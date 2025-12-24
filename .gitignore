@@ -3,9 +3,6 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-# Ignore Visual Studio files
-.vs/
-
 # dotenv files
 .env
 
@@ -40,6 +37,8 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+obj/
+bin/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -485,5 +484,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-o b j /  
+o b j / 
+ 
  
