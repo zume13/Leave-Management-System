@@ -21,6 +21,7 @@ namespace LeaveManagement.Domain.Shared
         public static class Employee
         {
             public static Error EmptyEmployeeName = new("EmployeeName.Empty", "Employee name is empty");
+            public static Error InactiveEmployeeRequest = new("Request.Invalid", "Inactive employees cannot request for leaves");
         }
 
         public static class Email 
@@ -41,7 +42,17 @@ namespace LeaveManagement.Domain.Shared
 
         public static class LeaveAllocation
         {
-            public static Error InstanceCreationFailed = new("Instantio.Failed", "LeaveAllocation creation failed");
+            public static Error InstanceCreationFailed = new("Instantion.Failed", "LeaveAllocation creation failed");
+            public static Error AllocationNotFound = new("Alocation.Unexistent", "No allocation was found with the same type of the request");
+            public static Error DuplicateAllocation = new("Allocation.Duplicate", "One leave allocation per employee only");
+        }
+
+        public static class LeaveRequest
+        {
+            public static Error InstanceCreationFailed = new("Instantion.Failed", "LeaveRequest creation failed");
+            public static Error InvalidRequestStatus = new("Request.Invalid", "Leave request status was invalid");
+            public static Error RequestAlreadyExists = new("Request.Duplicate", "Only one request per allocation");
+            public static Error OverLappingRequest = new("Request.Overlap", "Leave request has overlapping dates");
         }
     }
 }

@@ -9,7 +9,7 @@ namespace LeaveManagement.Domain.Entities
 
         private readonly List<LeaveAllocation> _allocations = new();
         private readonly List<LeaveRequest> _requests = new();
-        private Employee(Guid id, Name name, Email email, bool isActive,  Department department) : base(id)
+        private Employee(Guid id, Name name, Email email, bool isActive, Department department) : base(id)
         {
             this.Name = name;
             this.Email = email;
@@ -25,9 +25,6 @@ namespace LeaveManagement.Domain.Entities
         //FKs
         public Guid DeptId { get; private set; }
 
-        //Nav Property
-        public Department? Department { get; private set; }
-
         public IReadOnlyCollection<LeaveAllocation> allocations => _allocations;
         public IReadOnlyCollection<LeaveRequest> requests => _requests;
 
@@ -37,19 +34,21 @@ namespace LeaveManagement.Domain.Entities
         public static ResultT<Employee> Create(Name name, Email email, Department department)
         {
             if (name is null)
-                    return DomainErrors.Employee.EmptyEmployeeName;
+                return DomainErrors.Employee.EmptyEmployeeName;
 
             if (email is null)
                 return DomainErrors.Email.EmptyEmail;
 
             return ResultT<Employee>.Success(new Employee(Guid.NewGuid(), name, email, true, department));
-
         }
 
-        public ResultT<LeaveAllocation> GrantLeave(LeaveType leave)
+        public ResultT<LeaveAllocation> AllocateLeave(LeaveType leave)
         {
             if (leave is null)
                 return DomainErrors.General.NullObject;
+
+            if(_allocations.Any(a => a.LeaveTypeId == leave.Id))
+                return DomainErrors.LeaveAllocation.DuplicateAllocation;
 
             var allocation = LeaveAllocation.Create(this, leave);
 
@@ -59,29 +58,88 @@ namespace LeaveManagement.Domain.Entities
             _allocations.Add(allocation.Value);
 
             return ResultT<LeaveAllocation>.Success(allocation.Value);
-
         }
 
-        public ResultT<LeaveAllocation> UseLeave(LeaveType leave, int Days)
+        public ResultT<LeaveRequest> RequestLeave(DateTime startDate, DateTime endDate, string? description, LeaveType leaveType)
         {
-            if (Days <= 0)
-                return DomainErrors.General.InvalidInt;
+            if (!IsActive)
+                return DomainErrors.Employee.InactiveEmployeeRequest;
 
-            if(leave is null)
-                return DomainErrors.General.NullObject;
+            if (_requests.Any(r => r.OverlapsWith(startDate, endDate)))
+                return DomainErrors.LeaveRequest.OverLappingRequest;
 
-            var allocation = _allocations.FirstOrDefault(l => l.LeaveType.Id == leave.Id && l.Year == leave.Period);
+            if (!_allocations.Any(a => a.LeaveTypeId == leaveType.Id))
+                return DomainErrors.LeaveAllocation.AllocationNotFound;
 
-            if(allocation is null)
-                return DomainErrors.General.NotFound;
+            var leaveRequest = LeaveRequest.Create(startDate, endDate, description, this, leaveType);
 
-            var deductResult = allocation.Days.Deduct(Days);
+            if(leaveRequest.isFailure)
+                return DomainErrors.LeaveRequest.InstanceCreationFailed;
 
-            if(deductResult.isFailure)
-                return DomainErrors.LeaveDays.FailedDeduction;
+            if (_requests.Contains(leaveRequest.Value))
+                return DomainErrors.LeaveRequest.RequestAlreadyExists;
+
+            _requests.Add(leaveRequest.Value);
+
+            return ResultT<LeaveRequest>.Success(leaveRequest.Value);
+        }
+
+        public ResultT<LeaveAllocation> ApproveLeaveRequest(LeaveRequest request)
+        {
+            if (!_requests.Contains(request))
+                return DomainErrors.LeaveAllocation.AllocationNotFound;
+
+            if (!IsActive)
+                return DomainErrors.Employee.InactiveEmployeeRequest;
+
+            if (request.Status != Enums.LeaveRequestStatus.Pending)
+                return DomainErrors.LeaveRequest.InvalidRequestStatus;
+
+            if (request.LeaveDays.Days <= 0)
+                return DomainErrors.LeaveDays.InvalidLeaveDuration;
+
+            var allocation = _allocations.FirstOrDefault(a => a.LeaveTypeId == request.LeaveTypeId);
+
+            if (allocation is null)
+                return DomainErrors.LeaveAllocation.AllocationNotFound;
+
+            var deducted = allocation.Days.Deduct(request.LeaveDays.Days);
+
+            if (deducted.isFailure)
+                return DomainErrors.LeaveDays.InsufficientLeaveDays;
+
+            var approved = request.Approve();
+
+            if (approved.isFailure)
+                return DomainErrors.LeaveRequest.InvalidRequestStatus;
 
             return ResultT<LeaveAllocation>.Success(allocation);
         }
 
+        public ResultT<bool> AllocationExists(LeaveAllocation allocation)
+        {
+            if (allocation is null)
+                return DomainErrors.General.NullObject;
+
+            var alloc = _allocations.FirstOrDefault(a => a.LeaveTypeId == allocation.LeaveTypeId);
+
+            if (alloc is null)
+                return ResultT<bool>.Success(false);
+
+            return ResultT<bool>.Success(true);
+        }
+
+        public ResultT<bool> LeaveRequestExists(LeaveRequest request)
+        {
+            if(request is null)
+                return DomainErrors.General.NullObject;
+
+            var req = _requests.FirstOrDefault(r => r.LeaveTypeId == request.LeaveTypeId);
+
+            if (req is null)
+                return ResultT<bool>.Success(false);
+  
+           return ResultT<bool>.Success(true);
+        }
     }
 }

@@ -18,14 +18,19 @@ namespace LeaveManagement.Domain.Entities
         public LeaveDuration Days { get; private set; }
         public int Period { get; private set; }
 
-        public static ResultT<LeaveType> Create(Name leaveName, LeaveDuration days, DateTime year)
+        public static ResultT<LeaveType> Create(Name leaveName, int days)
         {
             if (leaveName == null)
                 return DomainErrors.General.EmptyName;
-            if (days == null || days.Days <= 0)
+            if (days <= 0)
+                return DomainErrors.General.InvalidInt;
+
+            var duration = LeaveDuration.Create(days);
+
+            if (duration.isFailure)
                 return DomainErrors.LeaveDays.InvalidLeaveDuration;
 
-            return ResultT<LeaveType>.Success(new LeaveType(Guid.NewGuid(), leaveName, days));
+            return ResultT<LeaveType>.Success(new LeaveType(Guid.NewGuid(), leaveName, duration.Value));
         }
     }
 }
