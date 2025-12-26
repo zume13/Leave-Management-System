@@ -49,10 +49,12 @@ namespace LeaveManagement.Domain.Shared
 
         public static class LeaveRequest
         {
-            public static Error InstanceCreationFailed = new("Instantion.Failed", "LeaveRequest creation failed");
+            
             public static Error InvalidRequestStatus = new("Request.Invalid", "Leave request status was invalid");
             public static Error RequestAlreadyExists = new("Request.Duplicate", "Only one request per allocation");
             public static Error OverLappingRequest = new("Request.Overlap", "Leave request has overlapping dates");
+            public static Error InvalidDateRange = new("Invalid.Dates", "Start date of request is past the end date");
+            public static Error InvalidEmployee = new("Employee.Invalid", "Request employee id and this employee are different");
         }
     }
 }
