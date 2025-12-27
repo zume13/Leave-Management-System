@@ -1,6 +1,7 @@
 ﻿using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Domain.Shared;
 using LeaveManagement.Domain.Value_Objects;
+using System.Text.Json.Serialization;
 
 namespace LeaveManagement.Domain.Entities
 {
@@ -71,6 +72,19 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
 
+        public ResultT<LeaveDuration> RemainingAllocatedLeaveDays(LeaveAllocation alloc)
+        {
+            if(alloc is null)
+                return DomainErrors.General.NullObject;
+
+            var allocation = _allocations.FirstOrDefault(a => a.LeaveTypeId == alloc.LeaveTypeId);
+
+            if (allocation is null)
+                return DomainErrors.LeaveAllocation.AllocationNotFound;
+
+            return ResultT<LeaveDuration>.Success(allocation.Days);
+        }
+        
         public Result RequestLeave
             (DateTime startDate, 
              DateTime endDate, 
@@ -118,6 +132,45 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
 
+        public Result CancelLeaveRequest(LeaveType leaveType)
+        {
+            if (leaveType is null)
+                return DomainErrors.General.NullObject;
+
+            var request = _requests.FirstOrDefault(r => r.LeaveTypeId == leaveType.Id);
+
+            if(request is null)
+                return DomainErrors.LeaveRequest.RequestNotFound;
+
+            var pending = request.IsPending();
+
+            if (!pending)
+                return DomainErrors.LeaveRequest.InvalidRequestStatus;
+
+            request.Cancel();
+
+            return Result.Success();
+        }
+       
+        public Result RejectLeaveRequest(LeaveRequest request)
+        {
+            if (request is null)
+                return DomainErrors.General.NullObject;
+
+            var req = _requests.FirstOrDefault(r => r.Id == request.Id && r.LeaveTypeId == request.LeaveTypeId);
+
+            if(req is null)
+                return DomainErrors.LeaveRequest.RequestNotFound;
+
+            var pending = req.IsPending();
+
+            if (!pending)
+                return DomainErrors.LeaveRequest.InvalidRequestStatus;
+
+            req.Reject();
+
+            return Result.Success();
+        }
         public Result ApproveLeaveRequest(LeaveRequest request)
         {
             if (request is null)
@@ -179,12 +232,12 @@ namespace LeaveManagement.Domain.Entities
             return ResultT<LeaveRequest>.Success(req);
         }
 
+        public List<LeaveRequest> GetAllPendingRequest()
+        {
+            return _requests.ToList();
+        }
+
         //raise domain events for approved and rejected leaves
-        //cancel request
-        //reject leave
-        //allocate in bulk
-        //get remaining leavedays
-        //list pending request
         //email and name update
         //add attributes for who created and processed leaves and allocation
         //add invariant that employee cannot approve his own leave

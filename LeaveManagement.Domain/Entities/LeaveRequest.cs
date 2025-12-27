@@ -74,7 +74,7 @@ namespace LeaveManagement.Domain.Entities
             return StartDate <= end && start <= EndDate;
         }
 
-        public ResultT<bool> Approve()
+        public Result Approve()
         {
             if (Status != LeaveRequestStatus.Pending)
                 return DomainErrors.LeaveRequest.InvalidRequestStatus;
@@ -82,7 +82,20 @@ namespace LeaveManagement.Domain.Entities
             Status = LeaveRequestStatus.Approved;
             ProcessedDate = DateTime.UtcNow;
             LastModifiedDate = DateTime.UtcNow;
-            return ResultT<bool>.Success(true);
+
+            return Result.Success();
+        }
+
+        public Result Cancel()
+        {
+            if(Status != LeaveRequestStatus.Pending)
+                return DomainErrors.LeaveRequest.InvalidRequestStatus;
+
+            Status = LeaveRequestStatus.Cancelled;
+            ProcessedDate = DateTime.UtcNow;
+            LastModifiedDate = DateTime.UtcNow;
+
+            return Result.Success();
         }
 
         public Result Reject(string? reason = null)
