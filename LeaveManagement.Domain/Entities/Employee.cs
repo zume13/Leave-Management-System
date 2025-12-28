@@ -1,7 +1,6 @@
 ﻿using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Domain.Shared;
 using LeaveManagement.Domain.Value_Objects;
-using System.Text.Json.Serialization;
 
 namespace LeaveManagement.Domain.Entities
 {
@@ -35,15 +34,12 @@ namespace LeaveManagement.Domain.Entities
         public IReadOnlyCollection<LeaveRequest> Requests => _requests;
 
         public void Activate() => IsActive = true;
-        public void DeActivate() => IsActive = false; //give invariants
+        public void DeActivate() => IsActive = false;
 
-        public static ResultT<Employee> Create(
-            Name name, 
-            Email email, 
-            Department department )
+        public static ResultT<Employee> Create(Name name, Email email, Department department )
         {
             if (department is null)
-                return DomainErrors.General.NullObject;
+                return DomainErrors.Department.NulllDepartment;
 
             if (name is null)
                 return DomainErrors.Employee.EmptyEmployeeName;
@@ -56,8 +52,6 @@ namespace LeaveManagement.Domain.Entities
 
         public Result AllocateLeave(LeaveType leave)
         {
-            if (leave is null)
-                return DomainErrors.General.NullObject;
 
             if(_allocations.Any(a => a.LeaveTypeId == leave.Id))
                 return DomainErrors.LeaveAllocation.DuplicateAllocation;
@@ -72,12 +66,9 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
 
-        public ResultT<LeaveDuration> RemainingAllocatedLeaveDays(LeaveAllocation alloc)
+        public ResultT<LeaveDuration> RemainingAllocatedLeaveDays(Guid allocationId)
         {
-            if(alloc is null)
-                return DomainErrors.General.NullObject;
-
-            var allocation = _allocations.FirstOrDefault(a => a.LeaveTypeId == alloc.LeaveTypeId);
+            var allocation = _allocations.SingleOrDefault(a => a.Id == allocationId);
 
             if (allocation is null)
                 return DomainErrors.LeaveAllocation.AllocationNotFound;
@@ -85,17 +76,13 @@ namespace LeaveManagement.Domain.Entities
             return ResultT<LeaveDuration>.Success(allocation.Days);
         }
         
-        public Result RequestLeave
-            (DateTime startDate, 
-             DateTime endDate, 
-             string? description, 
-             LeaveType leaveType )
+        public Result RequestLeave(DateTime startDate, DateTime endDate, string? description, LeaveType leaveType )
         {
             if (!IsActive)
                 return DomainErrors.Employee.InactiveEmployeeRequest;
 
             if (leaveType is null)
-                return DomainErrors.General.NullObject;
+                return DomainErrors.LeaveType.NullLeaveType;
 
             if (startDate > endDate)
                 return DomainErrors.LeaveRequest.InvalidDateRange;
@@ -103,7 +90,7 @@ namespace LeaveManagement.Domain.Entities
             if (_requests.Any(r => r.OverlapsWith(startDate, endDate)))
                 return DomainErrors.LeaveRequest.OverLappingRequest;
 
-            var alloc = _allocations.FirstOrDefault(a => a.LeaveTypeId == leaveType.Id);
+            var alloc = _allocations.SingleOrDefault(a => a.LeaveTypeId == leaveType.Id);
                 
             if(alloc is null)
                 return DomainErrors.LeaveAllocation.AllocationNotFound;
@@ -111,7 +98,8 @@ namespace LeaveManagement.Domain.Entities
             if (_requests.Any(r =>
                 r.LeaveTypeId == leaveType.Id &&
                 r.StartDate == startDate &&
-                r.EndDate == endDate))
+                r.EndDate == endDate && 
+                r.IsPending()))
                 return DomainErrors.LeaveRequest.RequestAlreadyExists;
 
             if (alloc.Days.Days < LeaveRequest.GetLeaveSpan(startDate, endDate)) 
@@ -132,57 +120,37 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
 
-        public Result CancelLeaveRequest(LeaveType leaveType)
+        public Result UpdateLeaveRequest(Guid requestId, Action<LeaveRequest> method)
         {
-            if (leaveType is null)
-                return DomainErrors.General.NullObject;
+            var request = _requests.SingleOrDefault(r => r.Id == requestId);
 
-            var request = _requests.FirstOrDefault(r => r.LeaveTypeId == leaveType.Id);
+            if (request is null)
+                return DomainErrors.LeaveRequest.RequestNotFound;
+
+            if (!request.IsPending())
+                return DomainErrors.LeaveRequest.InvalidRequestStatus;
+
+            method(request);
+
+            return Result.Success();
+        }
+
+        public Result CancelLeaveRequest(Guid requestId) => UpdateLeaveRequest(requestId, r => r.Cancel());
+       
+        public Result RejectLeaveRequest(Guid requestId) => UpdateLeaveRequest(requestId, r => r.Reject()); 
+       
+        public Result ApproveLeaveRequest(Guid requestId)
+        {
+
+            var request = _requests.SingleOrDefault(r => r.Id == requestId);
 
             if(request is null)
                 return DomainErrors.LeaveRequest.RequestNotFound;
 
-            var pending = request.IsPending();
-
-            if (!pending)
-                return DomainErrors.LeaveRequest.InvalidRequestStatus;
-
-            request.Cancel();
-
-            return Result.Success();
-        }
-       
-        public Result RejectLeaveRequest(LeaveRequest request)
-        {
-            if (request is null)
-                return DomainErrors.General.NullObject;
-
-            var req = _requests.FirstOrDefault(r => r.Id == request.Id && r.LeaveTypeId == request.LeaveTypeId);
-
-            if(req is null)
-                return DomainErrors.LeaveRequest.RequestNotFound;
-
-            var pending = req.IsPending();
-
-            if (!pending)
-                return DomainErrors.LeaveRequest.InvalidRequestStatus;
-
-            req.Reject();
-
-            return Result.Success();
-        }
-        public Result ApproveLeaveRequest(LeaveRequest request)
-        {
-            if (request is null)
-                return DomainErrors.General.NullObject;
-
-            if (request.EmployeeId != this.Id)
-                return DomainErrors.LeaveRequest.InvalidEmployee;
-
             if (!IsActive)
                 return DomainErrors.Employee.InactiveEmployeeRequest;
 
-            var allocation = _allocations.FirstOrDefault(a => a.LeaveTypeId == request.LeaveTypeId);
+            var allocation = _allocations.SingleOrDefault(a => a.LeaveTypeId == request.LeaveTypeId);
 
             if (allocation is null)
                 return DomainErrors.LeaveAllocation.AllocationNotFound;
@@ -200,46 +168,59 @@ namespace LeaveManagement.Domain.Entities
 
             var deducted = allocation.Days.Deduct(request.LeaveDays.Days);
 
-            if (deducted.isFailure)
-                return deducted.Error;
+            allocation.UpdateDays(deducted.Value);
 
             return Result.Success();
         }
 
-        public ResultT<LeaveAllocation> HasAllocationFor(LeaveAllocation allocation)
+        public ResultT<LeaveAllocation> HasAllocationForLeaveType(Guid leaveTypeId)
         {
-            if (allocation is null)
-                return DomainErrors.General.NullObject;
-
-            var alloc = _allocations.FirstOrDefault(a => a.LeaveTypeId == allocation.LeaveTypeId);
+            var alloc = _allocations.SingleOrDefault(a => a.LeaveTypeId == leaveTypeId);
 
             if (alloc is null)
-                return DomainErrors.General.NullObject;
+                return DomainErrors.LeaveAllocation.AllocationNotFound;
 
             return ResultT<LeaveAllocation>.Success(alloc);
         }
 
-        public ResultT<LeaveRequest> HasPendingRequest(LeaveRequest request)
+        public ResultT<LeaveRequest> HasPendingRequest(Guid leaveTypeId)
         {
-            if(request is null)
-                return DomainErrors.General.NullObject;
+            var request = _requests.SingleOrDefault(r => r.LeaveTypeId == leaveTypeId && r.IsPending());
 
-            var req = _requests.FirstOrDefault(r => r.LeaveTypeId == request.LeaveTypeId);
+            if (request is null)
+                return DomainErrors.LeaveRequest.RequestNotFound;
 
-            if (req is null)
-                return DomainErrors.General.NullObject;
-
-            return ResultT<LeaveRequest>.Success(req);
+            return ResultT<LeaveRequest>.Success(request);
         }
 
-        public List<LeaveRequest> GetAllPendingRequest()
+        public List<LeaveRequest> GetAllPendingRequests()
         {
-            return _requests.ToList();
+            return _requests.Where(r => r.IsPending()).ToList();
         }
 
-        //raise domain events for approved and rejected leaves
-        //email and name update
-        //add attributes for who created and processed leaves and allocation
-        //add invariant that employee cannot approve his own leave
+        public Result ChangeEmail(string email)
+        {
+           var result = Email.Create(email);
+
+            if (result.isFailure)
+                return result.Error;
+
+            Email = result.Value;
+            return Result.Success();
+        }
+
+        public Result ChangeName(string name)
+        {
+            var result = Name.Create(name);
+
+            if (result.isFailure) 
+                return result.Error;
+
+            Name = result.Value;
+            return Result.Success();
+        }
+        
+        //raise domain events 
+        //add attribute for who processed leaves and allocation
     }
 }

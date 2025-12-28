@@ -7,7 +7,7 @@ namespace LeaveManagement.Domain.Entities
 {
     public class LeaveType : Entity
     {
-        internal LeaveType(Guid id, Name name, LeaveDuration days) : base(id)  
+        private LeaveType(Guid id, Name name, LeaveDuration days) : base(id)  
         {
             LeaveName = name;
             Days = days;

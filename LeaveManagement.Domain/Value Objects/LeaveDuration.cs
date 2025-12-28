@@ -5,7 +5,7 @@ namespace LeaveManagement.Domain.Value_Objects
 {
     public class LeaveDuration : ValueObject
     {
-        public int Days { get; init; }
+        public int Days { get; }
         protected LeaveDuration(int days) 
         {
             Days = days;
@@ -33,6 +33,5 @@ namespace LeaveManagement.Domain.Value_Objects
 
             return ResultT<LeaveDuration>.Success(new LeaveDuration(Days - daysToDeduct));
         }
-
     }
 }

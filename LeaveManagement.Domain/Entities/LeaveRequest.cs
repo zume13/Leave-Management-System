@@ -8,10 +8,11 @@ namespace LeaveManagement.Domain.Entities
     public class LeaveRequest : Entity
     {
         
-        internal LeaveRequest(Guid id, DateTime startDate, DateTime endDate, string description, Employee employee, LeaveType leaveType, LeaveDuration days) : base(id)
+        private LeaveRequest(Guid id, DateTime startDate, DateTime endDate, string description, Employee employee, LeaveType leaveType, LeaveDuration days, DateTime requestDate, DateTime modifiedDate) : base(id)
         {
-            RequestDate = DateTime.UtcNow;
-            LastModifiedDate = DateTime.UtcNow;
+            RequestedBy = employee.Name;
+            RequestDate = requestDate;
+            LastModifiedDate = modifiedDate;
             ProcessedDate = null;
             StartDate = startDate;
             EndDate = endDate;
@@ -23,6 +24,7 @@ namespace LeaveManagement.Domain.Entities
             LeaveTypeId = leaveType.Id;
         }
         private LeaveRequest() { }
+        public Name RequestedBy { get; private set; }
         public DateTime RequestDate { get; private set; }
         public DateTime LastModifiedDate { get; private set; }
         public DateTime? ProcessedDate { get; private set; }
@@ -61,12 +63,12 @@ namespace LeaveManagement.Domain.Entities
                 return DomainErrors.LeaveDays.InvalidEndDate;
 
             if (employee is null)
-                return DomainErrors.General.NullObject;
+                return DomainErrors.Employee.NullEmployee;
 
             if (leaveType is null)
-                return DomainErrors.General.NullObject;
+                return DomainErrors.LeaveType.NullLeaveType;
 
-            return ResultT<LeaveRequest>.Success(new LeaveRequest(Guid.NewGuid(), startDate, endDate, description, employee, leaveType, leaveDays.Value));
+            return ResultT<LeaveRequest>.Success(new LeaveRequest(Guid.NewGuid(), startDate, endDate, description, employee, leaveType, leaveDays.Value, DateTime.UtcNow, DateTime.UtcNow));
         }
 
         public bool OverlapsWith(DateTime start, DateTime end)
@@ -117,6 +119,21 @@ namespace LeaveManagement.Domain.Entities
         public bool IsPending()
         {
             return Status == LeaveRequestStatus.Pending;
+        }
+
+        public bool IsApproved()
+        {
+            return Status == LeaveRequestStatus.Approved;
+        }
+
+        public bool IsRejected()
+        {
+            return Status == LeaveRequestStatus.Rejected;
+        }
+
+        public bool IsCancelled()
+        {
+            return Status == LeaveRequestStatus.Cancelled;
         }
 
         public static int GetLeaveSpan(DateTime startDate, DateTime endDate)

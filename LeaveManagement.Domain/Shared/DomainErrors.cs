@@ -15,13 +15,13 @@ namespace LeaveManagement.Domain.Shared
             public static Error InvalidInt = new("Int.Invalid", "Int must be positive");
             public static Error InvalidGuid = new("Guid.Invalid", "Guid must be valid");
             public static Error InvalidId = new("Id.Invalid", "ID must be positive");
-            public static Error NullObject = new("Object.Null", "Provide an not null object");
             public static Error NotFound = new("Object.NotFound", "Object was not found");
         }
         public static class Employee
         {
             public static Error EmptyEmployeeName = new("EmployeeName.Empty", "Employee name is empty");
             public static Error InactiveEmployeeRequest = new("Request.Invalid", "Inactive employees cannot request for leaves");
+            public static Error NullEmployee = new("Employee.Null", "Passed employee instance was null");
         }
 
         public static class Email 
@@ -38,6 +38,7 @@ namespace LeaveManagement.Domain.Shared
             public static Error InvalidEndDate = new("EndDate.Invalid", "End date should be in the present or after the start date");
             public static Error FailedDeduction = new("Deduction.Failed", "Leave days deduction went wrong");
             public static Error InsufficientLeaveDays = new("Insufficient.Days", "Insufficient Leave Days");
+            public static Error NullLeaveDays = new("LeaveDays.Null", "Passed days instance was null");
         }
 
         public static class LeaveAllocation
@@ -55,7 +56,18 @@ namespace LeaveManagement.Domain.Shared
             public static Error OverLappingRequest = new("Request.Overlap", "Leave request has overlapping dates");
             public static Error InvalidDateRange = new("Invalid.Dates", "Start date of request is past the end date");
             public static Error InvalidEmployee = new("Employee.Invalid", "Request employee id and this employee are different");
+            public static Error NullLeaveRequest = new("Request.Null", "Passed leave request instance was null");
             public static Error RequestNotFound = new("Request.Unexistent", "No request was found");
+        }
+
+        public static class Department
+        {
+            public static Error NulllDepartment = new("Department.Null", "Passed department instance was null");
+        }
+
+        public static class LeaveType
+        {
+            public static Error NullLeaveType = new("LeaveType.Null", "Passed leave type instance was null");
         }
     }
 }
