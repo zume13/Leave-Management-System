@@ -1,4 +1,6 @@
-﻿using LeaveManagement.Domain.Primitives;
+﻿using LeaveManagement.Domain.Commons.Shared;
+using LeaveManagement.Domain.Contracts;
+using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Domain.Shared;
 using LeaveManagement.Domain.Value_Objects;
 
@@ -6,10 +8,10 @@ namespace LeaveManagement.Domain.Entities
 {
     public class Employee : AggregateRoot
     {
-
         private readonly List<LeaveAllocation> _allocations = new();
         private readonly List<LeaveRequest> _requests = new();
         private Employee(
+            
             Guid id, 
             Name name, 
             Email email, 
@@ -32,7 +34,7 @@ namespace LeaveManagement.Domain.Entities
 
         public IReadOnlyCollection<LeaveAllocation> Allocations => _allocations;
         public IReadOnlyCollection<LeaveRequest> Requests => _requests;
-
+        
         public void Activate() => IsActive = true;
         public void DeActivate() => IsActive = false;
 
@@ -46,10 +48,9 @@ namespace LeaveManagement.Domain.Entities
 
             if (email is null)
                 return DomainErrors.Email.EmptyEmail;
-
+            
             return ResultT<Employee>.Success(new Employee(Guid.NewGuid(), name, email, true, department));
         }
-
         public Result AllocateLeave(LeaveType leave)
         {
 
@@ -65,7 +66,6 @@ namespace LeaveManagement.Domain.Entities
 
             return Result.Success();
         }
-
         public ResultT<LeaveDuration> RemainingAllocatedLeaveDays(Guid allocationId)
         {
             var allocation = _allocations.SingleOrDefault(a => a.Id == allocationId);
@@ -75,7 +75,6 @@ namespace LeaveManagement.Domain.Entities
 
             return ResultT<LeaveDuration>.Success(allocation.Days);
         }
-        
         public Result RequestLeave(DateTime startDate, DateTime endDate, string? description, LeaveType leaveType )
         {
             if (!IsActive)
@@ -119,7 +118,6 @@ namespace LeaveManagement.Domain.Entities
 
             return Result.Success();
         }
-
         public Result UpdateLeaveRequest(Guid requestId, Action<LeaveRequest> method)
         {
             var request = _requests.SingleOrDefault(r => r.Id == requestId);
@@ -134,11 +132,8 @@ namespace LeaveManagement.Domain.Entities
 
             return Result.Success();
         }
-
         public Result CancelLeaveRequest(Guid requestId) => UpdateLeaveRequest(requestId, r => r.Cancel());
-       
         public Result RejectLeaveRequest(Guid requestId) => UpdateLeaveRequest(requestId, r => r.Reject()); 
-       
         public Result ApproveLeaveRequest(Guid requestId)
         {
 
@@ -172,7 +167,6 @@ namespace LeaveManagement.Domain.Entities
 
             return Result.Success();
         }
-
         public ResultT<LeaveAllocation> HasAllocationForLeaveType(Guid leaveTypeId)
         {
             var alloc = _allocations.SingleOrDefault(a => a.LeaveTypeId == leaveTypeId);
@@ -182,7 +176,6 @@ namespace LeaveManagement.Domain.Entities
 
             return ResultT<LeaveAllocation>.Success(alloc);
         }
-
         public ResultT<LeaveRequest> HasPendingRequest(Guid leaveTypeId)
         {
             var request = _requests.SingleOrDefault(r => r.LeaveTypeId == leaveTypeId && r.IsPending());
@@ -192,12 +185,10 @@ namespace LeaveManagement.Domain.Entities
 
             return ResultT<LeaveRequest>.Success(request);
         }
-
         public List<LeaveRequest> GetAllPendingRequests()
         {
             return _requests.Where(r => r.IsPending()).ToList();
         }
-
         public Result ChangeEmail(string email)
         {
            var result = Email.Create(email);
@@ -208,7 +199,6 @@ namespace LeaveManagement.Domain.Entities
             Email = result.Value;
             return Result.Success();
         }
-
         public Result ChangeName(string name)
         {
             var result = Name.Create(name);

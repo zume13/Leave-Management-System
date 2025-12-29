@@ -1,4 +1,5 @@
-﻿using LeaveManagement.Domain.Primitives;
+﻿using LeaveManagement.Domain.Commons.Shared;
+using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Domain.Shared;
 
 namespace LeaveManagement.Domain.Value_Objects

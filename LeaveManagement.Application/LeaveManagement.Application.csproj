@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Employee\Commands\" />
+    <Folder Include="Features\Employee\Queries\" />
+    <Folder Include="Features\LeaveAllocation\Commands\" />
+    <Folder Include="Features\LeaveAllocation\Queries\" />
+    <Folder Include="Features\LeaveRequest\Commands\" />
+    <Folder Include="Features\LeaveRequest\Queries\" />
+    <Folder Include="Features\LeaveType\Commands\" />
+    <Folder Include="Features\LeaveType\Queries\" />
+  </ItemGroup>
+
 </Project>

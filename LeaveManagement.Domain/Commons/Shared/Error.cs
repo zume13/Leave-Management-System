@@ -1,10 +1,11 @@
-﻿using System;
+﻿using LeaveManagement.Domain.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeaveManagement.Domain.Shared
+namespace LeaveManagement.Domain.Commons.Shared
 {
     public class Error
     {
