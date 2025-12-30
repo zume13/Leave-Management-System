@@ -1,4 +1,5 @@
 ﻿using LeaveManagement.Domain.Commons.Shared;
+using LeaveManagement.Domain.Enums;
 using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Domain.Shared;
 using LeaveManagement.Domain.Value_Objects;
@@ -11,14 +12,23 @@ namespace LeaveManagement.Domain.Entities
         private LeaveAllocation(Guid id, Employee employee, LeaveType leaveType, int year, DateTime creationDate) : base(id)
         {
             CreationDate = creationDate;
-            Days = leaveType.Days;
+            LeaveDays = leaveType.Days;
             Year = year;
             EmployeeId = employee.Id;
             LeaveTypeId = leaveType.Id;
         }
         private LeaveAllocation() { }
         public DateTime CreationDate { get; private set; }
-        public LeaveDuration Days { get; private set; }
+        public LeaveDuration LeaveDays { get; private set; }
+        public int UsedDays { get; private set; } = default;
+        public int RemainingDays
+        {
+            get
+            {
+                return LeaveDays.Days - UsedDays;
+            }
+        }
+
         public int Year { get; private set; }
 
         //FKs
@@ -30,23 +40,22 @@ namespace LeaveManagement.Domain.Entities
             if (employee is null)
                 return DomainErrors.Employee.NullEmployee;
 
+            if (employee.Status == EmployeeStatus.Fired)
+                return DomainErrors.Employee.InactiveEmployee;
+
             if (leaveType is null)
                 return DomainErrors.LeaveType.NullLeaveType;
 
             return ResultT<LeaveAllocation>.Success(new LeaveAllocation(Guid.NewGuid(), employee, leaveType, DateTime.UtcNow.Year, DateTime.UtcNow));
         } 
 
-        public Result UpdateDays(LeaveDuration newDays)
+        public void Consume(int days)
         {
-            if (newDays is null)
-                return DomainErrors.LeaveDays.NullLeaveDays;
-
-            if (newDays == Days)
-                return Result.Success();
-
-            Days = newDays;
-
-            return Result.Success();
+            UsedDays += days;
         }
+        
+        public bool CanConsume(int days) => RemainingDays >= days;
+
+        //raise updated allocation days
     }
 }

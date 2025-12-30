@@ -11,7 +11,6 @@ namespace LeaveManagement.Domain.Entities
         
         private LeaveRequest(Guid id, DateTime startDate, DateTime endDate, string description, Employee employee, LeaveType leaveType, LeaveDuration days, DateTime requestDate, DateTime modifiedDate) : base(id)
         {
-            RequestedBy = employee.Name;
             RequestDate = requestDate;
             LastModifiedDate = modifiedDate;
             ProcessedDate = null;
@@ -20,12 +19,10 @@ namespace LeaveManagement.Domain.Entities
             LeaveDays = days;
             Status = LeaveRequestStatus.Pending; 
             Description = string.IsNullOrWhiteSpace(description) ? "No description provided" : description;
-
             EmployeeId = employee.Id;
             LeaveTypeId = leaveType.Id;
         }
         private LeaveRequest() { }
-        public Name RequestedBy { get; private set; }
         public DateTime RequestDate { get; private set; }
         public DateTime LastModifiedDate { get; private set; }
         public DateTime? ProcessedDate { get; private set; }
@@ -33,21 +30,17 @@ namespace LeaveManagement.Domain.Entities
         public DateTime EndDate { get; private set; }
         public LeaveDuration LeaveDays {  get; private set; }
         public LeaveRequestStatus Status { get; private set; }
-
+        public string? RejectionReason { get; private set; }
         public string? Description { get; private set; }
 
         //FKs
         public Guid EmployeeId { get; private set; }
         public Guid LeaveTypeId { get; private set; }
 
-        // Nav Properties
-        public Employee? Employee { get ; private set; }
-        public LeaveType? LeaveType { get; private set; }
-
         public static ResultT<LeaveRequest> Create(DateTime startDate, DateTime endDate, string? description, Employee employee, LeaveType leaveType)
         {
 
-            int days = (endDate.Date.AddDays(1) - startDate.Date).Days;
+            int days = GetLeaveSpan(startDate, endDate); 
 
             var leaveDays = LeaveDuration.Create(days);
 
@@ -79,7 +72,7 @@ namespace LeaveManagement.Domain.Entities
 
         public Result Approve()
         {
-            if (Status != LeaveRequestStatus.Pending)
+            if(Status != LeaveRequestStatus.Pending)
                 return DomainErrors.LeaveRequest.InvalidRequestStatus;
 
             Status = LeaveRequestStatus.Approved;
@@ -88,7 +81,6 @@ namespace LeaveManagement.Domain.Entities
 
             return Result.Success();
         }
-
         public Result Cancel()
         {
             if(Status != LeaveRequestStatus.Pending)
@@ -107,10 +99,7 @@ namespace LeaveManagement.Domain.Entities
                 return DomainErrors.LeaveRequest.InvalidRequestStatus;
 
             Status = LeaveRequestStatus.Rejected;
-            Description = string.IsNullOrWhiteSpace(reason)
-                ? Description
-                : reason;
-
+            RejectionReason = string.IsNullOrWhiteSpace(reason) ? "Not provided" : reason;
             ProcessedDate = DateTime.UtcNow;
             LastModifiedDate = DateTime.UtcNow;
 

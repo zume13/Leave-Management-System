@@ -12,12 +12,10 @@ namespace LeaveManagement.Domain.Entities
         {
             LeaveName = name;
             Days = days;
-            Period = DateTime.UtcNow.Year;
         }
         private LeaveType() { }
         public Name LeaveName { get; private set; }
         public LeaveDuration Days { get; private set; }
-        public int Period { get; private set; }
 
         public static ResultT<LeaveType> Create(Name leaveName, int days)
         {

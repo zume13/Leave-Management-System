@@ -7,14 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Employee\Commands\" />
-    <Folder Include="Features\Employee\Queries\" />
+    <Folder Include="Features\Employee\Commands\RemoveEmployee\" />
+    <Folder Include="Features\Employee\Commands\UpdateEmployee\" />
+    <Folder Include="Features\Employee\Queries\GetEmployee\" />
+    <Folder Include="Features\Employee\Queries\ListEmployees\" />
     <Folder Include="Features\LeaveAllocation\Commands\" />
     <Folder Include="Features\LeaveAllocation\Queries\" />
     <Folder Include="Features\LeaveRequest\Commands\" />
     <Folder Include="Features\LeaveRequest\Queries\" />
     <Folder Include="Features\LeaveType\Commands\" />
     <Folder Include="Features\LeaveType\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LeaveManagement.Domain\LeaveManagement.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -20,8 +20,9 @@ namespace LeaveManagement.Domain.Commons.Shared
         public static class Employee
         {
             public static Error EmptyEmployeeName = new("EmployeeName.Empty", "Employee name is empty");
-            public static Error InactiveEmployeeRequest = new("Request.Invalid", "Inactive employees cannot request for leaves");
+            public static Error InactiveEmployee = new("Request.Invalid", "Inactive employees cannot execute functionalities");
             public static Error NullEmployee = new("Employee.Null", "Passed employee instance was null");
+            public static Error EmployeeOnLeave = new("Employee.OnLeave", "Employee cannot access functionalities while on leave");
         }
 
         public static class Email 
@@ -39,6 +40,8 @@ namespace LeaveManagement.Domain.Commons.Shared
             public static Error FailedDeduction = new("Deduction.Failed", "Leave days deduction went wrong");
             public static Error InsufficientLeaveDays = new("Insufficient.Days", "Insufficient Leave Days");
             public static Error NullLeaveDays = new("LeaveDays.Null", "Passed days instance was null");
+            public static Error PastDate = new("Date.Invalid", "The date was in the past");
+            public static Error InvalidUsedDays = new("UsedDays.Invalid", "Employee cannot use more than allocated leave days");
         }
 
         public static class LeaveAllocation
@@ -58,6 +61,7 @@ namespace LeaveManagement.Domain.Commons.Shared
             public static Error InvalidEmployee = new("Employee.Invalid", "Request employee id and this employee are different");
             public static Error NullLeaveRequest = new("Request.Null", "Passed leave request instance was null");
             public static Error RequestNotFound = new("Request.Unexistent", "No request was found");
+            public static Error InvalidYear = new("Year.Invalid", "The input year has already passed");
         }
 
         public static class Department

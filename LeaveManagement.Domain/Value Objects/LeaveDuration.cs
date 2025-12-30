@@ -23,16 +23,5 @@ namespace LeaveManagement.Domain.Value_Objects
 
             return ResultT<LeaveDuration>.Success(new LeaveDuration(days));
         }
-
-        public ResultT<LeaveDuration> Deduct(int daysToDeduct)
-        {
-            if(daysToDeduct <= 0)
-                return DomainErrors.General.InvalidInt;
-            
-            if(daysToDeduct > Days)
-                return DomainErrors.LeaveDays.InsufficientLeaveDays;
-
-            return ResultT<LeaveDuration>.Success(new LeaveDuration(Days - daysToDeduct));
-        }
     }
 }
