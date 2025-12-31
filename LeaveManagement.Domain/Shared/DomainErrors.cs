@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeaveManagement.Domain.Commons.Shared
+namespace LeaveManagement.Domain.Shared
 {
     internal class DomainErrors
     {
