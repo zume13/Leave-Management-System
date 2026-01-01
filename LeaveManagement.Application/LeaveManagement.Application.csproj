@@ -7,16 +7,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Employee\Commands\RemoveEmployee\" />
-    <Folder Include="Features\Employee\Commands\UpdateEmployee\" />
-    <Folder Include="Features\Employee\Queries\GetEmployee\" />
-    <Folder Include="Features\Employee\Queries\ListEmployees\" />
-    <Folder Include="Features\LeaveAllocation\Commands\" />
-    <Folder Include="Features\LeaveAllocation\Queries\" />
-    <Folder Include="Features\LeaveRequest\Commands\" />
-    <Folder Include="Features\LeaveRequest\Queries\" />
-    <Folder Include="Features\LeaveType\Commands\" />
-    <Folder Include="Features\LeaveType\Queries\" />
+    <Folder Include="Features\LeaveRequest\Commands\CreateLeaveRequest\" />
+    <Folder Include="Features\LeaveRequest\Commands\CancelLeaveRequest\" />
+    <Folder Include="Features\LeaveRequest\Commands\ApproveLeaveRequest\" />
+    <Folder Include="Features\LeaveRequest\Commands\UpdateLeaveRequest\" />
+    <Folder Include="Features\LeaveRequest\Commands\RejectLeaveRequest\" />
+    <Folder Include="Features\LeaveRequest\Queries\GetAllPendingRequests\" />
+    <Folder Include="Features\LeaveRequest\Queries\GetAllRequestByEmployee\" />
+    <Folder Include="Features\LeaveRequest\Queries\GetAllRejectedRequests\" />
+    <Folder Include="Features\LeaveRequest\Queries\GetAllApproveRequests\" />
+    <Folder Include="Features\LeaveRequest\Queries\GetPendingRequestsByEmploye\" />
+    <Folder Include="Features\LeaveRequest\Queries\GetApprovedRequestsByEmployee\" />
+    <Folder Include="Features\LeaveRequest\Queries\GetRejectedRequestsByEmployee\" />
+    <Folder Include="Features\LeaveType\Commands\CreateLeaveType\" />
+    <Folder Include="Features\LeaveType\Commands\RemoveLeaveType\" />
+    <Folder Include="Features\LeaveType\Commands\UpdateLeaveType\" />
+    <Folder Include="Features\LeaveType\Queries\GetAllLeaveTypes\" />
+    <Folder Include="Features\LeaveType\Queries\GetLeaveTypeById\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.5.1" />
   </ItemGroup>
 
   <ItemGroup>

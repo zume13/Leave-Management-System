@@ -1,21 +1,21 @@
-﻿
-using LeaveManagement.Domain.Commons.Contracts;
+﻿using LeaveManagement.Application.Abstractions.Data;
+using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Domain.Shared;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.CreateEmployee
 {
-    public class CreateEmployeeHandler
+    public class CreateEmployeeHandler : ICommandHandler<CreateEmployeeCommand, CreateEmployeeDto>
     {
-        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IApplicationDbContext _context;
 
-        public CreateEmployeeHandler(IEmployeeRepository employeeRepository)
+        public CreateEmployeeHandler(IApplicationDbContext context)
         {
-            _employeeRepository = employeeRepository;
+            _context = context;
         }
 
-        public Result<CreateEmployeeDto> Handle(CreateEmployeeCommand command, CancellationToken ct)
+        public async Task<ResultT<CreateEmployeeDto>> Handle(CreateEmployeeCommand command, CancellationToken token)
         {
-
+             
         }
     }
 }
