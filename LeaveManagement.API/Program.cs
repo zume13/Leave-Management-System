@@ -1,3 +1,4 @@
+using LeaveManagement.Application.Models;
 
 namespace LeaveManagement.API
 {
@@ -25,10 +26,11 @@ namespace LeaveManagement.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
-
             app.MapControllers();
+            app.MapIdentityApi<User>();
 
             app.Run();
         }

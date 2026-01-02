@@ -1,10 +1,5 @@
 ﻿using LeaveManagement.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Application.Abstractions.Data
 {
@@ -13,8 +8,8 @@ namespace LeaveManagement.Application.Abstractions.Data
         DbSet<Department> Departments { get; }
         DbSet<Employee> Employees { get; }
         DbSet<LeaveAllocation> LeaveAllocations { get; }
-        DbSet<Employee> LeaveTypes { get; }
+        DbSet<LeaveType> LeaveTypes { get; }
 
-        Task<int> SaveChangesAsync(CancellationToken ct);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

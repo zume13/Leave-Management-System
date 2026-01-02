@@ -1,33 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\LeaveRequest\Commands\CreateLeaveRequest\" />
-    <Folder Include="Features\LeaveRequest\Commands\CancelLeaveRequest\" />
-    <Folder Include="Features\LeaveRequest\Commands\ApproveLeaveRequest\" />
-    <Folder Include="Features\LeaveRequest\Commands\UpdateLeaveRequest\" />
-    <Folder Include="Features\LeaveRequest\Commands\RejectLeaveRequest\" />
-    <Folder Include="Features\LeaveRequest\Queries\GetAllPendingRequests\" />
-    <Folder Include="Features\LeaveRequest\Queries\GetAllRequestByEmployee\" />
-    <Folder Include="Features\LeaveRequest\Queries\GetAllRejectedRequests\" />
-    <Folder Include="Features\LeaveRequest\Queries\GetAllApproveRequests\" />
-    <Folder Include="Features\LeaveRequest\Queries\GetPendingRequestsByEmploye\" />
-    <Folder Include="Features\LeaveRequest\Queries\GetApprovedRequestsByEmployee\" />
-    <Folder Include="Features\LeaveRequest\Queries\GetRejectedRequestsByEmployee\" />
-    <Folder Include="Features\LeaveType\Commands\CreateLeaveType\" />
-    <Folder Include="Features\LeaveType\Commands\RemoveLeaveType\" />
-    <Folder Include="Features\LeaveType\Commands\UpdateLeaveType\" />
-    <Folder Include="Features\LeaveType\Queries\GetAllLeaveTypes\" />
-    <Folder Include="Features\LeaveType\Queries\GetLeaveTypeById\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
