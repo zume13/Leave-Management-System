@@ -1,6 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Behaviors;
 using LeaveManagement.Application.Abstractions.Messaging;
-using LeaveManagement.Domain.Shared;
+using SharedKernel.Shared;
 using Microsoft.Extensions.DependencyInjection;
 
 

@@ -1,6 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
-using LeaveManagement.Domain.Shared;
+using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.CreateEmployee
 {
@@ -15,7 +15,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.CreateEmployee
 
         public async Task<ResultT<CreateEmployeeDto>> Handle(CreateEmployeeCommand command, CancellationToken token)
         {
-             
+             throw new NotImplementedException();
         }
     }
 }

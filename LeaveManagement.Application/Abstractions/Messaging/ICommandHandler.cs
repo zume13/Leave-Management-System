@@ -1,4 +1,4 @@
-﻿using LeaveManagement.Domain.Shared;
+﻿using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Abstractions.Messaging
 {

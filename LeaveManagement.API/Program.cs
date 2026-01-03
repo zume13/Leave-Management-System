@@ -30,7 +30,6 @@ namespace LeaveManagement.API
             app.UseAuthorization();
 
             app.MapControllers();
-            app.MapIdentityApi<User>();
 
             app.Run();
         }

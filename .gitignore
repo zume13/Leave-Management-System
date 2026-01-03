@@ -6,6 +6,11 @@
 # dotenv files
 .env
 
+# ASP.NET Core environment-specific settings
+appsettings.Development.json
+appsettings.Staging.json
+appsettings.Production.json
+
 # User-specific files
 *.rsuser
 *.suo

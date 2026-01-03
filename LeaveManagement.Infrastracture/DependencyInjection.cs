@@ -1,14 +1,12 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Abstractions.Services;
 using LeaveManagement.Infrastracture.Messaging;
 using LeaveManagement.Infrastracture.Persistence;
+using LeaveManagement.Infrastracture.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace LeaveManagement.Infrastracture
 {
@@ -22,6 +20,8 @@ namespace LeaveManagement.Infrastracture
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddScoped<IMediator, Mediator>();
+
+            services.AddScoped<ITokenService, TokenService>();
 
             return services;
         }

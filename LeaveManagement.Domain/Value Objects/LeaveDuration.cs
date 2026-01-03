@@ -1,5 +1,5 @@
 ﻿using LeaveManagement.Domain.Primitives;
-using LeaveManagement.Domain.Shared;
+using SharedKernel.Shared;
 
 namespace LeaveManagement.Domain.Value_Objects
 {

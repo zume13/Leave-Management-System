@@ -1,5 +1,5 @@
 ﻿using LeaveManagement.Domain.Primitives;
-using LeaveManagement.Domain.Shared;
+using SharedKernel.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
