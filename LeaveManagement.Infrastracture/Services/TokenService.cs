@@ -39,7 +39,7 @@ namespace LeaveManagement.Infrastracture.Services
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Name, user.EmployeeName!.Value),
                 new Claim(ClaimTypes.Email, user.Email!)
@@ -59,7 +59,7 @@ namespace LeaveManagement.Infrastracture.Services
 
         public ResultT<ClaimsPrincipal> ValidateRefreshToken(string refreshToken)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
+            
             try
             {
                 var validationParameters = new TokenValidationParameters
@@ -73,11 +73,11 @@ namespace LeaveManagement.Infrastracture.Services
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!))
                 };
 
+                var tokenHandler = new JwtSecurityTokenHandler();
                 var principal = tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
-
                 var jwtToken = validatedToken as JwtSecurityToken;
 
-                if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256))
+                if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                     return InfrastractureErrors.TokenService.InvalidRefreshToken;
 
                 return ResultT<ClaimsPrincipal>.Success(principal);
