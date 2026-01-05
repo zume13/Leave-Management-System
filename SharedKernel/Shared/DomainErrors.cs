@@ -18,6 +18,7 @@ namespace SharedKernel.Shared
             public static readonly Error InactiveEmployee = new("Request.Invalid", "Inactive employees cannot execute functionalities");
             public static readonly Error NullEmployee = new("Employee.Null", "Passed employee instance was null");
             public static readonly Error EmployeeOnLeave = new("Employee.OnLeave", "Employee cannot access functionalities while on leave");
+            public static readonly Error NullUserId = new("UserId.Null", "The user id is null");
         }
 
         public static class Email 

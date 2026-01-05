@@ -9,12 +9,13 @@ namespace LeaveManagement.Domain.Entities
     {
         private readonly List<LeaveAllocation> _allocations = new();
         private readonly List<LeaveRequest> _requests = new();
-        private Employee(Guid id, Name name, Email email, EmployeeStatus status, Department department) : base(id)
+        private Employee(Guid id, Name name, Email email, EmployeeStatus status, Guid departmentId, string userId) : base(id)
         {
             this.Name = name;
             this.Email = email;
             this.Status = status;
-            this.DeptId = department.Id;
+            this.DeptId = departmentId;
+            this.UserId = userId;
         }
         private Employee() { }
 
@@ -24,15 +25,16 @@ namespace LeaveManagement.Domain.Entities
 
         //FKs
         public Guid DeptId { get; private set; }
+        public string UserId { get; private set; } = null!;
 
         public IReadOnlyCollection<LeaveAllocation> Allocations => _allocations;
         public IReadOnlyCollection<LeaveRequest> Requests => _requests;
 
         #region methods
-        public static ResultT<Employee> Create(Name name, Email email, Department department )
+        public static ResultT<Employee> Create(Name name, Email email, Guid departmentId, string userId)
         {
-            if (department is null)
-                return DomainErrors.Department.NulllDepartment;
+            if (userId is null)
+                return DomainErrors.Employee.NullUserId;
 
             if (name is null)
                 return DomainErrors.Employee.EmptyEmployeeName;
@@ -40,7 +42,7 @@ namespace LeaveManagement.Domain.Entities
             if (email is null)
                 return DomainErrors.Email.EmptyEmail;
             
-            return ResultT<Employee>.Success(new Employee(Guid.NewGuid(), name, email, EmployeeStatus.Active, department));
+            return ResultT<Employee>.Success(new Employee(Guid.NewGuid(), name, email, EmployeeStatus.Active, departmentId, userId));
         }
         public Result AllocateLeave(LeaveType leave)
         {

@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LeaveManagement.Application.Auth
+namespace LeaveManagement.Application.Features.Employee.Commands.LogIn
 {
     public class LogInDto
     {
-        Email Email { get; set; } = null!;
+        string Email { get; set; } = null!;
         string Password { get; set; } = null!;
     }
 }

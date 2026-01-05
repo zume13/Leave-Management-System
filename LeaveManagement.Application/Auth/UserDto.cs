@@ -3,11 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LeaveManagement.Application.AuthResponse
+namespace LeaveManagement.Application.Auth
 {
     public class UserDto
     {
-        Name EmployeeName { get; set; } = null!;
-        Email Email { get; set; } = null!;
+        public Guid UserId { get; set; }
+        public string EmployeeName { get; set; } = null!;
+        public string Email { get; set; } = null!;
     }
 }
