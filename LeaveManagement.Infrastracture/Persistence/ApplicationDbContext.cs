@@ -12,6 +12,7 @@ namespace LeaveManagement.Infrastracture.Persistence
         public DbSet<Employee> Employees => Set<Employee>();
         public DbSet<LeaveAllocation> LeaveAllocations => Set<LeaveAllocation>();
         public DbSet<LeaveType> LeaveTypes => Set<LeaveType>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         public override Task<int> SaveChangesAsync(
             CancellationToken cancellationToken = default)

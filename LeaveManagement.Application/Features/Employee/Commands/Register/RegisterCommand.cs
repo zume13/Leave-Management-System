@@ -6,5 +6,5 @@ using System.Text;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.Register
 {
-    public record RegisterCommand(string Email, string EmployeeName, string Password, Guid DepartmentId): ICommand<UserDto>;
+    public record RegisterCommand(string Email, string EmployeeName, string Password, Guid DepartmentId): ICommand<RegisterDto>;
 }

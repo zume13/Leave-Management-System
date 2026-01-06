@@ -7,7 +7,11 @@ namespace LeaveManagement.Application.Features.Employee.Commands.LogIn
 {
     public class LogInDto
     {
-        string Email { get; set; } = null!;
-        string Password { get; set; } = null!;
+        public bool IsSuccessful { get; set; }
+        public string UserId { get; set; } = null!;
+        public string Accesstoken { get; set; } = null!;
+        public string RefreshToken { get; set; } = null!;
+        public DateTime AccessTokenExpiration { get; set; }
+        public DateTime RefreshTokenExpiration { get; set; }
     }
 }

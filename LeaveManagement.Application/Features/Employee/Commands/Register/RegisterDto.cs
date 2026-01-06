@@ -8,9 +8,10 @@ namespace LeaveManagement.Application.Features.Employee.Commands.Register
 {
     public class RegisterDto 
     {
+        public bool Success { get; set; }
+        public string Message { get; set; } = null!;
+        public string UserId { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public string EmployeeName { get; set; } = null!;
-        public string Password { get; set; } = null!;
-        public Guid DepartmentId { get; set; }
+        public bool IsEmailVerified { get; set; } = false;
     }
 }

@@ -8,9 +8,9 @@ using System.Text;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.Register
 {
-    public class RegisterCommandHandler(IAuthService _service) : ICommandHandler<RegisterCommand, UserDto>
+    public class RegisterCommandHandler(IAuthService _service) : ICommandHandler<RegisterCommand, RegisterDto>
     {
-        public Task<ResultT<UserDto>> Handle(RegisterCommand command, CancellationToken token = default)
+        public Task<ResultT<RegisterDto>> Handle(RegisterCommand command, CancellationToken token = default)
         {
            
         }

@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using LeaveManagement.Domain.Entities;
 
 
 namespace LeaveManagement.Infrastracture.Services
@@ -35,7 +36,7 @@ namespace LeaveManagement.Infrastracture.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GenerateRefreshToken(User user)
+        public ResultT<RefreshToken> GenerateRefreshToken(User user)
         {
             var claims = new[]
             {
@@ -54,7 +55,15 @@ namespace LeaveManagement.Infrastracture.Services
                 expires: DateTime.Now.AddDays(7),
                 signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(refreshToken);
+            var token = new JwtSecurityTokenHandler().WriteToken(refreshToken);
+
+            return ResultT<RefreshToken>.Success(
+                RefreshToken.Create(
+                    token: token,
+                    expiresAt: DateTime.UtcNow.AddDays(7),
+                    userId: Guid.Parse(user.Id)
+                ).Value
+            );
         }
 
         public ResultT<ClaimsPrincipal> ValidateRefreshToken(string refreshToken)

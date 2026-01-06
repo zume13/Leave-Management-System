@@ -1,42 +1,121 @@
-﻿using LeaveManagement.Application.Abstractions.Services;
-using LeaveManagement.Application.AuthResponse;
+﻿using LeaveManagement.Application.Abstractions.Data;
+using LeaveManagement.Application.Abstractions.Services;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Models;
+using LeaveManagement.Domain.Entities;
+using LeaveManagement.Domain.Value_Objects;
 using Microsoft.AspNetCore.Identity;
 using SharedKernel.Shared;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LeaveManagement.Infrastracture.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService(UserManager<User> _userManager, IApplicationDbContext _context, IEmailService _emailService, ITokenService _token) : IAuthService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly ITokenService _tokenService;
-        public AuthService(UserManager<User> user, SignInManager<User> sign, ITokenService token)
+        
+        public async Task<ResultT<LogInDto>> LoginAsync(string email, string password)
         {
-            _userManager = user;
-            _signInManager = sign;
-            _tokenService = token;  
-        }   
-        public Task<ResultT<AuthResult>> LoginAsync(string email, string password)
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+                return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
+
+            if (user.isEmailVerified == false)
+                return ResultT<LogInDto>.Failure(InfrastractureErrors.Email.EmailNotVerified);
+
+
+            if (!await _userManager.CheckPasswordAsync(user, password))
+                return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
+
+            var token = _token.GenerateAccessToken(user);
+
+            if(token is null)
+                return ResultT<LogInDto>.Failure(InfrastractureErrors.General.InternalError);
+
+            var refreshToken = _token.GenerateRefreshToken(user);
+
+            if(refreshToken.isFailure)
+                return ResultT<LogInDto>.Failure(InfrastractureErrors.General.InternalError);
+
+            _context.RefreshTokens.Add(refreshToken.Value);
+
+            return ResultT<LogInDto>.Success(new LogInDto
+            {
+                IsSuccessful = true,
+                UserId = user.Id,
+                Accesstoken = token,
+                RefreshToken = refreshToken.Value.Token,
+                AccessTokenExpiration = DateTime.UtcNow.AddMinutes(15), 
+                RefreshTokenExpiration = DateTime.UtcNow.AddDays(7) 
+            });
+        }
+
+        public Task<Result> RefreshTokenAsync(string refreshToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ResultT<AuthResult>> RefreshTokenAsync(string refreshToken)
+        public async Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId)
         {
-            throw new NotImplementedException();
-        }
+            var existingUser = await _userManager.FindByEmailAsync(email);
 
-        public Task<ResultT<AuthResult>> RegisterAsync(string email, string employeeName, string password, Guid deptId)
-        {
-            var existingUser = _userManager.FindByEmailAsync(email);
+            if (existingUser is not null)
+                return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.UserEmailExists);
 
-            if(existingUser is null)
+            var user = new User
+            {
+                UserName = email,
+                Email = email,
+                EmployeeName = Name.Create(employeeName).Value,
+                isEmailVerified = false,
+                verificationToken = Guid.NewGuid().ToString(),
+                tokenExpiration = DateTime.UtcNow.AddDays(1)
+            };
+
+            var createUserResult = await _userManager.CreateAsync(user, password);
+
+            if (!createUserResult.Succeeded)
+                return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
+
+            var newMail = Email.Create(user.Email).Value;
+            var employee = Employee.Create(user.EmployeeName, newMail, deptId, user.Id);
+
+            if (employee.isFailure)
+                return ResultT<RegisterDto>.Failure(DomainErrors.Employee.NullEmployee);
+
+            await _context.Employees.AddAsync(employee.Value);
+
+            var emailResult = await _emailService.SendEmailVerificationAsync(user);
+             
+            if (emailResult.isFailure)
+            {
+                await _userManager.DeleteAsync(user);
+                _context.Employees.Remove(employee.Value);
+                return ResultT<RegisterDto>.Failure(InfrastractureErrors.Email.FailedToSendVerificationEmail);
+            }
+
+            var registerDto = new RegisterDto
+            {
+                Success = true,
+                Message = "User registered successfully. Please check your inbox and verify your email.",
+                UserId = user.Id,
+                Email = user.Email,
+                IsEmailVerified = user.isEmailVerified
+            };
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception)
+            {
+                await _userManager.DeleteAsync(user);
+                _context.Employees.Remove(employee.Value);
+                return ResultT<RegisterDto>.Failure(InfrastractureErrors.General.InternalError);
+            }
+
+            return ResultT<RegisterDto>.Success(registerDto);
         }
+        //add verification endpoint
     }
 }

@@ -21,13 +21,13 @@ namespace SharedKernel.Shared
             public static readonly Error NullUserId = new("UserId.Null", "The user id is null");
         }
 
-        public static class Email 
+        public static class Email
         {
             public static readonly Error EmptyEmail = new("Email.Empty", "Email is empty");
             public static readonly Error EmailInvalid = new("Email.Invalid", "Email is invalid");
         }
 
-        public static class LeaveDays 
+        public static class LeaveDays
         {
             public static readonly Error InvalidLeaveDuration = new("Duration.Invalid", "Leave days should be greater than 0");
             public static readonly Error InvalidYear = new("Year.Invalid", "Year should be a valid year");
@@ -49,7 +49,7 @@ namespace SharedKernel.Shared
 
         public static class LeaveRequest
         {
-            
+
             public static readonly Error InvalidRequestStatus = new("Request.Invalid", "Leave request status was invalid");
             public static readonly Error RequestAlreadyExists = new("Request.Duplicate", "Only one request per allocation");
             public static readonly Error OverLappingRequest = new("Request.Overlap", "Leave request has overlapping dates");
@@ -68,6 +68,12 @@ namespace SharedKernel.Shared
         public static class LeaveType
         {
             public static readonly Error NullLeaveType = new("LeaveType.Null", "Passed leave type instance was null");
+        }
+        public static class RefreshToken
+        {
+            public static readonly Error NullToken = new("Token.Null", "Passed user instance was null");
+            public static readonly Error TokenExpired = new("Token.Expired", "Refresh token was not expired");
+            public static readonly Error RevokedToken = new("Token.Revoked", "Refresh token is invalid");
         }
     }
 }
