@@ -1,4 +1,5 @@
-﻿using LeaveManagement.Application.Features.Employee.Commands.LogIn;
+﻿using LeaveManagement.Application.Dto.Response;
+using LeaveManagement.Application.Features.Employee.Commands.LogIn;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using SharedKernel.Shared;
 
@@ -8,7 +9,7 @@ namespace LeaveManagement.Application.Abstractions.Services
     {
         Task<ResultT<LogInDto>> LoginAsync(string email, string password);
         Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId);
-        Task<Result> RefreshTokenAsync(string refreshToken);
+        Task<ResultT<RefreshTokenAsyncDto>> RefreshTokenAsync(string refreshToken);
 
     }
 }

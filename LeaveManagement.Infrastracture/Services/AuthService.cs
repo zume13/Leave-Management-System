@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Services;
+using LeaveManagement.Application.Dto.Response;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Models;
@@ -50,9 +51,24 @@ namespace LeaveManagement.Infrastracture.Services
             });
         }
 
-        public Task<Result> RefreshTokenAsync(string refreshToken)
+        public async Task<ResultT<RefreshTokenAsyncDto>> RefreshTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrWhiteSpace(refreshToken))
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.InvalidInput);
+
+            var oldRefreshToken = _context.RefreshTokens.FirstOrDefault(rt => rt.Token == refreshToken);
+            
+            if(oldRefreshToken is null)
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.InvalidRefreshToken);
+
+            var user = await _userManager.FindByIdAsync(oldRefreshToken.UserId.ToString());
+
+            if(user is null)
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.User.UserNotFound);
+
+            var newRefreshToken = _token.GenerateRefreshToken(user);
+
+            return ResultT<RefreshTokenAsyncDto>.Success(new RefreshTokenAsyncDto());
         }
 
         public async Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId)

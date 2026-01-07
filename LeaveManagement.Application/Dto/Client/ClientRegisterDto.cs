@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace LeaveManagement.Application.ClientDto
+namespace LeaveManagement.Application.Dto.Client
 {
     public class ClientRegisterDto
     {
