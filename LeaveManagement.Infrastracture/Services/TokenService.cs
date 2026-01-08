@@ -9,7 +9,7 @@ using System.Text;
 using LeaveManagement.Domain.Entities;
 
 
-namespace LeaveManagement.Infrastracture.Services
+namespace LeaveManagement.Infrastructure.Services
 {
     public class TokenService(IConfiguration _config) : ITokenService
     {
@@ -17,9 +17,9 @@ namespace LeaveManagement.Infrastracture.Services
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.EmployeeName!.Value),
+                new Claim(ClaimTypes.Name, user.EmployeeName),
                 new Claim(ClaimTypes.Email, user.Email!),
             };
 
@@ -40,10 +40,8 @@ namespace LeaveManagement.Infrastracture.Services
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.EmployeeName!.Value),
-                new Claim(ClaimTypes.Email, user.Email!)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
@@ -57,11 +55,16 @@ namespace LeaveManagement.Infrastracture.Services
 
             var token = new JwtSecurityTokenHandler().WriteToken(refreshToken);
 
+            if (string.IsNullOrEmpty(token))
+                return InfrastractureErrors.TokenService.TokenGenerationFailed;
+            
+
             return ResultT<RefreshToken>.Success(
                 RefreshToken.Create(
+                    id : Guid.Parse(refreshToken.Id),
                     token: token,
                     expiresAt: DateTime.UtcNow.AddDays(7),
-                    userId: Guid.Parse(user.Id)
+                    userId: user.Id
                 ).Value
             );
         }

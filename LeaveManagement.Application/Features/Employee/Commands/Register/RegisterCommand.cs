@@ -1,5 +1,4 @@
 ﻿using LeaveManagement.Application.Abstractions.Messaging;
-using LeaveManagement.Application.Auth;
 using System;
 using System.Collections.Generic;
 using System.Text;

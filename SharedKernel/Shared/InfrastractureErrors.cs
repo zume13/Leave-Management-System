@@ -13,6 +13,8 @@ namespace SharedKernel.Shared
             public static readonly Error InvalidRefreshToken = new("Token.InvalidRefresh", "The refresh token is invalid or expired");
             public static readonly Error TokenGenerationFailed = new("Token.GenerationFailed", "Failed to generate token due to internal error");
             public static readonly Error InvalidInput = new("Token.InvalidInput", "The provided input is invalid"); 
+            public static readonly Error CredentialsError = new("Creds.Error", "Error occurred while processing credentials");
+            public static readonly Error TokenReused = new("Token.Reused", "The refresh token has been reused");
         }
         public static class User 
         {

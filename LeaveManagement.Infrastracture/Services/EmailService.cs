@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using MimeKit;
 using SharedKernel.Shared;
 
-namespace LeaveManagement.Infrastracture.Services
+namespace LeaveManagement.Infrastructure.Services
 {
     public class EmailService(IConfiguration _config) : IEmailService
     {

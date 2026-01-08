@@ -4,7 +4,7 @@ using LeaveManagement.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeaveManagement.Infrastracture.Persistence
+namespace LeaveManagement.Infrastructure.Persistence
 {
     public class ApplicationDbContext(DbContextOptions op) : IdentityDbContext<User>(op), IApplicationDbContext
     {

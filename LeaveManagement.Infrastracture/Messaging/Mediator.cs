@@ -4,7 +4,7 @@ using SharedKernel.Shared;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace LeaveManagement.Infrastracture.Messaging
+namespace LeaveManagement.Infrastructure.Messaging
 {
     public class Mediator : IMediator
     {

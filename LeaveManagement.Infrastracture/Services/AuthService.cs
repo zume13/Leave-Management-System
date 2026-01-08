@@ -8,8 +8,10 @@ using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.Value_Objects;
 using Microsoft.AspNetCore.Identity;
 using SharedKernel.Shared;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
-namespace LeaveManagement.Infrastracture.Services
+namespace LeaveManagement.Infrastructure.Services
 {
     public class AuthService(UserManager<User> _userManager, IApplicationDbContext _context, IEmailService _emailService, ITokenService _token) : IAuthService
     {
@@ -46,7 +48,7 @@ namespace LeaveManagement.Infrastracture.Services
                 UserId = user.Id,
                 Accesstoken = token,
                 RefreshToken = refreshToken.Value.Token,
-                AccessTokenExpiration = DateTime.UtcNow.AddMinutes(15), 
+                AccessTokenExpiration = DateTime.UtcNow.AddMinutes(30), 
                 RefreshTokenExpiration = DateTime.UtcNow.AddDays(7) 
             });
         }
@@ -56,19 +58,61 @@ namespace LeaveManagement.Infrastracture.Services
             if(string.IsNullOrWhiteSpace(refreshToken))
                 return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.InvalidInput);
 
-            var oldRefreshToken = _context.RefreshTokens.FirstOrDefault(rt => rt.Token == refreshToken);
+            var principalResult = _token.ValidateRefreshToken(refreshToken);
+
+            if (principalResult.isFailure)
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.InvalidRefreshToken);
+
+            var userId = principalResult.Value.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var jti = principalResult.Value.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+            if (userId is null)
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.CredentialsError);
+
+            if(jti is null)
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.CredentialsError);
+
+            var oldRefreshToken = _context.RefreshTokens.FirstOrDefault(rt => rt.Id == Guid.Parse(jti) && rt.UserId == userId && rt.RevokedAt == null);
             
             if(oldRefreshToken is null)
                 return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.InvalidRefreshToken);
+
+            if(oldRefreshToken.IsExpired())
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.InvalidRefreshToken);
+
+            if(!oldRefreshToken.IsActive())
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.TokenReused);
 
             var user = await _userManager.FindByIdAsync(oldRefreshToken.UserId.ToString());
 
             if(user is null)
                 return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.User.UserNotFound);
-
+            
             var newRefreshToken = _token.GenerateRefreshToken(user);
+            var newAccessToken = _token.GenerateAccessToken(user);
 
-            return ResultT<RefreshTokenAsyncDto>.Success(new RefreshTokenAsyncDto());
+            if(newRefreshToken.isFailure || newAccessToken is null)
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.TokenGenerationFailed);
+
+            try
+            {
+                oldRefreshToken.Revoke(newRefreshToken.Value.Token);
+                _context.RefreshTokens.Add(newRefreshToken.Value);
+
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception)
+            {
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.General.InternalError);
+            }
+
+            return ResultT<RefreshTokenAsyncDto>.Success(new RefreshTokenAsyncDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken.Value.Token,
+                AccessTokenExpiration = DateTime.UtcNow.AddMinutes(30),
+                RefreshTokenExpiration = DateTime.UtcNow.AddDays(7)
+            });
         }
 
         public async Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId)
@@ -82,7 +126,7 @@ namespace LeaveManagement.Infrastracture.Services
             {
                 UserName = email,
                 Email = email,
-                EmployeeName = Name.Create(employeeName).Value,
+                EmployeeName = employeeName,
                 isEmailVerified = false,
                 verificationToken = Guid.NewGuid().ToString(),
                 tokenExpiration = DateTime.UtcNow.AddDays(1)
@@ -94,7 +138,7 @@ namespace LeaveManagement.Infrastracture.Services
                 return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
 
             var newMail = Email.Create(user.Email).Value;
-            var employee = Employee.Create(user.EmployeeName, newMail, deptId, user.Id);
+            var employee = Employee.Create(Name.Create(user.EmployeeName).Value, newMail, deptId, user.Id);
 
             if (employee.isFailure)
                 return ResultT<RegisterDto>.Failure(DomainErrors.Employee.NullEmployee);
