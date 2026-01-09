@@ -16,7 +16,7 @@ namespace LeaveManagement.Infrastructure.Services
     public class AuthService(UserManager<User> _userManager, IApplicationDbContext _context, IEmailService _emailService, ITokenService _token) : IAuthService
     {
         
-        public async Task<ResultT<LogInDto>> LoginAsync(string email, string password)
+        public async Task<ResultT<LogInDto>> LoginAsync(string email, string password, CancellationToken ct = default)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
@@ -25,7 +25,6 @@ namespace LeaveManagement.Infrastructure.Services
 
             if (user.isEmailVerified == false)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.Email.EmailNotVerified);
-
 
             if (!await _userManager.CheckPasswordAsync(user, password))
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
@@ -40,7 +39,9 @@ namespace LeaveManagement.Infrastructure.Services
             if(refreshToken.isFailure)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.General.InternalError);
 
-            _context.RefreshTokens.Add(refreshToken.Value);
+            await _context.RefreshTokens.AddAsync(refreshToken.Value);
+
+            await _context.SaveChangesAsync(ct);
 
             return ResultT<LogInDto>.Success(new LogInDto
             {
@@ -53,7 +54,7 @@ namespace LeaveManagement.Infrastructure.Services
             });
         }
 
-        public async Task<ResultT<RefreshTokenAsyncDto>> RefreshTokenAsync(string refreshToken)
+        public async Task<ResultT<RefreshTokenAsyncDto>> RefreshTokenAsync(string refreshToken, CancellationToken ct = default)
         {
             if(string.IsNullOrWhiteSpace(refreshToken))
                 return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.InvalidInput);
@@ -99,7 +100,7 @@ namespace LeaveManagement.Infrastructure.Services
                 oldRefreshToken.Revoke(newRefreshToken.Value.Token);
                 _context.RefreshTokens.Add(newRefreshToken.Value);
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
             }
             catch(Exception)
             {
@@ -115,10 +116,11 @@ namespace LeaveManagement.Infrastructure.Services
             });
         }
 
-        public async Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId)
+        public async Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId, CancellationToken ct = default)
         {
-            var existingUser = await _userManager.FindByEmailAsync(email);
+            await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
+            var existingUser = await _userManager.FindByEmailAsync(email);
             if (existingUser is not null)
                 return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.UserEmailExists);
 
@@ -132,49 +134,46 @@ namespace LeaveManagement.Infrastructure.Services
                 tokenExpiration = DateTime.UtcNow.AddDays(1)
             };
 
-            var createUserResult = await _userManager.CreateAsync(user, password);
-
-            if (!createUserResult.Succeeded)
-                return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
-
-            var newMail = Email.Create(user.Email).Value;
-            var employee = Employee.Create(Name.Create(user.EmployeeName).Value, newMail, deptId, user.Id);
-
-            if (employee.isFailure)
-                return ResultT<RegisterDto>.Failure(DomainErrors.Employee.NullEmployee);
-
-            await _context.Employees.AddAsync(employee.Value);
-
-            var emailResult = await _emailService.SendEmailVerificationAsync(user);
-             
-            if (emailResult.isFailure)
+            try
             {
+                var createUserResult = await _userManager.CreateAsync(user, password);
+                if (!createUserResult.Succeeded)
+                    return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
+
+                var newMail = Email.Create(user.Email).Value;
+                var employee = Employee.Create(Name.Create(user.EmployeeName).Value, newMail, deptId, user.Id);
+                if (employee.isFailure)
+                {
+                    await _userManager.DeleteAsync(user);
+                    return ResultT<RegisterDto>.Failure(DomainErrors.Employee.NullEmployee);
+                }
+
+                var emailResult = await _emailService.SendEmailVerificationAsync(user);
+                if (emailResult.isFailure)
+                {
+                    await _userManager.DeleteAsync(user); 
+                    return ResultT<RegisterDto>.Failure(InfrastractureErrors.Email.FailedToSendVerificationEmail);
+                }
+
+                await _context.Employees.AddAsync(employee.Value, ct);
+                await _context.SaveChangesAsync(ct);
+                await transaction.CommitAsync(ct);
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync(ct);
                 await _userManager.DeleteAsync(user);
-                _context.Employees.Remove(employee.Value);
-                return ResultT<RegisterDto>.Failure(InfrastractureErrors.Email.FailedToSendVerificationEmail);
+                return ResultT<RegisterDto>.Failure(InfrastractureErrors.General.InternalError);
             }
 
-            var registerDto = new RegisterDto
+            return ResultT<RegisterDto>.Success(new RegisterDto
             {
                 Success = true,
                 Message = "User registered successfully. Please check your inbox and verify your email.",
                 UserId = user.Id,
                 Email = user.Email,
                 IsEmailVerified = user.isEmailVerified
-            };
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch(Exception)
-            {
-                await _userManager.DeleteAsync(user);
-                _context.Employees.Remove(employee.Value);
-                return ResultT<RegisterDto>.Failure(InfrastractureErrors.General.InternalError);
-            }
-
-            return ResultT<RegisterDto>.Success(registerDto);
+            });
         }
         //add verification endpoint
     }

@@ -71,7 +71,7 @@ namespace LeaveManagement.Infrastructure.Services
 
         public ResultT<ClaimsPrincipal> ValidateRefreshToken(string refreshToken)
         {
-            
+
             try
             {
                 var validationParameters = new TokenValidationParameters
@@ -98,6 +98,11 @@ namespace LeaveManagement.Infrastructure.Services
             {
                 return InfrastractureErrors.TokenService.InvalidRefreshToken;
             }
+        }
+
+        public Result ValidateRegisterUserToken()
+        {
+            throw new NotImplementedException();
         }
     }
 }

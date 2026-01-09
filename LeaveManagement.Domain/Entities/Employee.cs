@@ -44,7 +44,7 @@ namespace LeaveManagement.Domain.Entities
             
             return ResultT<Employee>.Success(new Employee(Guid.NewGuid(), name, email, EmployeeStatus.Active, departmentId, userId));
         }
-        public Result AllocateLeave(LeaveType leave)
+        public ResultT<Guid> AllocateLeave(LeaveType leave)
         {
             if (Status == EmployeeStatus.Fired)
                 return DomainErrors.Employee.InactiveEmployee;
@@ -59,7 +59,7 @@ namespace LeaveManagement.Domain.Entities
 
             _allocations.Add(allocation.Value);
 
-            return Result.Success();
+            return ResultT<Guid>.Success(allocation.Value.Id);
         }
         public ResultT<LeaveDuration> GetRemainingLeaveDays(Guid allocationId)
         {
@@ -208,6 +208,27 @@ namespace LeaveManagement.Domain.Entities
                 return result.Error;
 
             Name = result.Value;
+            return Result.Success();
+        }
+        public Result Update(string? name, string? email)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+                ChangeName(name);
+
+            if (!string.IsNullOrWhiteSpace(email))
+                ChangeEmail(email);
+
+            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(email))
+                return DomainErrors.General.NullUpdateValues;
+
+            return Result.Success();
+        }
+        public Result RemoveAllocation(Guid allocationId)
+        {
+            var allocation = _allocations.FirstOrDefault(a => a.Id == allocationId);
+            if (allocation is null)
+                return DomainErrors.LeaveAllocation.AllocationNotFound;
+            _allocations.Remove(allocation);
             return Result.Success();
         }
         #endregion

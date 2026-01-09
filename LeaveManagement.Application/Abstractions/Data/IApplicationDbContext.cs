@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace LeaveManagement.Application.Abstractions.Data
 {
@@ -12,5 +13,6 @@ namespace LeaveManagement.Application.Abstractions.Data
         DbSet<RefreshToken> RefreshTokens { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        DatabaseFacade Database { get; }
     }
 }

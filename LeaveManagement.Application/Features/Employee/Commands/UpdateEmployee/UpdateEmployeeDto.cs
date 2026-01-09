@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
 {
-    internal class UpdateEmployeeDto
-    {
-    }
+    public record UpdateEmployeeDto(Guid EmployeeId);
 }

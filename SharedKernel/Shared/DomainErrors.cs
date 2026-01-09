@@ -11,6 +11,7 @@ namespace SharedKernel.Shared
             public static readonly Error InvalidGuid = new("Guid.Invalid", "Guid must be valid");
             public static readonly Error InvalidId = new("Id.Invalid", "ID must be positive");
             public static readonly Error NotFound = new("Object.NotFound", "Object was not found");
+            public static readonly Error NullUpdateValues = new("Values.Null", "Provided details were null");
         }
         public static class Employee
         {

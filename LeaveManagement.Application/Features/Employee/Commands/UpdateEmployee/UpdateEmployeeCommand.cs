@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using LeaveManagement.Application.Abstractions.Messaging;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
 {
-    internal class UpdateEmployeeCommand
-    {
-    }
+    public record UpdateEmployeeCommand(Guid EmployeeId, string? EmployeeName, string? Email) : ICommand<Guid>;
 }
