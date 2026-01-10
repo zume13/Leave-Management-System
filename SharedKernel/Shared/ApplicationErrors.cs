@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace SharedKernel.Shared
 {
     public static class ApplicationErrors
@@ -23,5 +18,9 @@ namespace SharedKernel.Shared
         {
             public static readonly Error LeaveTypeNotFound = new Error("LeaveType.NotFound", "Leave type with the given id was not found");
         }
-    }
+
+        public static class LeaveAllocation
+        {
+            public static readonly Error LeaveAllocationNotFound = new Error("LeaveAllocation.NotFound", "Leave allocation with the given id was not found");
+        }
 }

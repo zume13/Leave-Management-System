@@ -1,11 +1,7 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.DeleteLeaveAllocation
 {
@@ -14,7 +10,10 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.DeleteLe
         private readonly IApplicationDbContext _context = context;  
         public async Task<ResultT<bool>> Handle(DeleteLeaveAllocationCommand command, CancellationToken token = default)
         {
-            var employee = await _context.Employees.FindAsync(command.EmployeeId, token);
+            var employee = await _context.Employees
+                .Include(e => e.Allocations.Where(a => a.Id == command.AllocationId))
+                .SingleOrDefaultAsync(e => 
+                    e.Allocations.Any(a => a.Id == command.AllocationId), token);
 
             if(employee is null)
                 return ApplicationErrors.Employee.EmployeeNotFound;

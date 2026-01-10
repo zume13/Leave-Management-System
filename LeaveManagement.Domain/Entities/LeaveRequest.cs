@@ -2,6 +2,7 @@
 using LeaveManagement.Domain.Primitives;
 using SharedKernel.Shared;
 using LeaveManagement.Domain.Value_Objects;
+using System.Globalization;
 
 namespace LeaveManagement.Domain.Entities
 {
@@ -31,6 +32,7 @@ namespace LeaveManagement.Domain.Entities
         public LeaveRequestStatus Status { get; private set; }
         public string? RejectionReason { get; private set; }
         public string? Description { get; private set; }
+        public string? ProcessedBy { get; private set; }
 
         //FKs
         public Guid EmployeeId { get; private set; }
@@ -68,8 +70,7 @@ namespace LeaveManagement.Domain.Entities
         {
             return StartDate <= end && start <= EndDate;
         }
-
-        public Result Approve()
+        public Result Approve(string AdminName)
         {
             if(Status != LeaveRequestStatus.Pending)
                 return DomainErrors.LeaveRequest.InvalidRequestStatus;
@@ -77,6 +78,7 @@ namespace LeaveManagement.Domain.Entities
             Status = LeaveRequestStatus.Approved;
             ProcessedDate = DateTime.UtcNow;
             LastModifiedDate = DateTime.UtcNow;
+            ProcessedBy = AdminName;
 
             return Result.Success();
         }
@@ -91,8 +93,7 @@ namespace LeaveManagement.Domain.Entities
 
             return Result.Success();
         }
-
-        public Result Reject(string? reason = null)
+        public Result Reject(string adminName, string? reason = null)
         {
             if (Status != LeaveRequestStatus.Pending)
                 return DomainErrors.LeaveRequest.InvalidRequestStatus;
@@ -101,30 +102,26 @@ namespace LeaveManagement.Domain.Entities
             RejectionReason = string.IsNullOrWhiteSpace(reason) ? "Not provided" : reason;
             ProcessedDate = DateTime.UtcNow;
             LastModifiedDate = DateTime.UtcNow;
+            ProcessedBy = adminName;
 
             return Result.Success();
         }
-
         public bool IsPending()
         {
             return Status == LeaveRequestStatus.Pending;
         }
-
         public bool IsApproved()
         {
             return Status == LeaveRequestStatus.Approved;
         }
-
         public bool IsRejected()
         {
             return Status == LeaveRequestStatus.Rejected;
         }
-
         public bool IsCancelled()
         {
             return Status == LeaveRequestStatus.Cancelled;
         }
-
         public static int GetLeaveSpan(DateTime startDate, DateTime endDate)
         {
             return (endDate.Date.AddDays(1) - startDate.Date).Days;

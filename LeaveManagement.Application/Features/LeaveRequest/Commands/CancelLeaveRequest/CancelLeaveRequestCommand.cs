@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LeaveManagement.Application.Abstractions.Messaging;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeaveRequest
 {
-    internal class CancelLeaveRequestCommand
-    {
-    }
+    public record CancelLeaveRequestCommand(Guid LeaveRequestId) : ICommand<bool>;
 }

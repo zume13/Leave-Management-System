@@ -70,7 +70,7 @@ namespace LeaveManagement.Domain.Entities
 
             return ResultT<LeaveDuration>.Success(allocation.LeaveDays);
         }
-        public Result RequestLeave(DateTime startDate, DateTime endDate, string? description, LeaveType leaveType )
+        public ResultT<LeaveRequest> RequestLeave(DateTime startDate, DateTime endDate, string? description, LeaveType leaveType )
         {
             if (Status == EmployeeStatus.Fired)
                 return DomainErrors.Employee.InactiveEmployee;
@@ -120,7 +120,7 @@ namespace LeaveManagement.Domain.Entities
 
             _requests.Add(leaveRequest.Value);
 
-            return Result.Success();
+            return ResultT<LeaveRequest>.Success(leaveRequest.Value);
         }
         private Result UpdateLeaveRequest(Guid requestId, Action<LeaveRequest> method)
         {
@@ -137,8 +137,8 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
         public Result CancelLeaveRequest(Guid requestId) => UpdateLeaveRequest(requestId, r => r.Cancel());
-        public Result RejectLeaveRequest(Guid requestId) => UpdateLeaveRequest(requestId, r => r.Reject()); 
-        public Result ApproveLeaveRequest(Guid requestId)
+        public Result RejectLeaveRequest(Guid requestId, string adminName) => UpdateLeaveRequest(requestId, r => r.Reject(adminName)); 
+        public Result ApproveLeaveRequest(Guid requestId, string AdminName)
         {
             var request = _requests.FirstOrDefault(r => r.Id == requestId);
 
@@ -159,7 +159,7 @@ namespace LeaveManagement.Domain.Entities
             if (!allocation.CanConsume(request.LeaveDays.Days))
                 return DomainErrors.LeaveDays.InsufficientLeaveDays;
 
-            var approved = request.Approve();
+            var approved = request.Approve(AdminName);
 
             if (approved.isFailure)
                 return approved.Error;

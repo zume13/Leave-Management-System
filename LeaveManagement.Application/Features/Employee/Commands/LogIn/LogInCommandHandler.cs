@@ -1,9 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Abstractions.Services;
 using SharedKernel.Shared;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.LogIn
 {

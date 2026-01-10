@@ -8,5 +8,5 @@ using System.Windows.Input;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.DeleteLeaveAllocation
 {
-    public record DeleteLeaveAllocationCommand(Guid EmployeeId, Guid AllocationId) : ICommand<bool>;
+    public record DeleteLeaveAllocationCommand(Guid AllocationId) : ICommand<bool>;
 }

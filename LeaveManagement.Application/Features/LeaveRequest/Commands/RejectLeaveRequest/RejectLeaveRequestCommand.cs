@@ -1,12 +1,12 @@
-﻿using System;
+﻿using LeaveManagement.Application.Abstractions.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.RejectLeaveRequest
 {
-    internal class RejectLeaveRequestCommand
-    {
-    }
+    public record RejectLeaveRequestCommand(Guid LeaveRequestId, string Description, string AdminName) : ICommand<bool>;
 }
