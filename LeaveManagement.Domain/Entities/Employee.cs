@@ -137,7 +137,7 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
         public Result CancelLeaveRequest(Guid requestId) => UpdateLeaveRequest(requestId, r => r.Cancel());
-        public Result RejectLeaveRequest(Guid requestId, string adminName) => UpdateLeaveRequest(requestId, r => r.Reject(adminName)); 
+        public Result RejectLeaveRequest(Guid requestId, string adminName, string reason) => UpdateLeaveRequest(requestId, r => r.Reject(adminName, reason)); 
         public Result ApproveLeaveRequest(Guid requestId, string AdminName)
         {
             var request = _requests.FirstOrDefault(r => r.Id == requestId);
@@ -231,6 +231,8 @@ namespace LeaveManagement.Domain.Entities
             _allocations.Remove(allocation);
             return Result.Success();
         }
+        public Result EditRequest(Guid requestId, DateTime newStartDate, DateTime newEndDate, string? newDescription) => UpdateLeaveRequest(requestId, r => r.EditLeaveRequest(newStartDate, newEndDate, newDescription));
+        
         #endregion
         
         /*  raise domain events 

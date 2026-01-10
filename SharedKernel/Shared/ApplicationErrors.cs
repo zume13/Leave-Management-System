@@ -14,7 +14,7 @@ namespace SharedKernel.Shared
             public static readonly Error InternalError = new Error("General.InternalError", "An internal error occurred. Please try again later.");
         }
 
-        public static class  LeaveType
+        public static class LeaveType
         {
             public static readonly Error LeaveTypeNotFound = new Error("LeaveType.NotFound", "Leave type with the given id was not found");
         }
@@ -23,4 +23,5 @@ namespace SharedKernel.Shared
         {
             public static readonly Error LeaveAllocationNotFound = new Error("LeaveAllocation.NotFound", "Leave allocation with the given id was not found");
         }
+    }
 }

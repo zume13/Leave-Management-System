@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LeaveManagement.Application.Abstractions.Messaging;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.UpdateLeaveRequest
 {
-    internal class UpdateLeaveRequestCommand
-    {
-    }
+    public record UpdateLeaveRequestCommand(Guid LeaveRequestId, DateTime newStartDate, DateTime newEndDate, string? newDescription) : ICommand<Guid>;
 }

@@ -1,7 +1,8 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared;
-using System.Data.Entity;
+
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeaveRequest
 {

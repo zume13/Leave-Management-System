@@ -65,7 +65,35 @@ namespace LeaveManagement.Domain.Entities
 
             return ResultT<LeaveRequest>.Success(new LeaveRequest(Guid.NewGuid(), startDate, endDate, description, employee, leaveType, leaveDays.Value, DateTime.UtcNow, DateTime.UtcNow));
         }
+        public Result EditLeaveRequest(DateTime newStartDate, DateTime newEndDate, string? newDescription)
+        {
+            if (Status != LeaveRequestStatus.Pending)
+                return DomainErrors.LeaveRequest.InvalidRequestStatus;
 
+            int days = GetLeaveSpan(newStartDate, newEndDate);
+
+            var leaveDays = LeaveDuration.Create(days);
+
+            if (leaveDays.isFailure)
+                return DomainErrors.LeaveDays.InvalidLeaveDuration;
+
+            if (newStartDate < DateTime.UtcNow)
+                return DomainErrors.LeaveDays.InvalidStartDate;
+
+            if (newStartDate > newEndDate)
+                return DomainErrors.LeaveDays.InvalidStartDate;
+
+            if (newEndDate < DateTime.UtcNow)
+                return DomainErrors.LeaveDays.InvalidEndDate;
+
+            StartDate = newStartDate;
+            EndDate = newEndDate;
+            LeaveDays = leaveDays.Value;
+            Description = string.IsNullOrWhiteSpace(newDescription) ? "No description provided" : newDescription;
+            LastModifiedDate = DateTime.UtcNow;
+
+            return Result.Success();
+        }
         public bool OverlapsWith(DateTime start, DateTime end)
         {
             return StartDate <= end && start <= EndDate;

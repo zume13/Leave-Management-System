@@ -69,6 +69,7 @@ namespace SharedKernel.Shared
         public static class LeaveType
         {
             public static readonly Error NullLeaveType = new("LeaveType.Null", "Passed leave type instance was null");
+            public static readonly Error EmptyLeaveName = new("LeaveType.Name.Empty", "Leave type name is empty");
         }
         public static class RefreshToken
         {
