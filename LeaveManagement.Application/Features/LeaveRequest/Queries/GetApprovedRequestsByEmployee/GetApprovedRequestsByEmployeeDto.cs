@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetApprovedRequestsByEmployee
 {
-    internal class GetApprovedRequestsByEmployeeDto
+    internal sealed class GetApprovedRequestsByEmployeeDto
     {
     }
 }

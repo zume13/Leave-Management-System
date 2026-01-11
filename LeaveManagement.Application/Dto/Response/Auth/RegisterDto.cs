@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LeaveManagement.Application.Features.Employee.Commands.Register
+namespace LeaveManagement.Application.Dto.Response.Auth
 {
     public class RegisterDto 
     {

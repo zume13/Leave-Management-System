@@ -1,6 +1,4 @@
-﻿using LeaveManagement.Application.Dto.Response;
-using LeaveManagement.Application.Features.Employee.Commands.LogIn;
-using LeaveManagement.Application.Features.Employee.Commands.Register;
+﻿using LeaveManagement.Application.Dto.Response.Auth;
 using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Abstractions.Services

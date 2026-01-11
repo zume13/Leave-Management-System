@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDepartment
 {
-    internal class GetEmployeesByDepartmentCommandHandler
+    internal sealed class GetEmployeesByDepartmentCommandHandler
     {
     }
 }

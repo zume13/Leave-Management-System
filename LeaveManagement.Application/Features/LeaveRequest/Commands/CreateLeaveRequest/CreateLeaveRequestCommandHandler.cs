@@ -6,7 +6,7 @@ using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeaveRequest
 {
-    public class CreateLeaveRequestCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateLeaveRequestCommand, Guid>
+    public sealed class CreateLeaveRequestCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateLeaveRequestCommand, Guid>
     {
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<Guid>> Handle(CreateLeaveRequestCommand command, CancellationToken token = default)

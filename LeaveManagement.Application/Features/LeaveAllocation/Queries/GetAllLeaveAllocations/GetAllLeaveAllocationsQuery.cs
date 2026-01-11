@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Queries
 {
-    internal class GetAllLeaveAllocationsQuery
+    internal sealed class GetAllLeaveAllocationsQuery
     {
     }
 }

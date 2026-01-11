@@ -5,7 +5,7 @@ using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.DeleteLeaveAllocation
 {
-    public class DeleteLeaveAllocationCommandHandler(IApplicationDbContext context) : ICommandHandler<DeleteLeaveAllocationCommand, bool>
+    public sealed class DeleteLeaveAllocationCommandHandler(IApplicationDbContext context) : ICommandHandler<DeleteLeaveAllocationCommand, bool>
     {
         private readonly IApplicationDbContext _context = context;  
         public async Task<ResultT<bool>> Handle(DeleteLeaveAllocationCommand command, CancellationToken token = default)

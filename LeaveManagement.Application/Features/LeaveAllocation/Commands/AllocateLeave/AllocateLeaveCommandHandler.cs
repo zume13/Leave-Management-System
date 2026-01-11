@@ -4,7 +4,7 @@ using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.AllocateLeave
 {
-    public class AllocateLeaveCommandHandler(IApplicationDbContext context) : ICommandHandler<AllocateLeaveCommand, Guid>
+    public sealed class AllocateLeaveCommandHandler(IApplicationDbContext context) : ICommandHandler<AllocateLeaveCommand, Guid>
     {
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<Guid>> Handle(AllocateLeaveCommand command, CancellationToken token = default)

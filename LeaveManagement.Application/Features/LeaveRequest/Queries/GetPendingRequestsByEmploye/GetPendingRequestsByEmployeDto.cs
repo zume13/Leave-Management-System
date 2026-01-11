@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetPendingRequestsByEmploye
 {
-    internal class GetPendingRequestsByEmployeDto
+    internal sealed class GetPendingRequestsByEmployeDto
     {
     }
 }

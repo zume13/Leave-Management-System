@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAllocationQuery
 {
-    internal class GetAllocationByIdDto
+    internal sealed class GetAllocationByIdDto
     {
     }
 }

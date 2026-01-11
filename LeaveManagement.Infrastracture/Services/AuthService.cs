@@ -1,8 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Services;
-using LeaveManagement.Application.Dto.Response;
-using LeaveManagement.Application.Features.Employee.Commands.LogIn;
-using LeaveManagement.Application.Features.Employee.Commands.Register;
+using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Models;
 using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.Value_Objects;

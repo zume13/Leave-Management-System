@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetRejectedRequestsByEmployee
 {
-    internal class GetRejectedRequestsByEmployeeQueryHandler
+    internal sealed class GetRejectedRequestsByEmployeeQueryHandler
     {
     }
 }

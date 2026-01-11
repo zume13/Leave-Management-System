@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetExpiredLeaveAllocations
 {
-    internal class GetExpiredLeaveAllocationsQueryHandler
+    internal sealed class GetExpiredLeaveAllocationsQueryHandler
     {
     }
 }

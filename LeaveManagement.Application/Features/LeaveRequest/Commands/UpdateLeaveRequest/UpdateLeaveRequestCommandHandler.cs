@@ -5,7 +5,7 @@ using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.UpdateLeaveRequest
 {
-    public class UpdateLeaveRequestCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateLeaveRequestCommand, Guid>
+    public sealed class UpdateLeaveRequestCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateLeaveRequestCommand, Guid>
     {
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<Guid>> Handle(UpdateLeaveRequestCommand command, CancellationToken token = default)

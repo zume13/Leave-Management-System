@@ -6,7 +6,7 @@ using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee
 {
-    public class RemoveEmployeeCommandHandler(IApplicationDbContext context, UserManager<User> userManager) : ICommandHandler<RemoveEmployeeCommand, bool>
+    public sealed class RemoveEmployeeCommandHandler(IApplicationDbContext context, UserManager<User> userManager) : ICommandHandler<RemoveEmployeeCommand, bool>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly UserManager<User> _userManager = userManager;

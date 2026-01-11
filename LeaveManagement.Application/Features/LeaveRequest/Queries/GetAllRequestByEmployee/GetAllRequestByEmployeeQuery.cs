@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRequestByEmployee
 {
-    internal class GetAllRequestByEmployeeQuery
+    internal sealed class GetAllRequestByEmployeeQuery
     {
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveType.Queries.GetLeaveTypeById
 {
-    internal class GetLeaveTypeByIdQuery
+    internal sealed class GetLeaveTypeByIdQuery
     {
     }
 }

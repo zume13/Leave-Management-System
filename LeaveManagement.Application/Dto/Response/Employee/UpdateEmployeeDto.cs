@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
+namespace LeaveManagement.Application.Dto.Response.Employee
 {
     public record UpdateEmployeeDto(Guid EmployeeId);
 }

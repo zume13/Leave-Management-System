@@ -2,11 +2,12 @@
 using LeaveManagement.Application.Abstractions.Messaging;
 using SharedKernel.Shared;
 using Microsoft.EntityFrameworkCore;
+using LeaveManagement.Application.Dto.Response.LeaveAllocation;
 
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.BulkAllocateLeave
 {
-    public class BulkLeaveAllocationCommandHandler(IApplicationDbContext context) : ICommandHandler<BulkLeaveAllocationCommand, BulkLeaveAllocationDto>
+    public sealed class BulkLeaveAllocationCommandHandler(IApplicationDbContext context) : ICommandHandler<BulkLeaveAllocationCommand, BulkLeaveAllocationDto>
     {
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<BulkLeaveAllocationDto>> Handle(BulkLeaveAllocationCommand command, CancellationToken token = default)

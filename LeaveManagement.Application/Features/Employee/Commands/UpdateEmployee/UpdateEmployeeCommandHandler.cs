@@ -7,7 +7,7 @@ using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
 {
-    public class UpdateEmployeeCommandHandler(IApplicationDbContext context, UserManager<User> userManager) : ICommandHandler<UpdateEmployeeCommand, Guid>
+    public sealed class UpdateEmployeeCommandHandler(IApplicationDbContext context, UserManager<User> userManager) : ICommandHandler<UpdateEmployeeCommand, Guid>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly UserManager<User> _userManager = userManager;

@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Commands.RemoveLeaveType
 {
-    public record RemoveLeaveTypeCommand(Guid LeaveTypeId) : ICommand<bool>;
+    public sealed record RemoveLeaveTypeCommand(Guid LeaveTypeId) : ICommand<bool>;
 }

@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee
 {
-    public record RemoveEmployeeCommand(Guid employeeId) : ICommand<bool>;
+    public sealed record RemoveEmployeeCommand(Guid employeeId) : ICommand<bool>;
 }

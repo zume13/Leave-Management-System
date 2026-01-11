@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApproveRequests
 {
-    internal class GetAllApproveRequestsQueryHandler
+    internal sealed class GetAllApproveRequestsQueryHandler
     {
     }
 }

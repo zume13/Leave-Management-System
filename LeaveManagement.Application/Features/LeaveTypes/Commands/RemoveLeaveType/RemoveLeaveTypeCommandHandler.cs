@@ -4,7 +4,7 @@ using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Commands.RemoveLeaveType
 {
-    public class RemoveLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<RemoveLeaveTypeCommand, bool>
+    public sealed class RemoveLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<RemoveLeaveTypeCommand, bool>
     {
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<bool>> Handle(RemoveLeaveTypeCommand command, CancellationToken token = default)

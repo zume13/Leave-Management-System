@@ -8,5 +8,5 @@ using System.Windows.Input;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeaveRequest
 {
-    public record ApproveLeaveRequestCommand(Guid LeaveRequestId, string AdminName) : ICommand<Guid>;
+    public sealed record ApproveLeaveRequestCommand(Guid LeaveRequestId, string AdminName) : ICommand<Guid>;
 }

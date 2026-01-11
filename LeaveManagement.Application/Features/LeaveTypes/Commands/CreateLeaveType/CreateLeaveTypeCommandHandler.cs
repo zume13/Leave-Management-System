@@ -4,7 +4,7 @@ using SharedKernel.Shared;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Commands.CreateLeaveType
 {
-    public class CreateLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateLeaveTypeCommand, Guid>
+    public sealed class CreateLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateLeaveTypeCommand, Guid>
     {
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<Guid>> Handle(CreateLeaveTypeCommand command, CancellationToken token = default)

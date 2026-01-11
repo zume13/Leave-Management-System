@@ -2,5 +2,5 @@
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeaveRequest
 {
-    public record CancelLeaveRequestCommand(Guid LeaveRequestId) : ICommand<bool>;
+    public sealed record CancelLeaveRequestCommand(Guid LeaveRequestId) : ICommand<bool>;
 }
