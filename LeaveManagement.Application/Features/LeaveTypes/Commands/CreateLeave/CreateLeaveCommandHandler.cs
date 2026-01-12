@@ -1,15 +1,16 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
 using SharedKernel.Shared;
+using LeaveManagement.Domain.Entities;
 
-namespace LeaveManagement.Application.Features.LeaveTypes.Commands.CreateLeaveType
+namespace LeaveManagement.Application.Features.LeaveTypes.Commands.CreateLeave
 {
-    public sealed class CreateLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateLeaveTypeCommand, Guid>
+    public sealed class CreateLeaveCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateLeaveCommand, Guid>
     {
         private readonly IApplicationDbContext _context = context;
-        public async Task<ResultT<Guid>> Handle(CreateLeaveTypeCommand command, CancellationToken token = default)
+        public async Task<ResultT<Guid>> Handle(CreateLeaveCommand command, CancellationToken token = default)
         {
-            var result = Domain.Entities.LeaveType.Create(command.Name, command.DefaultDays);
+            var result = LeaveType.Create(command.Name, command.DefaultDays);
 
             if (result.isFailure)
                 return result.Error;

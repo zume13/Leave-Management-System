@@ -3,7 +3,7 @@ using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
 using SharedKernel.Shared;
 
-namespace LeaveManagement.Application.Features.LeaveTypes.Commands.UpdateLeaveType
+namespace LeaveManagement.Application.Features.LeaveTypes.Commands.UpdateLeave
 {
     public sealed class UpdateLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateLeaveTypeCommand, Guid>
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeaveManagement.Application.Features.LeaveType.Queries.GetAllLeaveTypes
+namespace LeaveManagement.Application.Features.LeaveTypes.Queries.GetAllLeaves
 {
-    internal sealed class GetAllLeaveTypesQuery
+    internal sealed class GetAllLeavesQuery
     {
     }
 }

@@ -2,7 +2,7 @@
 using LeaveManagement.Application.Abstractions.Messaging;
 using SharedKernel.Shared;
 
-namespace LeaveManagement.Application.Features.LeaveTypes.Commands.RemoveLeaveType
+namespace LeaveManagement.Application.Features.LeaveTypes.Commands.RemoveLeave
 {
     public sealed class RemoveLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<RemoveLeaveTypeCommand, bool>
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeaveManagement.Application.Features.LeaveType.Queries.GetLeaveTypeById
+namespace LeaveManagement.Application.Features.LeaveTypes.Queries.GetAllLeave
 {
-    internal sealed class GetLeaveTypeByIdDto
+    internal sealed class GetAllLeaveQueryHandler
     {
     }
 }
