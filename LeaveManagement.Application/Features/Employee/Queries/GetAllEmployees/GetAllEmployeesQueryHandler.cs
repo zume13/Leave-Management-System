@@ -15,9 +15,9 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
         {
             var employees = await (
                 from e in _context.Employees.AsNoTracking()
+                where e.Status != EmployeeStatus.Fired
                 join d in _context.Departments.AsNoTracking()
                 on e.DeptId equals d.Id
-                where e.Status != EmployeeStatus.Fired
                 select new EmployeeDto(
                     e.Id,
                     e.Name.Value,
@@ -26,6 +26,9 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
                     d.DepartmentName.Value
                 )
             ).ToListAsync(cancellationToken);
+
+            if (employees is null)
+                return ApplicationErrors.Employee.NoEmployeesFound;
 
             return ResultT<List<EmployeeDto>>.Success(employees);
         }

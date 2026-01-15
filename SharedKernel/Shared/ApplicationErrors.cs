@@ -22,6 +22,7 @@ namespace SharedKernel.Shared
         public static class LeaveAllocation
         {
             public static readonly Error LeaveAllocationNotFound = new Error("LeaveAllocation.NotFound", "Leave allocation with the given id was not found");
+            public static readonly Error NoAllocationsFound = new Error("Allocation.NotFound", "There are no found allocations");
         }
     }
 }
