@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Dto.Response.Allocation;
+using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAllAllocationsByEmployee;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAllocationByEmployee
 {
-    internal sealed class GetAllAllocationsByEmployeeQuery
-    {
-    }
+    public sealed record GetAllAllocationsByEmployeeQuery(Guid EmployeeId) : IQuery<List<GetAllocationByEmployeeDto>>;
 }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LeaveManagement.Application.Abstractions.Messaging;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApproveRequests
 {
-    internal sealed class GetAllApproveRequestsQuery
-    {
-    }
+    public sealed record GetAllApproveRequestsQuery : IQuery<List<GetAllApproveRequestsDto>>;
 }

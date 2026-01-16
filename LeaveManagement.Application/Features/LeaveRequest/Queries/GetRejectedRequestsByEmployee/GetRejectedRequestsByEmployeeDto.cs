@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetRejectedRequestsByEmployee
 {
-    internal sealed class GetRejectedRequestsByEmployeeDto
-    {
-    }
+    public sealed record GetRejectedRequestsByEmployeeDto(
+        Guid RequestId,
+        string Requestor,
+        DateTime RequestDate,
+        DateTime ProcessedDate,
+        DateTime StartDate,
+        DateTime EndDate,
+        int LeaveDuration,
+        string Reason,
+        string ProcessedBy);
 }

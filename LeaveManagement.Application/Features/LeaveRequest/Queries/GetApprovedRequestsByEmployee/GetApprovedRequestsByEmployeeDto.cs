@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetApprovedRequestsByEmployee
 {
-    internal sealed class GetApprovedRequestsByEmployeeDto
-    {
-    }
+    public sealed record GetApprovedRequestsByEmployeeDto(
+        Guid RequestId,
+        string Requestor,
+        DateTime RequestDate,
+        DateTime ProcessedDate,
+        DateTime StartDate,
+        DateTime EndDate,
+        int LeaveDuration,
+        string Description,
+        string Approver);
 }

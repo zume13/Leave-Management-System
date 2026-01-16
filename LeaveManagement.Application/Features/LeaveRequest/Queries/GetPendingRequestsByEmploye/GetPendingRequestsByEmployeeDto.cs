@@ -1,7 +1,7 @@
 ﻿
-namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendingRequests
+namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetPendingRequestsByEmployee
 {
-    public sealed record GetAllPendingRequestsDto(
+    public sealed record GetPendingRequestsByEmployeeDto(
         Guid RequestId,
         string Requestor,
         DateTime RequestDate,

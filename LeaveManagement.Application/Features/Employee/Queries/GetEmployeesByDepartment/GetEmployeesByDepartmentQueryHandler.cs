@@ -13,8 +13,10 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDe
         public async Task<ResultT<List<GetEmployeesByDepartmentDto>>> Handle(GetEmployeesByDepartmentQuery query, CancellationToken cancellationToken)
         {
             var employees = await _context.Employees
+                .AsNoTracking()
                 .Where(e => e.DeptId == query.DeptId)
                 .AsNoTracking()
+                .OrderBy(e => e.Name.Value)
                 .Select(e => new GetEmployeesByDepartmentDto(
                     e.Id,
                     e.Name.Value,

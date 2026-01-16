@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Dto.Response.Allocation;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetExpiredLeaveAllocations
 {
-    internal sealed class GetExpiredLeaveAllocationsQuery
-    {
-    }
+    public sealed record GetExpiredLeaveAllocationsQuery : IQuery<List<LeaveAllocationDto>>;
 }

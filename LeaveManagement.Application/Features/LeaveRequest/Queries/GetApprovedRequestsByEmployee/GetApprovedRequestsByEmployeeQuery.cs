@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LeaveManagement.Application.Abstractions.Messaging;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetApprovedRequestsByEmployee
 {
-    internal sealed class GetApprovedRequestsByEmployeeQuery
-    {
-    }
+    public sealed record GetApprovedRequestsByEmployeeQuery(Guid EmployeeId) : IQuery<List<GetApprovedRequestsByEmployeeDto>>;
+
 }

@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LeaveManagement.Domain.Enums;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRequestByEmployee
 {
-    internal sealed class GetAllRequestByEmployeeDto
-    {
-    }
+    public sealed record GetAllRequestByEmployeeDto(
+        Guid RequestId,
+        string Requestor,
+        DateTime RequestDate,
+        DateTime StartDate,
+        DateTime EndDate,
+        int LeaveDuration,
+        string Description,
+        LeaveRequestStatus Status);
 }

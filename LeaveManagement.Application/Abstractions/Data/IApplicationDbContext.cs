@@ -10,6 +10,7 @@ namespace LeaveManagement.Application.Abstractions.Data
         DbSet<Employee> Employees { get; }
         DbSet<LeaveAllocation> LeaveAllocations { get; }
         DbSet<LeaveType> LeaveTypes { get; }
+        DbSet<LeaveRequest> LeaveRequests { get; }
         DbSet<RefreshToken> RefreshTokens { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

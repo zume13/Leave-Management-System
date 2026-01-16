@@ -13,6 +13,7 @@ namespace LeaveManagement.Infrastructure.Persistence
         public DbSet<LeaveAllocation> LeaveAllocations => Set<LeaveAllocation>();
         public DbSet<LeaveType> LeaveTypes => Set<LeaveType>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+        public DbSet<LeaveRequest> LeaveRequests => throw new NotImplementedException();
 
         public override Task<int> SaveChangesAsync(
             CancellationToken cancellationToken = default)

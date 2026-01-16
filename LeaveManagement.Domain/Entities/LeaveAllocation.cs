@@ -15,9 +15,11 @@ namespace LeaveManagement.Domain.Entities
             Year = year;
             EmployeeId = employee.Id;
             LeaveTypeId = leaveType.Id;
+            LeaveName = leaveType.LeaveName.Value;
         }
         private LeaveAllocation() { }
         public DateTime CreationDate { get; private set; }
+        public string LeaveName { get; private set; }
         public LeaveDuration LeaveDays { get; private set; }
         public int UsedDays { get; private set; } = default;
         public int RemainingDays
@@ -54,6 +56,8 @@ namespace LeaveManagement.Domain.Entities
         }
         
         public bool CanConsume(int days) => RemainingDays >= days;
+
+        public bool IsExpired => Year < DateTime.UtcNow.Year || RemainingDays == 0;   
 
         //raise updated allocation days
     }

@@ -17,6 +17,12 @@ namespace SharedKernel.Shared
         public static class LeaveType
         {
             public static readonly Error LeaveTypeNotFound = new Error("LeaveType.NotFound", "Leave type with the given id was not found");
+            public static readonly Error NoLeaveFound = new Error("Leave.NotFound", "There are no found leaves");
+        }
+
+        public static class LeaveRequests 
+        {
+            public static readonly Error NoRequestsFound = new Error("Requests.NotFound", "There are no found leave requests");
         }
 
         public static class LeaveAllocation

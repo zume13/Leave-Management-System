@@ -14,9 +14,11 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
         public async Task<ResultT<List<EmployeeDto>>> Handle(GetAllEmployeesQuery query, CancellationToken cancellationToken)
         {
             var employees = await (
-                from e in _context.Employees.AsNoTracking()
+                from e in _context.Employees
+                .AsNoTracking()
                 where e.Status != EmployeeStatus.Fired
-                join d in _context.Departments.AsNoTracking()
+                join d in _context.Departments
+                .AsNoTracking()
                 on e.DeptId equals d.Id
                 select new EmployeeDto(
                     e.Id,
@@ -27,7 +29,7 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
                 )
             ).ToListAsync(cancellationToken);
 
-            if (employees is null)
+            if (employees.Count == 0)
                 return ApplicationErrors.Employee.NoEmployeesFound;
 
             return ResultT<List<EmployeeDto>>.Success(employees);

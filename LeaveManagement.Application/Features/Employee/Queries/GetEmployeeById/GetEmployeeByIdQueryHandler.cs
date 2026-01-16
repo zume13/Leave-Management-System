@@ -12,18 +12,18 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployee
         IApplicationDbContext _context = context;
         public async Task<ResultT<EmployeeDto>> Handle(GetEmployeeByIdQuery query, CancellationToken cancellationToken)
         {
-            var employee = await _context.Employees.AsNoTracking()
+            var employee = await _context.Employees
+                .AsNoTracking()
                 .Where(e => e.Id == query.EmployeeId)
                 .Join(_context.Departments.AsNoTracking(),
                       e => e.DeptId,
                       d => d.Id,
-                      (e, d) => new { e, d })
-                .Select(x => new EmployeeDto(
-                    x.e.Id, 
-                    x.e.Name.Value,
-                    x.e.Email.Value, 
-                    x.e.Status, 
-                    x.d.DepartmentName.Value))
+                      (e, d) => new EmployeeDto(
+                        e.Id, 
+                        e.Name.Value,
+                        e.Email.Value, 
+                        e.Status, 
+                        d.DepartmentName.Value))
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (employee is null)
