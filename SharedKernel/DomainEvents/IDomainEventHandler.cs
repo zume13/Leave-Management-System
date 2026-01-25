@@ -1,4 +1,4 @@
-﻿using LeaveManagement.Application.DomainEvents;
+﻿using LeaveManagement.SharedKernel.DomainEvents;
 using System;
 using System.Collections.Generic;
 using System.Linq;

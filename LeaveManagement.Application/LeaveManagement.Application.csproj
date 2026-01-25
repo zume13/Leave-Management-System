@@ -22,8 +22,4 @@
 		<ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="DomainEvents\" />
-	</ItemGroup>
-
 </Project>

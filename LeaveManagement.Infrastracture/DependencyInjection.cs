@@ -22,7 +22,7 @@ namespace LeaveManagement.Infrastructure
             services.AddScoped<IMediator, Mediator>();
 
             services.AddScoped<ITokenService, TokenService>();
-
+            // register domainevents
             return services;
         }
 

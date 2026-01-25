@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LeaveManagement.Application.DomainEvents
+﻿
+namespace LeaveManagement.SharedKernel.DomainEvents
 {
     public interface IDomainEvent;
 }
