@@ -1,6 +1,6 @@
 ﻿using LeaveManagement.Application.Models;
 using LeaveManagement.Domain.Entities;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Result;
 using System.Security.Claims;
 
 namespace LeaveManagement.Application.Abstractions.Services

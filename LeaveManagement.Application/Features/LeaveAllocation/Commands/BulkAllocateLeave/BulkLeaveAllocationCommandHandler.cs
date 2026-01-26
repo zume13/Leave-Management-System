@@ -1,8 +1,9 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
-using SharedKernel.Shared;
 using Microsoft.EntityFrameworkCore;
 using LeaveManagement.Application.Dto.Response.LeaveAllocation;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.BulkAllocateLeave

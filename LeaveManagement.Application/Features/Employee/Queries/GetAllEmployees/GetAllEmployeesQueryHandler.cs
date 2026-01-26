@@ -4,7 +4,8 @@ using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Domain.Enums;
 using LeaveManagement.Domain.Value_Objects;
 using Microsoft.EntityFrameworkCore;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
 {

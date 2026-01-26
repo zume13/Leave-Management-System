@@ -3,7 +3,8 @@ using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Dto.Response.LeaveType;
 using LeaveManagement.Application.Features.LeaveTypes.Queries.GetAllLeaves;
 using Microsoft.EntityFrameworkCore;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Queries.GetAllLeave
 {

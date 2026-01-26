@@ -1,8 +1,9 @@
 ﻿using LeaveManagement.Domain.Enums;
 using LeaveManagement.Domain.Primitives;
-using SharedKernel.Shared;
 using LeaveManagement.Domain.Value_Objects;
 using System.Globalization;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Domain.Entities
 {

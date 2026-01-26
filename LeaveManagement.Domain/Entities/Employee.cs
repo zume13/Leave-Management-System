@@ -1,7 +1,10 @@
 ﻿using LeaveManagement.Domain.Enums;
+using LeaveManagement.Domain.Events.Employees;
 using LeaveManagement.Domain.Primitives;
-using SharedKernel.Shared;
 using LeaveManagement.Domain.Value_Objects;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
+using System.Runtime.CompilerServices;
 
 namespace LeaveManagement.Domain.Entities
 {
@@ -31,7 +34,7 @@ namespace LeaveManagement.Domain.Entities
         public IReadOnlyCollection<LeaveRequest> Requests => _requests;
 
         #region methods
-        public static ResultT<Employee> Create(Name name, Email email, Guid departmentId, string userId)
+        public static ResultT<Employee> Create(Name name, Email email, Guid departmentId, string userId, string verificationToken)
         {
             if (userId is null)
                 return DomainErrors.Employee.NullUserId;
@@ -41,8 +44,15 @@ namespace LeaveManagement.Domain.Entities
 
             if (email is null)
                 return DomainErrors.Email.EmptyEmail;
-            
-            return ResultT<Employee>.Success(new Employee(Guid.NewGuid(), name, email, EmployeeStatus.Active, departmentId, userId));
+
+            var employee = new Employee(Guid.NewGuid(), name, email, EmployeeStatus.Active, departmentId, userId);
+
+            employee.RaiseDomainEvent(new MemberRegisteredEvent(
+                employee.Name.Value,
+                employee.Email.Value,
+                verificationToken));
+
+            return ResultT<Employee>.Success(employee);
         }
         public ResultT<Guid> AllocateLeave(LeaveType leave)
         {
@@ -70,7 +80,7 @@ namespace LeaveManagement.Domain.Entities
 
             return ResultT<LeaveDuration>.Success(allocation.LeaveDays);
         }
-        public ResultT<LeaveRequest> RequestLeave(DateTime startDate, DateTime endDate, string? description, LeaveType leaveType )
+        public ResultT<LeaveRequest> RequestLeave(DateTime startDate, DateTime endDate, string? description, LeaveType leaveType)
         {
             if (Status == EmployeeStatus.Fired)
                 return DomainErrors.Employee.InactiveEmployee;
@@ -236,12 +246,8 @@ namespace LeaveManagement.Domain.Entities
         #endregion
         
         /*  raise domain events 
-            EmployeeCreatedDomainEvent
             LeaveRequestedDomainEvent
-            LeaveApprovedDomainEvent
             LeaveRejectedDomainEvent
-            LeaveCancelledDomainEvent
-            LeaveAllocatedDomainEvent
             add attribute for who processed leaves and allocation
         */
     }

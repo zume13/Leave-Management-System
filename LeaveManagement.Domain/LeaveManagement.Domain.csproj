@@ -11,9 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Events\LeaveRequest\" />
     <Folder Include="Events\Allocations\" />
-    <Folder Include="Events\LeaveTypes\" />
   </ItemGroup>
 
 </Project>

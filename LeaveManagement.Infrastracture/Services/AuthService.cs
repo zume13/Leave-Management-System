@@ -3,9 +3,11 @@ using LeaveManagement.Application.Abstractions.Services;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Models;
 using LeaveManagement.Domain.Entities;
+using LeaveManagement.Domain.Events.Employees;
 using LeaveManagement.Domain.Value_Objects;
 using Microsoft.AspNetCore.Identity;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -135,22 +137,17 @@ namespace LeaveManagement.Infrastructure.Services
             try
             {
                 var createUserResult = await _userManager.CreateAsync(user, password);
+
                 if (!createUserResult.Succeeded)
                     return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
 
                 var newMail = Email.Create(user.Email).Value;
-                var employee = Employee.Create(Name.Create(user.EmployeeName).Value, newMail, deptId, user.Id);
+                var employee = Employee.Create(Name.Create(user.EmployeeName).Value, newMail, deptId, user.Id, user.verificationToken);
+
                 if (employee.isFailure)
                 {
                     await _userManager.DeleteAsync(user);
                     return ResultT<RegisterDto>.Failure(DomainErrors.Employee.NullEmployee);
-                }
-
-                var emailResult = await _emailService.SendEmailVerificationAsync(user);
-                if (emailResult.isFailure)
-                {
-                    await _userManager.DeleteAsync(user); 
-                    return ResultT<RegisterDto>.Failure(InfrastractureErrors.Email.FailedToSendVerificationEmail);
                 }
 
                 await _context.Employees.AddAsync(employee.Value, ct);

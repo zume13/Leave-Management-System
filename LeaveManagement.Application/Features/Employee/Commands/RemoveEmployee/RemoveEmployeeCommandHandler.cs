@@ -2,7 +2,8 @@
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Models;
 using Microsoft.AspNetCore.Identity;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee
 {

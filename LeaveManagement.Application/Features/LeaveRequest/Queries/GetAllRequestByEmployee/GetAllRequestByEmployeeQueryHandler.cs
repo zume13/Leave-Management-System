@@ -2,7 +2,8 @@
 using LeaveManagement.Application.Abstractions.Messaging;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRequestByEmployee
 {

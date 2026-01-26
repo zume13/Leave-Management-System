@@ -1,5 +1,4 @@
-﻿
-namespace SharedKernel.Shared
+﻿namespace SharedKernel.Shared.Result
 {
     public class Error
     {

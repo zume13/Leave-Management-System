@@ -1,7 +1,7 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
-using SharedKernel.Shared;
 using LeaveManagement.Domain.Entities;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Commands.CreateLeave
 {

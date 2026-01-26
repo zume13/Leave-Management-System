@@ -3,22 +3,22 @@ using LeaveManagement.Application.Models;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Infrastructure.Services
 {
     public class EmailService(IConfiguration _config) : IEmailService
     {
 
-        public async Task<Result> SendEmailVerificationAsync(User user)
+        public async Task<Result> SendEmailVerificationAsync(string EmployeeName, string EmployeeEmail, string VerificationToken)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("Leave Management", _config["EmailConfiguration:From"]));
-            emailMessage.To.Add(new MailboxAddress(user.EmployeeName.ToString(), user.Email));
+            emailMessage.To.Add(new MailboxAddress(EmployeeName, EmployeeEmail));
             emailMessage.Subject = "Email Verification";
             emailMessage.Body = new TextPart("plain")
             {
-                Text = $"Please verify your email by clicking on the following link: https://yourdomain.com/verify?token={user.verificationToken}"
+                Text = $"Please verify your email by clicking on the following link: https://ZLM.com/verify?token={VerificationToken}"
             };
 
             try

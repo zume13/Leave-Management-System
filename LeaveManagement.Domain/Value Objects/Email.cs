@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Domain.Primitives;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 using System;
 using System.Collections.Generic;
 using System.Linq;

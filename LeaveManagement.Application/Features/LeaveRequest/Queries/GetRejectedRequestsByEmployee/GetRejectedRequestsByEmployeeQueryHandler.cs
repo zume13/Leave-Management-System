@@ -2,7 +2,8 @@
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRejectedRequests;
 using Microsoft.EntityFrameworkCore;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Errors;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetRejectedRequestsByEmployee
 {

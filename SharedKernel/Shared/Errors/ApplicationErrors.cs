@@ -1,5 +1,6 @@
-﻿
-namespace SharedKernel.Shared
+﻿using SharedKernel.Shared.Result;
+
+namespace SharedKernel.Shared.Errors
 {
     public static class ApplicationErrors
     {

@@ -1,6 +1,4 @@
-﻿
-
-using SharedKernel.Shared;
+﻿using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Abstractions.Messaging
 {

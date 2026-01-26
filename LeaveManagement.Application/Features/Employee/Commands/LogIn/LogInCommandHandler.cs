@@ -1,7 +1,7 @@
 ﻿using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Abstractions.Services;
 using LeaveManagement.Application.Dto.Response.Auth;
-using SharedKernel.Shared;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.LogIn
 {
