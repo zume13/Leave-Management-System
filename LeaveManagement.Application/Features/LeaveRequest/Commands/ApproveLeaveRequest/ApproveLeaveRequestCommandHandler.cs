@@ -14,6 +14,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeav
         {
             var employee = await _context.Employees
                 .Include(e => e.Requests.Where(r => r.Id == command.LeaveRequestId))
+                .Include(e => e.Allocations)
                 .SingleOrDefaultAsync(e => 
                     e.Requests.Any(r => r.Id == command.LeaveRequestId), token);
 

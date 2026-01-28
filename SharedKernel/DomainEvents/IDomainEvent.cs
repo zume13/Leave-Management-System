@@ -1,5 +1,8 @@
 ﻿
 namespace LeaveManagement.SharedKernel.DomainEvents
 {
-    public interface IDomainEvent;
+    public interface IDomainEvent
+    {
+        string EventName { get; }
+    }
 }

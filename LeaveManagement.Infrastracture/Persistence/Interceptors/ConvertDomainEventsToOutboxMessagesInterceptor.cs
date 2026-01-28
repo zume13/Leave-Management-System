@@ -1,13 +1,13 @@
-﻿using LeaveManagement.Domain.Primitives;
+﻿using LeaveManagement.Application.Abstractions.Events;
+using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Infrastructure.Persistence.Outbox;
 using LeaveManagement.SharedKernel.DomainEvents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Newtonsoft.Json;
 
 namespace LeaveManagement.Infrastructure.Persistence.Interceptors
 {
-    public sealed class ConvertDomainEventsToOutboxMessagesInterceptor : SaveChangesInterceptor
+    public sealed class ConvertDomainEventsToOutboxMessagesInterceptor(IOutBoxMessageSerializer _serializer) : SaveChangesInterceptor
     {
         public override ValueTask<int> SavedChangesAsync(
             SaveChangesCompletedEventData eventData,
@@ -19,12 +19,12 @@ namespace LeaveManagement.Infrastructure.Persistence.Interceptors
             if (dbContext is null)
                 return base.SavedChangesAsync(eventData, result, ct);
 
-            dbContext.ChangeTracker
+            var outBoxMessages = dbContext.ChangeTracker
                 .Entries<AggregateRoot>()
                 .Select(x => x.Entity)
-                .Select(aggregate => {
+                .SelectMany(aggregate => {
 
-                    List<IDomainEvent> domainEvents = aggregate.domainEvents.ToList();
+                    List<IDomainEvent> domainEvents = aggregate.domainEvents;
 
                     aggregate.ClearDomainEvents();
 
@@ -34,14 +34,12 @@ namespace LeaveManagement.Infrastructure.Persistence.Interceptors
                     {
                         Id = Guid.NewGuid(),
                         Type = domainEvent.GetType().Name,
-                        Content = JsonConvert.SerializeObject(
-                            domainEvent,
-                            new JsonSerializerSettings
-                            {
-                                TypeNameHandling = TypeNameHandling.All
-                            })
+                        Content = _serializer.Serialize(domainEvent),
+                        OccuredOn = DateTime.UtcNow,
                     })
                 .ToList();
+
+            dbContext.Set<OutBoxMessage>().AddRange(outBoxMessages);
 
             return base.SavedChangesAsync(eventData, result, ct);
         }
