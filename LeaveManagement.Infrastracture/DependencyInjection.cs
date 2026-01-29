@@ -1,6 +1,8 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
+using LeaveManagement.Application.Abstractions.Events;
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Abstractions.Services;
+using LeaveManagement.Infrastructure.Events;
 using LeaveManagement.Infrastructure.Messaging;
 using LeaveManagement.Infrastructure.Persistence;
 using LeaveManagement.Infrastructure.Services;
@@ -14,15 +16,18 @@ namespace LeaveManagement.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<ApplicationDbContext>(options => 
-                options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
-
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddScoped<IMediator, Mediator>();
 
             services.AddScoped<ITokenService, TokenService>();
-            // register domainevents
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAuthService, AuthService>();
+
+            services.AddScoped<IDomainEventDispatcher, DomainEventsDispatcher>();
+            services.AddSingleton<IDomainEventTypeRegistry, DomainEventTypeRegistry>();
+            services.AddScoped<IOutBoxMessageSerializer, OutboxMessageSerializer>();
+
             return services;
         }
 

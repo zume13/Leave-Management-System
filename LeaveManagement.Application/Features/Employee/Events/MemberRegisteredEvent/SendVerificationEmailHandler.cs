@@ -5,7 +5,7 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Events
 {
-    public class SendlVerificationEmailHandler(IEmailService _service) : IDomainEventHandler<MemberRegisteredEvent>
+    public class SendVerificationEmailHandler(IEmailService _service) : IDomainEventHandler<MemberRegisteredEvent>
     {
         public async Task Handle(MemberRegisteredEvent domainEvent, CancellationToken ct = default)
         {

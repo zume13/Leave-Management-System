@@ -7,6 +7,10 @@ using System.Text;
 using LeaveManagement.Infrastructure.Persistence;
 using LeaveManagement.Infrastructure.Identity;
 using LeaveManagement.Infrastructure;
+using LeaveManagement.Infrastructure.Persistence.Interceptors;
+using Microsoft.EntityFrameworkCore;
+using Quartz;
+using LeaveManagement.Infrastructure.BackgroundJobs;
 
 namespace LeaveManagement.API
 {
@@ -35,6 +39,31 @@ namespace LeaveManagement.API
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            string connection = builder.Configuration.GetConnectionString("DefaultConnection")!;
+
+            builder.Services.AddDbContext<ApplicationDbContext>((sp, opt) =>
+            {
+                var interceptor = sp.GetService<ConvertDomainEventsToOutboxMessagesInterceptor>();
+
+                opt.UseSqlServer(connection).AddInterceptors(interceptor!);
+            });
+
+            builder.Services.AddQuartz(config =>
+            {
+                var JobKey = new JobKey(nameof(ProcessOutBoxMessageJob));
+
+                config.AddJob<ProcessOutBoxMessageJob>(opt => opt.WithIdentity(JobKey))
+                .AddTrigger(
+                    trigger =>
+                    trigger.ForJob(JobKey)
+                           .WithSimpleSchedule(
+                                schedule =>
+                                    schedule.WithIntervalInSeconds(10)
+                                        .RepeatForever()));
+            });
+
+            builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

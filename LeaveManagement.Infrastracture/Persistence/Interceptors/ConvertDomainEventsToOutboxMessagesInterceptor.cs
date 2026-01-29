@@ -33,6 +33,7 @@ namespace LeaveManagement.Infrastructure.Persistence.Interceptors
                 .Select(domainEvent => new OutBoxMessage
                     {
                         Id = Guid.NewGuid(),
+                        EventName = domainEvent.EventName,
                         Type = domainEvent.GetType().Name,
                         Content = _serializer.Serialize(domainEvent),
                         OccuredOn = DateTime.UtcNow,

@@ -2,9 +2,7 @@
 using LeaveManagement.Domain.Events.Employees;
 using LeaveManagement.Domain.Events.LeaveRequest;
 using SharedKernel.DomainEvents;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Infrastructure.Events
 {
@@ -15,12 +13,12 @@ namespace LeaveManagement.Infrastructure.Events
             [DomainEventName.MemberRegistered] = typeof(MemberRegisteredEvent),
             [DomainEventName.LeaveApproved] = typeof(ApprovedLeaveEvent)
         };
-        public Type Resolve(string eventName)
+        public ResultT<Type> Resolve(string eventName)
         {
             if (_map.TryGetValue(eventName, out var type))
-                return type;
+                return ResultT<Type>.Success(type);
 
-            return 
+            return ResultT<Type>.Failure(new Error("Type.Unregistered", "Type is invalid"));
         }
     }
 }

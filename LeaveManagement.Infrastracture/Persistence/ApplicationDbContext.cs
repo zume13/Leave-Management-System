@@ -26,12 +26,10 @@ namespace LeaveManagement.Infrastructure.Persistence
         {
 
             int result = await base.SaveChangesAsync(cancellationToken);
-
-            await PublishDomainEvents();
-
             return result;
         }
 
+        //Another example on how to dispatch domain events
         private async Task PublishDomainEvents()
         {
             var domainEvents = ChangeTracker

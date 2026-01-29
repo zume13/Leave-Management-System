@@ -1,11 +1,19 @@
-﻿
-using LeaveManagement.Application.Models;
-using SharedKernel.Shared.Result;
+﻿using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Abstractions.Services
 {
     public interface IEmailService
     {
-        Task<Result> SendEmailVerificationAsync(string EmployeeName, string EmployeeEmail, string VerificationToken);
+        Task SendEmailVerificationAsync(
+            string employeeName,
+            string employeeEmail,
+            string verificationToken,
+            CancellationToken ct = default);
+
+        Task SendLeaveApprovedEmailAsync(
+            string employeeName,
+            string employeeEmail,
+            string admin,
+            CancellationToken ct = default);
     }
 }

@@ -1,8 +1,9 @@
-﻿
+﻿using SharedKernel.Shared.Result;
+
 namespace LeaveManagement.Application.Abstractions.Events
 {
     public interface IDomainEventTypeRegistry
     {
-        Type Resolve(string eventName);
+        ResultT<Type> Resolve(string eventName);
     }
 }
