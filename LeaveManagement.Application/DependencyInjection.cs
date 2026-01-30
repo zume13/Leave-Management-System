@@ -1,4 +1,6 @@
-﻿using LeaveManagement.Application.Abstractions.Messaging;
+﻿using FluentValidation;
+using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Features.Employee.Commands.LogIn;
 using LeaveManagement.Application.Features.Employee.Events;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.DomainEvents;
@@ -35,6 +37,8 @@ namespace LeaveManagement.Application
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
 
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
+            
             return services;
         }
     }

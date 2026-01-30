@@ -11,6 +11,7 @@ using LeaveManagement.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using LeaveManagement.Infrastructure.BackgroundJobs;
+using LeaveManagement.Application;
 
 namespace LeaveManagement.API
 {
@@ -21,6 +22,7 @@ namespace LeaveManagement.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplication();
 
             builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
             {
