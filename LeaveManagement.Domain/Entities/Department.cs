@@ -13,8 +13,6 @@ namespace LeaveManagement.Domain.Entities
         }
         private Department() { }
         public Name DepartmentName { get; private set; }
-        public IReadOnlyCollection<Employee> Employees { get; private set; } = new List<Employee>();
-
         public static ResultT<Department> Create(Name deptName)
         {
             if (deptName == null)

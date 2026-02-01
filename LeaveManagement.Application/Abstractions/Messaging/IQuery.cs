@@ -1,6 +1,4 @@
-﻿
-
-namespace LeaveManagement.Application.Abstractions.Messaging
+﻿namespace LeaveManagement.Application.Abstractions.Messaging
 {
     public interface IQuery<TResponse>
     {
