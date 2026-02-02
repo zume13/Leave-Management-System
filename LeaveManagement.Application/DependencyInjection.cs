@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using LeaveManagement.Application.Abstractions.Messaging;
-using LeaveManagement.Application.Features.Employee.Commands.LogIn;
+using LeaveManagement.Application.Decorators;
 using LeaveManagement.Application.Features.Employee.Events;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.DomainEvents;
@@ -38,7 +38,14 @@ namespace LeaveManagement.Application
                 .WithScopedLifetime());
 
             services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
-            
+
+            services.Decorate(typeof(ICommandHandler<,>), typeof(ValidationDecorator.CommandHandler<,>));
+            services.Decorate(typeof(ICommandHandler<>), typeof(ValidationDecorator.BaseCommandHandler<>));
+
+            services.Decorate(typeof(ICommandHandler<,>), typeof(LoggingDecorator.CommandHandler<,>));
+            services.Decorate(typeof(ICommandHandler<>), typeof(LoggingDecorator.BaseCommandHandler<>));
+            services.Decorate(typeof(IQueryHandler<,>), typeof(LoggingDecorator.QueryHandler<,>));
+
             return services;
         }
     }
