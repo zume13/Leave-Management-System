@@ -15,6 +15,13 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Commands.RemoveLeave
             if (leaveType is null)
                 return ApplicationErrors.LeaveType.LeaveTypeNotFound;
 
+            var allocations = _context.LeaveAllocations.Where(x => x.LeaveTypeId == command.LeaveTypeId);
+
+            foreach (var allocation in allocations)
+            {
+                _context.LeaveAllocations.Remove(allocation);
+            }
+
             _context.LeaveTypes.Remove(leaveType);
 
             await _context.SaveChangesAsync(token);

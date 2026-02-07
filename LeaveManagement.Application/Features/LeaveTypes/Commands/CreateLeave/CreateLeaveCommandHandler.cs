@@ -21,3 +21,4 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Commands.CreateLeave
         }
     }
 }
+    
