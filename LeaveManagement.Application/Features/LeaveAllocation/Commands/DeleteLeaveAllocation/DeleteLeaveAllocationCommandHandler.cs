@@ -16,8 +16,8 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.DeleteLe
                 .SingleOrDefaultAsync(e => 
                     e.Allocations.Any(a => a.Id == command.AllocationId), token);
 
-            if(employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound;
+            if (employee is null)
+                return ApplicationErrors.LeaveAllocation.LeaveAllocationNotFound(command.AllocationId);
 
             var result = employee.RemoveAllocation(command.AllocationId);
 

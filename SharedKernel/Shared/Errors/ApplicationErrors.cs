@@ -6,30 +6,31 @@ namespace SharedKernel.Shared.Errors
     {
         public static class Employee
         {
-            public static readonly Error EmployeeNotFound = new Error("Employee.NotFound", "Employee with the id was not found");
-            public static readonly Error NoEmployeesFound = new Error("Employees.NotFound", "There are no registered employees");
+            public static Error EmployeeNotFound(Guid id) => Error.NotFound("Employee.NotFound", $"Employee with the id: {id} was not found");
+            public static readonly Error NoEmployeesFound = Error.NotFound("Employees.NotFound", "There are no registered employees");
         }
 
         public static class General
         {
-            public static readonly Error InternalError = new Error("General.InternalError", "An internal error occurred. Please try again later.");
+            public static readonly Error InternalError = Error.Failure("General.InternalError", "An internal error occurred. Please try again later.");
         }
 
         public static class LeaveType
         {
-            public static readonly Error LeaveTypeNotFound = new Error("LeaveType.NotFound", "Leave type with the given id was not found");
-            public static readonly Error NoLeaveFound = new Error("Leave.NotFound", "There are no found leaves");
+            public static Error LeaveTypeNotFound(Guid id) => Error.NotFound("LeaveType.NotFound", $"Leave type with the given id: {id} was not found");
+            public static readonly Error NoLeaveFound = Error.NotFound("Leave.NotFound", "There are no found leaves");
         }
 
         public static class LeaveRequests 
         {
-            public static readonly Error NoRequestsFound = new Error("Requests.NotFound", "There are no found leave requests");
+            public static Error RequestNotFound(Guid id) => Error.NotFound("Requests.NotFound", $"There are no found leave requests with the id: {id}");
+            public static readonly Error NoRequestsFound = Error.NotFound("Requests.NotFound", "There are no found leave requests");
         }
 
         public static class LeaveAllocation
         {
-            public static readonly Error LeaveAllocationNotFound = new Error("LeaveAllocation.NotFound", "Leave allocation with the given id was not found");
-            public static readonly Error NoAllocationsFound = new Error("Allocation.NotFound", "There are no found allocations");
+            public static Error LeaveAllocationNotFound(Guid id) => Error.NotFound("LeaveAllocation.NotFound", $"Leave allocation with the given id: {id} was not found");
+            public static readonly Error NoAllocationsFound = Error.NotFound("Allocation.NotFound", "There are no found allocations");
         }
     }
 }

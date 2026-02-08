@@ -17,12 +17,12 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeave
                 .SingleOrDefaultAsync(e => e.Id == command.employeeId, token);
             
             if(employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound; 
+                return ApplicationErrors.Employee.EmployeeNotFound(command.employeeId); 
 
             var leaveType = await _context.LeaveTypes.FindAsync(command.leaveTypeId, token);
 
             if(leaveType is null)
-                return ApplicationErrors.LeaveType.LeaveTypeNotFound;
+                return ApplicationErrors.LeaveType.LeaveTypeNotFound(command.leaveTypeId);
 
             var leaveRequest = employee.RequestLeave(command.startDate, command.endDate, command.description, leaveType);
 

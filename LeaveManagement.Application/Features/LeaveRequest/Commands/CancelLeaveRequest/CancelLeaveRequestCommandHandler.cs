@@ -18,7 +18,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeave
                     e.Requests.Any(e => e.Id == command.LeaveRequestId), token);
 
             if (employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound;
+                return ApplicationErrors.LeaveRequests.RequestNotFound(command.LeaveRequestId);
 
             var result = employee.CancelLeaveRequest(command.LeaveRequestId);
 

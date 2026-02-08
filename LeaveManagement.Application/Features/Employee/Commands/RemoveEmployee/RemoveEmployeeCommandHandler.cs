@@ -19,7 +19,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee
             var employee = await _context.Employees.FindAsync(command.employeeId, token);
 
             if (employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound;
+                return ApplicationErrors.Employee.EmployeeNotFound(command.employeeId);
 
             var user = await _userManager.FindByIdAsync(employee.UserId.ToString());
 

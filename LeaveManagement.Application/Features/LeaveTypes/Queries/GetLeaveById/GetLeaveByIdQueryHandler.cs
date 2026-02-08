@@ -19,7 +19,7 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Queries.GetLeaveById
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (leave == null)
-                return ApplicationErrors.LeaveType.LeaveTypeNotFound;
+                return ApplicationErrors.LeaveType.LeaveTypeNotFound(query.LeaveId);
 
             return ResultT<LeavesDto>.Success(leave);
         }

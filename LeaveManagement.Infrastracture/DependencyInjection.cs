@@ -1,9 +1,7 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Events;
-using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Abstractions.Services;
 using LeaveManagement.Infrastructure.Events;
-using LeaveManagement.Infrastructure.Messaging;
 using LeaveManagement.Infrastructure.Persistence;
 using LeaveManagement.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +15,6 @@ namespace LeaveManagement.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
-
-            services.AddScoped<IMediator, Mediator>();
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();

@@ -14,7 +14,7 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Commands.UpdateLeave
             var leaveType = _context.LeaveTypes.Find(command.LeaveTypeId);
 
             if (leaveType is null)
-                return ApplicationErrors.LeaveType.LeaveTypeNotFound;
+                return ApplicationErrors.LeaveType.LeaveTypeNotFound(command.LeaveTypeId);
 
             var updateResult = leaveType.Update(command.NewName, command.NewDays);
 

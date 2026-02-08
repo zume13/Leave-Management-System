@@ -17,7 +17,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.RejectLeave
                     e.Requests.Any(r => r.Id == command.LeaveRequestId), token);
 
             if (employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound;
+                return ApplicationErrors.LeaveRequests.RequestNotFound(command.LeaveRequestId);
 
             var rejectResult = employee.RejectLeaveRequest(command.LeaveRequestId, command.AdminName, command.Reason);
 

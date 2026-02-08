@@ -13,7 +13,7 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Commands.RemoveLeave
             var leaveType = await _context.LeaveTypes.FindAsync(command.LeaveTypeId);
 
             if (leaveType is null)
-                return ApplicationErrors.LeaveType.LeaveTypeNotFound;
+                return ApplicationErrors.LeaveType.LeaveTypeNotFound(command.LeaveTypeId);
 
             var allocations = _context.LeaveAllocations.Where(x => x.LeaveTypeId == command.LeaveTypeId);
 

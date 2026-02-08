@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Domain.Enums;
 using LeaveManagement.Domain.Events.Employees;
+using LeaveManagement.Domain.Events.LeaveRequest;
 using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Domain.Value_Objects;
 using SharedKernel.Shared.Errors;
@@ -175,6 +176,11 @@ namespace LeaveManagement.Domain.Entities
                 return approved.Error;
 
             allocation.Consume(request.LeaveDays.Days);
+
+            this.RaiseDomainEvent(new ApprovedLeaveEvent(
+                EmployeeName: this.Name.Value,
+                EmployeeEmail: this.Email.Value,
+                Admin: AdminName)); 
 
             return Result.Success();
         }

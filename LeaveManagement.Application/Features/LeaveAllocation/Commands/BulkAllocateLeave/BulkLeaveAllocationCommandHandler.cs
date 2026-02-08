@@ -16,7 +16,7 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.BulkAllo
             var leaveType = await _context.LeaveTypes.FindAsync(command.LeaveTypeId, token);
 
             if (leaveType is null)
-                return ApplicationErrors.LeaveType.LeaveTypeNotFound;
+                return ApplicationErrors.LeaveType.LeaveTypeNotFound(command.LeaveTypeId);
 
             var employees = await _context.Employees.Where(e => e.Status == Domain.Enums.EmployeeStatus.Active).ToListAsync(token);
 
@@ -51,7 +51,7 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.BulkAllo
             catch (Exception ex)
             {
                 await transaction.RollbackAsync(token);
-                return ResultT<BulkLeaveAllocationDto>.Failure(new Error("BulkLeaveAllocationFailed", $"Bulk leave allocation failed: {ex.Message}"));
+                return ResultT<BulkLeaveAllocationDto>.Failure(new Error("BulkLeaveAllocationFailed", $"Bulk leave allocation failed: {ex.Message}", ErrorType.Failure));
             }
         }
     }

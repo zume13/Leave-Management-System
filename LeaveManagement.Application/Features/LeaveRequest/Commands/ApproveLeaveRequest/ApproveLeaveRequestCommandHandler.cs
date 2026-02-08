@@ -19,7 +19,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeav
                     e.Requests.Any(r => r.Id == command.LeaveRequestId), token);
 
             if (employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound;
+                return ApplicationErrors.LeaveRequests.RequestNotFound(command.LeaveRequestId);
 
             var result = employee.ApproveLeaveRequest(command.LeaveRequestId, command.AdminName);
 

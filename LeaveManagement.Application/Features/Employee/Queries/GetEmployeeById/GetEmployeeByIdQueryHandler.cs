@@ -28,7 +28,7 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployee
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound;
+                return ApplicationErrors.Employee.EmployeeNotFound(query.EmployeeId);
 
             return ResultT<EmployeeDto>.Success(employee);
         }

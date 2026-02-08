@@ -31,7 +31,7 @@ namespace LeaveManagement.Application.Decorators
 
         private static ValidationError CreateValidationErrors(ValidationFailure[] validationFailures) => 
             new(validationFailures
-                .Select(v => new Error(v.ErrorCode, v.ErrorMessage))
+                .Select(v => new Error(v.ErrorCode, v.ErrorMessage, ErrorType.Validation))
                 .ToArray());
 
         internal sealed class CommandHandler<TCommand, TResponse>(
@@ -70,7 +70,7 @@ namespace LeaveManagement.Application.Decorators
                     await innerHandler.Handle(command, token);
                 }
 
-                return Result.Failure(new ValidationError([..validationFailures.Select(v => new Error(v.ErrorCode, v.ErrorMessage))]));
+                return Result.Failure(new ValidationError([..validationFailures.Select(v => new Error(v.ErrorCode, v.ErrorMessage, ErrorType.Validation))]));
             }
         }
     }

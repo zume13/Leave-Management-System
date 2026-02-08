@@ -17,7 +17,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
             var employee = await _context.Employees.FindAsync(command.EmployeeId, token);
 
             if (employee == null) 
-                return ApplicationErrors.Employee.EmployeeNotFound;
+                return ApplicationErrors.Employee.EmployeeNotFound(command.EmployeeId);
 
             await using var transaction = _context.Database.BeginTransaction();
 
@@ -31,14 +31,14 @@ namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
                 var user = await _userManager.FindByIdAsync(employee.UserId);
 
                 if (user == null)
-                    return ApplicationErrors.Employee.EmployeeNotFound;
+                    return ApplicationErrors.Employee.EmployeeNotFound(command.EmployeeId);
 
                 if (!string.IsNullOrWhiteSpace(command.Email) && user.Email != command.Email)
                 {
                     var emailResult = await _userManager.SetEmailAsync(user, command.Email);
 
                     if (!emailResult.Succeeded)
-                        return ResultT<Guid>.Failure(new Error("UserEmail.Failed", emailResult.Errors.Select(e => e.Description).ToString()!));
+                        return ResultT<Guid>.Failure(Error.Failure("UserEmail.Failed", emailResult.Errors.Select(e => e.Description).ToString()!));
                 }
 
                 if (!string.IsNullOrWhiteSpace(command.EmployeeName) && user.EmployeeName != command.EmployeeName)

@@ -3,7 +3,6 @@ using LeaveManagement.Application.Abstractions.Services;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Models;
 using LeaveManagement.Domain.Entities;
-using LeaveManagement.Domain.Events.Employees;
 using LeaveManagement.Domain.Value_Objects;
 using Microsoft.AspNetCore.Identity;
 using SharedKernel.Shared.Errors;
@@ -13,7 +12,7 @@ using System.Security.Claims;
 
 namespace LeaveManagement.Infrastructure.Services
 {
-    public class AuthService(UserManager<User> _userManager, IApplicationDbContext _context, IEmailService _emailService, ITokenService _token) : IAuthService
+    public class AuthService(UserManager<User> _userManager, IApplicationDbContext _context, ITokenService _token) : IAuthService
     {
         
         public async Task<ResultT<LogInDto>> LoginAsync(string email, string password, CancellationToken ct = default)

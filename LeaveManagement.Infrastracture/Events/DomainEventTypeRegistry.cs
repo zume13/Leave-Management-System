@@ -18,7 +18,7 @@ namespace LeaveManagement.Infrastructure.Events
             if (_map.TryGetValue(eventName, out var type))
                 return ResultT<Type>.Success(type);
 
-            return ResultT<Type>.Failure(new Error("Type.Unregistered", "Type is invalid"));
+            return ResultT<Type>.Failure(Error.Problem("Type.Unregistered", "Type is invalid"));
         }
     }
 }

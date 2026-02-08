@@ -13,12 +13,12 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.Allocate
             var employee = await _context.Employees.FindAsync(command.EmployeeId, token);
 
             if(employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound;
+                return ApplicationErrors.Employee.EmployeeNotFound(command.EmployeeId);
 
             var leaveType = await _context.LeaveTypes.FindAsync(command.LeaveTypeId, token);
             
             if(leaveType is null)
-                return ApplicationErrors.LeaveType.LeaveTypeNotFound;
+                return ApplicationErrors.LeaveType.LeaveTypeNotFound(command.LeaveTypeId);
 
             var allocateResult = employee.AllocateLeave(leaveType);
 
