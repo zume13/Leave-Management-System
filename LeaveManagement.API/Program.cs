@@ -23,6 +23,7 @@ namespace LeaveManagement.API
 
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication();
+            builder.Services.AddPresentation();
 
             builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
             {
