@@ -101,6 +101,8 @@ namespace LeaveManagement.API
 
             app.UseHttpsRedirection();
 
+            app.UseExceptionHandler();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
