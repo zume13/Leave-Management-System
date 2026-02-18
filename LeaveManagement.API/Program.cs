@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Quartz;
 using LeaveManagement.Infrastructure.BackgroundJobs;
 using LeaveManagement.Application;
+using LeaveManagement.API.Extensions;
 
 namespace LeaveManagement.API
 {
@@ -68,36 +69,14 @@ namespace LeaveManagement.API
 
             builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(opt =>
-            {
-                opt.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                });
-                opt.OperationFilter<SecurityRequirementsOperationFilter>();
-                opt.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "LeaveManagementApi",
-                    Description = "An Asp.Net Api for Leave Management"
-                });
-            });
-
             var app = builder.Build();
 
             using var scope = app.Services.CreateScope();
             await SeedData.InitializeAsync(scope.ServiceProvider);
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerWithUI();
             }
 
             app.UseHttpsRedirection();
