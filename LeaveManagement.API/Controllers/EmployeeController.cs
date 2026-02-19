@@ -7,5 +7,14 @@ namespace LeaveManagement.API.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
+        EmployeeController()
+        {
+        }
+
+        [HttpGet]
+        public Task<IActionResult> GetEmployees()
+        {
+
+        }
     }
 }

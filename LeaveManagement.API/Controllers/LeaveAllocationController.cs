@@ -5,7 +5,7 @@ namespace LeaveManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class LeaveAllocationController : ControllerBase
     {
     }
 }

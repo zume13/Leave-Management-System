@@ -1,4 +1,5 @@
 ﻿
+using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Infrastracture;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
@@ -9,6 +10,9 @@ namespace LeaveManagement.API
     {
         public static IServiceCollection AddPresentation(this IServiceCollection services)
         {
+            services.AddScoped<EmployeeQueryHandlers>();
+            services.AddScoped<EmployeeCommandHandlers>();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(opt =>
