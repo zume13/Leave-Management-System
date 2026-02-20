@@ -20,10 +20,10 @@ namespace LeaveManagement.API.Handlers.Employee
                 ICommandHandler<RemoveEmployeeCommand, bool> _Remove,
                 ICommandHandler<UpdateEmployeeCommand, Guid> _Update)
             {
-                this.LogIn = _LogIn;
-                this.Register = _Register;
-                this.Remove = _Remove;
-                this.Update = _Update;
+                LogIn = _LogIn;
+                Register = _Register;
+                Remove = _Remove;
+                Update = _Update;
             }
         }
     }

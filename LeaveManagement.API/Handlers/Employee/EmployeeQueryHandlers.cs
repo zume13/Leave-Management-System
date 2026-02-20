@@ -17,9 +17,9 @@ namespace LeaveManagement.API.Handlers.Employee
             IQueryHandler<GetEmployeeByIdQuery, EmployeeDto> _GetById,
             IQueryHandler<GetEmployeesByDepartmentQuery, List<GetEmployeesByDepartmentDto>> _GetByDepartment)
         {
-            this.GetAll = _GetAll;
-            this.GetById = _GetById;
-            this.GetByDepartment = _GetByDepartment;
+            GetAll = _GetAll;
+            GetById = _GetById;
+            GetByDepartment = _GetByDepartment;
 
         }
     }
