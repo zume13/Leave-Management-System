@@ -7,12 +7,12 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee
 {
-    public sealed class RemoveEmployeeCommandHandler(IApplicationDbContext context, UserManager<User> userManager) : ICommandHandler<RemoveEmployeeCommand, bool>
+    public sealed class RemoveEmployeeCommandHandler(IApplicationDbContext context, UserManager<User> userManager) : ICommandHandler<RemoveEmployeeCommand>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
 
-        public async Task<ResultT<bool>> Handle(RemoveEmployeeCommand command, CancellationToken token = default)
+        public async Task<Result> Handle(RemoveEmployeeCommand command, CancellationToken token = default)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(token);
 
@@ -43,7 +43,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee
                 return ApplicationErrors.General.InternalError;
             }
 
-            return ResultT<bool>.Success(true);
+            return Result.Success();
         }
     }
 }

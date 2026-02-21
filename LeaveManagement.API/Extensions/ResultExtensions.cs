@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
-using Org.BouncyCastle.Utilities.IO;
-using SharedKernel.Shared.Result;
-using System.Runtime.CompilerServices;
+﻿using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.API.Extensions
 {

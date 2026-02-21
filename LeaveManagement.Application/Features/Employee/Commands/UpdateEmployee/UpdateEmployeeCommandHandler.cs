@@ -8,11 +8,11 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
 {
-    public sealed class UpdateEmployeeCommandHandler(IApplicationDbContext context, UserManager<User> userManager) : ICommandHandler<UpdateEmployeeCommand, Guid>
+    public sealed class UpdateEmployeeCommandHandler(IApplicationDbContext context, UserManager<User> userManager) : ICommandHandler<UpdateEmployeeCommand>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly UserManager<User> _userManager = userManager;
-        public async Task<ResultT<Guid>> Handle(UpdateEmployeeCommand command, CancellationToken token = default)
+        public async Task<Result> Handle(UpdateEmployeeCommand command, CancellationToken token = default)
         {
             var employee = await _context.Employees.FindAsync(command.EmployeeId, token);
 
@@ -26,7 +26,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
                 var updateResult = employee.Update(command.EmployeeName, command.Email);
 
                 if (updateResult.isFailure)
-                    return ResultT<Guid>.Failure(updateResult.Error);
+                    return Result.Failure(updateResult.Error);
 
                 var user = await _userManager.FindByIdAsync(employee.UserId);
 
@@ -38,7 +38,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
                     var emailResult = await _userManager.SetEmailAsync(user, command.Email);
 
                     if (!emailResult.Succeeded)
-                        return ResultT<Guid>.Failure(Error.Failure("UserEmail.Failed", emailResult.Errors.Select(e => e.Description).ToString()!));
+                        return Result.Failure(Error.Failure("UserEmail.Failed", emailResult.Errors.Select(e => e.Description).ToString()!));
                 }
 
                 if (!string.IsNullOrWhiteSpace(command.EmployeeName) && user.EmployeeName != command.EmployeeName)
@@ -47,7 +47,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
                 await _context.SaveChangesAsync(token);
                 await transaction.CommitAsync(token);
 
-                return ResultT<Guid>.Success(employee.Id);
+                return Result.Success();
             }
             catch (Exception)
             {

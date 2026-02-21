@@ -1,10 +1,11 @@
-﻿using SharedKernel.Shared.Result;
+﻿using Microsoft.AspNetCore.Mvc;
+using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.API.Infrastracture
 {
     public static class CustomResults
     {
-        public static IResult Problem(Result result)
+        public static IActionResult Problem(Result result)
         {
             if(!result.isFailure)
             {
