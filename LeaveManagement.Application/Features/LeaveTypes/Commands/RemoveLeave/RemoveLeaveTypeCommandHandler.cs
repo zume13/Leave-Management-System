@@ -5,10 +5,10 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Commands.RemoveLeave
 {
-    public sealed class RemoveLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<RemoveLeaveTypeCommand, bool>
+    public sealed class RemoveLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<RemoveLeaveTypeCommand>
     {
         private readonly IApplicationDbContext _context = context;
-        public async Task<ResultT<bool>> Handle(RemoveLeaveTypeCommand command, CancellationToken token = default)
+        public async Task<Result> Handle(RemoveLeaveTypeCommand command, CancellationToken token = default)
         {
             var leaveType = await _context.LeaveTypes.FindAsync(command.LeaveTypeId);
 
@@ -26,7 +26,7 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Commands.RemoveLeave
 
             await _context.SaveChangesAsync(token);
 
-            return ResultT<bool>.Success(true);
+            return Result.Success();
         }
     }
 }

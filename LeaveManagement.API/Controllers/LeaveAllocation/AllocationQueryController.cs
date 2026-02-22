@@ -1,0 +1,44 @@
+﻿using LeaveManagement.API.Extensions;
+using LeaveManagement.API.Handlers.LeaveAllocation;
+using LeaveManagement.API.Infrastracture;
+using LeaveManagement.Application.Dto.Response.Allocation;
+using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetActiveLeaveAllocations;
+using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAllAllocationsByEmployee;
+using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAllocationByEmployee;
+using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetExpiredLeaveAllocations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SharedKernel.Shared.Result;
+
+namespace LeaveManagement.API.Controllers.LeaveAllocation
+{
+    [Authorize]
+    [Route("LeaveManagement/Allocation")]
+    [ApiController]
+    public class AllocationQueryController(AllocationQueryHandlers queryHandlers) : ControllerBase
+    {
+        [HttpGet("Active")]
+        public async Task<IActionResult> GetAllActive()
+        {
+            ResultT<List<LeaveAllocationDto>> result = await queryHandlers.GetActive.Handle(new GetActiveLeaveAllocationsQuery());
+
+            return result.Match<List<LeaveAllocationDto>, IActionResult>(Ok, CustomResults.Problem);
+        }
+
+        [HttpGet("Employee/{id:guid}/All")]
+        public async Task<IActionResult> GetAllAllocationsByEmployee(Guid id)
+        {
+            ResultT<List<GetAllocationByEmployeeDto>> result = await queryHandlers.GetEmployeeAllocations.Handle(new GetAllAllocationsByEmployeeQuery(id));
+
+            return result.Match<List<GetAllocationByEmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
+        }
+
+        [HttpGet("Expired")]
+        public async Task<IActionResult> GetExpiredAllocations()
+        {
+            ResultT<List<LeaveAllocationDto>> result = await queryHandlers.GetExpired.Handle(new GetExpiredLeaveAllocationsQuery());
+
+            return result.Match<List<LeaveAllocationDto>, IActionResult>(Ok, CustomResults.Problem);
+        }
+    }
+}

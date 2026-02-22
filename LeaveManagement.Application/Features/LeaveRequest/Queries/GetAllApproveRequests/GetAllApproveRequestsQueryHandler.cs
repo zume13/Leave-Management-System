@@ -9,7 +9,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApprov
     internal sealed class GetAllApproveRequestsQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllApproveRequestsQuery, List<GetAllApproveRequestsDto>>
     {
         private readonly IApplicationDbContext _context = context;
-        public async Task<ResultT<List<GetAllApproveRequestsDto>>> Handle(GetAllApproveRequestsQuery query, CancellationToken cancellationToken)
+        public async Task<ResultT<List<GetAllApproveRequestsDto>>> Handle(GetAllApproveRequestsQuery query, CancellationToken cancellationToken = default)
         {
             var requests = await _context.LeaveRequests
                 .AsNoTracking()

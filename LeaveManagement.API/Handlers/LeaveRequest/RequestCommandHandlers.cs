@@ -9,17 +9,17 @@ namespace LeaveManagement.API.Handlers.LeaveRequest
 {
     public class RequestCommandHandlers
     {
-        public ICommandHandler<ApproveLeaveRequestCommand, Guid> Approve { get; }
-        public ICommandHandler<CancelLeaveRequestCommand, bool> Cancel { get; }
+        public ICommandHandler<ApproveLeaveRequestCommand> Approve { get; }
+        public ICommandHandler<CancelLeaveRequestCommand> Cancel { get; }
         public ICommandHandler<CreateLeaveRequestCommand, Guid> Create { get; }
-        public ICommandHandler<RejectLeaveRequestCommand, Guid> Reject { get; }
-        public ICommandHandler<UpdateLeaveRequestCommand, Guid> Update { get; }
+        public ICommandHandler<RejectLeaveRequestCommand> Reject { get; }
+        public ICommandHandler<UpdateLeaveRequestCommand> Update { get; }
         public RequestCommandHandlers(
-            ICommandHandler<ApproveLeaveRequestCommand, Guid> approve,
-            ICommandHandler<CancelLeaveRequestCommand, bool> cancel,
+            ICommandHandler<ApproveLeaveRequestCommand> approve,
+            ICommandHandler<CancelLeaveRequestCommand> cancel,
             ICommandHandler<CreateLeaveRequestCommand, Guid> create,
-            ICommandHandler<RejectLeaveRequestCommand, Guid> reject,
-            ICommandHandler<UpdateLeaveRequestCommand, Guid> update)
+            ICommandHandler<RejectLeaveRequestCommand> reject,
+            ICommandHandler<UpdateLeaveRequestCommand> update)
         {
             Approve = approve;
             Cancel = cancel;

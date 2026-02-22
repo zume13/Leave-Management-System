@@ -10,47 +10,20 @@ using LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployee;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDepartment;
 using LeaveManagement.Application.Features.Employee.Queries.ListEmployees;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Shared.Result;
 
 
-namespace LeaveManagement.API.Controllers
+namespace LeaveManagement.API.Controllers.Employee
 {
-    [Route("LeaveManagement/[controller]")]
+    [Authorize]
+    [Route("LeaveManagement/Employee")]
     [ApiController]
-    public class EmployeeController(
-        EmployeeCommandHandlers commandHandler,
-        EmployeeQueryHandlers queryHandler) 
-        : ControllerBase
+    public class EmployeeCommandController(EmployeeCommandHandlers commandHandler) : ControllerBase
     {
-        [HttpGet("all")]
-        public async Task<IActionResult> GetEmployees()
-        {
-            ResultT<List<EmployeeDto>> result = 
-                await queryHandler.GetAll.Handle(new GetAllEmployeesQuery());
-
-            return result.Match<List<EmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
-        {
-            ResultT<EmployeeDto> result = 
-                await queryHandler.GetById.Handle(new GetEmployeeByIdQuery(id));
-
-            return result.Match<EmployeeDto, IActionResult>(Ok, CustomResults.Problem);
-        }
-
-        [HttpGet("department/{deptId}")]
-        public async Task<IActionResult> GetByDepartment(Guid deptId)
-        {
-            ResultT<List<GetEmployeesByDepartmentDto>> result = 
-                await queryHandler.GetByDepartment.Handle(new GetEmployeesByDepartmentQuery(deptId));
-
-            return result.Match<List<GetEmployeesByDepartmentDto>, IActionResult>(Ok, CustomResults.Problem);
-        }
-
-        [HttpPost("register")]
+        [AllowAnonymous]
+        [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterCommand command)
         {
             ResultT<RegisterDto> result = await commandHandler.Register.Handle(command);
@@ -58,7 +31,8 @@ namespace LeaveManagement.API.Controllers
             return result.Match<RegisterDto, IActionResult>(Ok, CustomResults.Problem);
         }
 
-        [HttpPost("login")]
+        [AllowAnonymous]
+        [HttpPost("Login")]
         public async Task<IActionResult> LogInAsync([FromBody] LogInCommand command)
         {
             ResultT<LogInDto> result = await commandHandler.LogIn.Handle(command);
@@ -66,7 +40,7 @@ namespace LeaveManagement.API.Controllers
             return result.Match<LogInDto, IActionResult>(Ok, CustomResults.Problem);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             Result result = await commandHandler.Remove.Handle(new RemoveEmployeeCommand(id));

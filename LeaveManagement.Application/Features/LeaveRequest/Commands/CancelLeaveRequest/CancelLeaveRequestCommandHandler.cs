@@ -7,10 +7,10 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeaveRequest
 {
-    public sealed class CancelLeaveRequestCommandHandler(IApplicationDbContext context) : ICommandHandler<CancelLeaveRequestCommand, bool>
+    public sealed class CancelLeaveRequestCommandHandler(IApplicationDbContext context) : ICommandHandler<CancelLeaveRequestCommand>
     {
         private readonly IApplicationDbContext _context = context;  
-        public async Task<ResultT<bool>> Handle(CancelLeaveRequestCommand command, CancellationToken token = default)
+        public async Task<Result> Handle(CancelLeaveRequestCommand command, CancellationToken token = default)
         {
             var employee = await _context.Employees
                 .Include(e => e.Requests.Where(r => r.Id == command.LeaveRequestId))
@@ -27,7 +27,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeave
 
             await _context.SaveChangesAsync(token);
 
-            return ResultT<bool>.Success(true);
+            return Result.Success();
         }
     }
 }

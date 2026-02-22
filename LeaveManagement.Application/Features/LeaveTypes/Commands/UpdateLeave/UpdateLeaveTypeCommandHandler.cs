@@ -6,10 +6,10 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Commands.UpdateLeave
 {
-    public sealed class UpdateLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateLeaveTypeCommand, Guid>
+    public sealed class UpdateLeaveTypeCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateLeaveTypeCommand>
     {
         private readonly IApplicationDbContext _context = context;
-        public async Task<ResultT<Guid>> Handle(UpdateLeaveTypeCommand command, CancellationToken token = default)
+        public async Task<Result> Handle(UpdateLeaveTypeCommand command, CancellationToken token = default)
         {
             var leaveType = _context.LeaveTypes.Find(command.LeaveTypeId);
 
@@ -23,7 +23,7 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Commands.UpdateLeave
 
             await _context.SaveChangesAsync(token);
 
-            return ResultT<Guid>.Success(leaveType.Id);
+            return Result.Success();
         }
     }
 }
