@@ -1,7 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Services;
 using LeaveManagement.Domain.Events.Employees;
 using SharedKernel.DomainEvents;
-using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Events
 {

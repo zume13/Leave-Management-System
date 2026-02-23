@@ -3,13 +3,12 @@ using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Infrastracture;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
+using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee;
+using LeaveManagement.Application.Features.Employee.Commands.ResendEmailVerification;
 using LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee;
-using LeaveManagement.Application.Features.Employee.Queries.GetEmployee;
-using LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDepartment;
-using LeaveManagement.Application.Features.Employee.Queries.ListEmployees;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Shared.Result;
@@ -55,6 +54,24 @@ namespace LeaveManagement.API.Controllers.Employee
             Result result = await commandHandler.Update.Handle(command);
 
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("Verify")]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+        {
+            ResultT<VerifyEmailDto> result = await commandHandler.VerifyEmail.Handle(new EmailVerificationCommand(token));
+
+            return result.Match<VerifyEmailDto, IActionResult>(Ok, CustomResults.Problem);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("ResendVerification")]
+        public async Task<IActionResult> ResendVerification([FromBody] string email)
+        {
+            var result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(email));
+
+            return result.Match<VerifyEmailDto, IActionResult>(Ok, CustomResults.Problem);
         }
     }
 }

@@ -29,6 +29,7 @@ namespace SharedKernel.Shared.Errors
         {
             public static readonly Error FailedToSendVerificationEmail = Error.Failure("Email.VerificationFailed", "Failed to send verification email");
             public static readonly Error EmailNotVerified = Error.Problem("Email.NotVerified", "Email address has not been verified");
+            public static readonly Error TokenExpired = Error.Problem("Token.Expired", "Verification token was expired");
         }
     }
 }

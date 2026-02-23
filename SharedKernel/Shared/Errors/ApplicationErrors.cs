@@ -8,6 +8,8 @@ namespace SharedKernel.Shared.Errors
         {
             public static Error EmployeeNotFound(Guid id) => Error.NotFound("Employee.NotFound", $"Employee with the id: {id} was not found");
             public static readonly Error NoEmployeesFound = Error.NotFound("Employees.NotFound", "There are no registered employees");
+            public static readonly Error InvalidToken = Error.NotFound("Token.Invalid", "Token was invalid");
+            public static readonly Error AlreadyVerified = Error.Validation("Email.Verified", "The user Email is already verified");
         }
 
         public static class General
@@ -31,6 +33,10 @@ namespace SharedKernel.Shared.Errors
         {
             public static Error LeaveAllocationNotFound(Guid id) => Error.NotFound("LeaveAllocation.NotFound", $"Leave allocation with the given id: {id} was not found");
             public static readonly Error NoAllocationsFound = Error.NotFound("Allocation.NotFound", "There are no found allocations");
+        }
+        public static class Email
+        {
+            public static readonly Error EmailInvalid = Error.Validation("Email.Invalid", "Email is invalid");
         }
     }
 }

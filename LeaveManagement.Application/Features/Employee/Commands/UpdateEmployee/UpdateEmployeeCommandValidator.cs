@@ -7,11 +7,11 @@ namespace LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee
         public UpdateEmployeeCommandValidator()
         {
             RuleFor(c => c.EmployeeId)
-                .NotEmpty();
+                .NotEmpty().WithMessage("Employee id should not be empty");
             RuleFor(c => c.EmployeeName)
-                .MinimumLength(5);
+                .MinimumLength(5).WithMessage("Employee name should not be shorter than 5 characters");
             RuleFor(c => c.Email)
-                .EmailAddress();
+                .EmailAddress().WithMessage("Please enter a valid Email Address");
         }
     }
 }

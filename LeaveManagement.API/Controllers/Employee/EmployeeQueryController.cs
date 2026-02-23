@@ -40,6 +40,5 @@ namespace LeaveManagement.API.Controllers.Employee
 
             return result.Match<List<GetEmployeesByDepartmentDto>, IActionResult>(Ok, CustomResults.Problem);
         }
-
     }
 }

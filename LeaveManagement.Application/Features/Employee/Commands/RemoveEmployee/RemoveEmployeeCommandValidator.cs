@@ -7,7 +7,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee
         public RemoveEmployeeCommandValidator()
         {
             RuleFor(c => c.employeeId)
-                .NotEmpty();
+                .NotEmpty().WithMessage("Employee id should not be empty");
         }
     }
 }

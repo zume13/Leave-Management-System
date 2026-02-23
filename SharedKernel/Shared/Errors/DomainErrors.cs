@@ -21,6 +21,8 @@ namespace SharedKernel.Shared.Errors
             public static readonly Error NullEmployee = Error.Validation("Employee.Null", "Passed employee instance was null");
             public static readonly Error EmployeeOnLeave = Error.Problem("Employee.OnLeave", "Employee cannot access functionalities while on leave");
             public static readonly Error NullUserId = Error.Validation("UserId.Null", "The user id is null");
+            public static readonly Error AlreadyVerified = Error.Validation("Email.Verified", "The user Email is already verified");
+            public static readonly Error InvalidToken = Error.Validation("Token.Invalid", "Verification token is invalid");
         }
 
         public static class Email

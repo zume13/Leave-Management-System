@@ -5,7 +5,6 @@ using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Domain.Value_Objects;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
-using System.Runtime.CompilerServices;
 
 namespace LeaveManagement.Domain.Entities
 {
@@ -13,19 +12,28 @@ namespace LeaveManagement.Domain.Entities
     {
         private readonly List<LeaveAllocation> _allocations = new();
         private readonly List<LeaveRequest> _requests = new();
-        private Employee(Guid id, Name name, Email email, EmployeeStatus status, Guid departmentId, string userId) : base(id)
+        private Employee(
+            Guid id, 
+            Name name, 
+            Email email, 
+            EmployeeStatus status,
+            Guid departmentId, 
+            string userId, 
+            string? verificationToken) : base(id)
         {
             this.Name = name;
             this.Email = email;
             this.Status = status;
             this.DeptId = departmentId;
             this.UserId = userId;
+            this.VerificationToken = verificationToken;
         }
         private Employee() { }
 
         public Name Name { get; private set; }
         public Email Email { get; private set; }
         public EmployeeStatus Status { get; private set; }
+        public string? VerificationToken { get; private set; }
 
         //FKs
         public Guid DeptId { get; private set; }
@@ -35,7 +43,12 @@ namespace LeaveManagement.Domain.Entities
         public IReadOnlyCollection<LeaveRequest> Requests => _requests;
 
         #region methods
-        public static ResultT<Employee> Create(Name name, Email email, Guid departmentId, string userId, string verificationToken)
+        public static ResultT<Employee> Create(
+            Name name, 
+            Email email, 
+            Guid departmentId,
+            string userId, 
+            string verificationToken)
         {
             if (userId is null)
                 return DomainErrors.Employee.NullUserId;
@@ -46,7 +59,8 @@ namespace LeaveManagement.Domain.Entities
             if (email is null)
                 return DomainErrors.Email.EmptyEmail;
 
-            var employee = new Employee(Guid.NewGuid(), name, email, EmployeeStatus.Active, departmentId, userId);
+            var employee = new Employee(Guid.NewGuid(), name, email, EmployeeStatus.Active,
+                                        departmentId, userId, verificationToken);
 
             employee.RaiseDomainEvent(new MemberRegisteredEvent(
                 employee.Name.Value,
@@ -54,6 +68,22 @@ namespace LeaveManagement.Domain.Entities
                 verificationToken));
 
             return ResultT<Employee>.Success(employee);
+        }
+        public Result VerifyEmail()
+        {
+            if (VerificationToken is null)
+                return DomainErrors.Employee.AlreadyVerified;
+
+            VerificationToken = null;
+            return Result.Success();
+        }
+        public Result UpdateVerificationToken(string newToken)
+        {
+            if (string.IsNullOrWhiteSpace(newToken))
+                return DomainErrors.Employee.InvalidToken;
+
+            VerificationToken = newToken;
+            return Result.Success();
         }
         public ResultT<Guid> AllocateLeave(LeaveType leave)
         {
@@ -250,11 +280,6 @@ namespace LeaveManagement.Domain.Entities
         public Result EditRequest(Guid requestId, DateTime newStartDate, DateTime newEndDate, string? newDescription) => UpdateLeaveRequest(requestId, r => r.EditLeaveRequest(newStartDate, newEndDate, newDescription));
         
         #endregion
-        
-        /*  raise domain events 
-            LeaveRequestedDomainEvent
-            LeaveRejectedDomainEvent
-            add attribute for who processed leaves and allocation
-        */
+       
     }
 }
