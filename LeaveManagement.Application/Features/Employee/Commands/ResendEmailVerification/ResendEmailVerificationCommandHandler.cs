@@ -47,24 +47,23 @@ namespace LeaveManagement.Application.Features.Employee.Commands.ResendEmailVeri
 
             try
             {
-                await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+                await using var transaction = await _context.Database.BeginTransactionAsync(token);
 
                 await _userManager.UpdateAsync(user);
-                await _context.SaveChangesAsync(ct);
-                await _emailService.SendEmailVerificationAsync(employee.Name.Value, employee.Email.Value, newToken, ct);
+                await _context.SaveChangesAsync(token);
+                await _emailService.SendEmailVerificationAsync(employee.Name.Value, employee.Email.Value, newToken, token);
 
-                await transaction.CommitAsync(ct);
+                await transaction.CommitAsync(token);
             }
             catch (Exception)
             {
-                return ResultT<ResendVerificationEmailDto>.Failure(InfrastractureErrors.General.InternalError);
+                return ResultT<VerifyEmailDto>.Failure(InfrastractureErrors.General.InternalError);
             }
 
-            return ResultT<ResendVerificationEmailDto>.Success(new ResendVerificationEmailDto
-            {
-                IsSuccessful = true,
-                Message = "Verification email resent. Please check your inbox."
-            });
+            return ResultT<VerifyEmailDto>.Success(new VerifyEmailDto(
+                true,
+                "Verification email resent. Please check your inbox."
+            ));
         }
     }
 }

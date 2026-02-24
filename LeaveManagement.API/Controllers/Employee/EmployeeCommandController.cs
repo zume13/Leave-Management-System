@@ -1,6 +1,7 @@
 ﻿using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Infrastracture;
+using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
@@ -69,7 +70,7 @@ namespace LeaveManagement.API.Controllers.Employee
         [HttpPost("ResendVerification")]
         public async Task<IActionResult> ResendVerification([FromBody] string email)
         {
-            var result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(email));
+            ResultT<VerifyEmailDto> result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(email));
 
             return result.Match<VerifyEmailDto, IActionResult>(Ok, CustomResults.Problem);
         }

@@ -278,8 +278,6 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
         public Result EditRequest(Guid requestId, DateTime newStartDate, DateTime newEndDate, string? newDescription) => UpdateLeaveRequest(requestId, r => r.EditLeaveRequest(newStartDate, newEndDate, newDescription));
-        
         #endregion
-       
     }
 }

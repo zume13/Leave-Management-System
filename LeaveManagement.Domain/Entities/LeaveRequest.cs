@@ -155,6 +155,5 @@ namespace LeaveManagement.Domain.Entities
         {
             return (endDate.Date.AddDays(1) - startDate.Date).Days;
         }
-
     }
 }

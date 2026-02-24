@@ -59,7 +59,5 @@ namespace LeaveManagement.Domain.Entities
         public bool CanConsume(int days) => RemainingDays >= days;
 
         public bool IsExpired => Year < DateTime.UtcNow.Year || RemainingDays == 0;   
-
-        //raise updated allocation days
     }
 }
