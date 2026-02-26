@@ -1,6 +1,7 @@
 ﻿using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.LeaveRequest;
 using LeaveManagement.API.Infrastracture;
+using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApproveRequests;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendingRequests;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRejectedRequests;
@@ -10,11 +11,14 @@ using LeaveManagement.Application.Features.LeaveRequest.Queries.GetPendingReques
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetRejectedRequestsByEmployee;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
+using static LeaveManagement.API.Constants.Constants;
 
 namespace LeaveManagement.API.Controllers.LeaveRequest
 {
     [Authorize]
+    [EnableRateLimiting(RateLimits.PerUser)]
     [Route("LeaveManagement/LeaveRequest")]
     [ApiController]
     public class RequestQueryController(RequestQueryHandlers queryHander) : ControllerBase

@@ -1,6 +1,5 @@
 ﻿using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.Employee;
-using LeaveManagement.API.Infrastracture;
 using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
@@ -12,7 +11,9 @@ using LeaveManagement.Application.Features.Employee.Commands.ResendEmailVerifica
 using LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
+using static LeaveManagement.API.Constants.Constants;
 
 
 namespace LeaveManagement.API.Controllers.Employee
@@ -23,6 +24,7 @@ namespace LeaveManagement.API.Controllers.Employee
     public class EmployeeCommandController(EmployeeCommandHandlers commandHandler) : ControllerBase
     {
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimits.Strict)]
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterCommand command)
         {
@@ -32,6 +34,7 @@ namespace LeaveManagement.API.Controllers.Employee
         }
 
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimits.Strict)]
         [HttpPost("Login")]
         public async Task<IActionResult> LogInAsync([FromBody] LogInCommand command)
         {
@@ -40,6 +43,7 @@ namespace LeaveManagement.API.Controllers.Employee
             return result.Match<LogInDto, IActionResult>(Ok, CustomResults.Problem);
         }
 
+        [EnableRateLimiting(RateLimits.PerUser)]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -48,6 +52,7 @@ namespace LeaveManagement.API.Controllers.Employee
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
         }
 
+        [EnableRateLimiting(RateLimits.PerUser)]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEmployeeCommand command)
         {
@@ -57,6 +62,7 @@ namespace LeaveManagement.API.Controllers.Employee
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
         }
 
+        [EnableRateLimiting(RateLimits.PerUser)]
         [AllowAnonymous]
         [HttpGet("Verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
@@ -67,6 +73,7 @@ namespace LeaveManagement.API.Controllers.Employee
         }
 
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimits.PerUser)]
         [HttpPost("ResendVerification")]
         public async Task<IActionResult> ResendVerification([FromBody] string email)
         {

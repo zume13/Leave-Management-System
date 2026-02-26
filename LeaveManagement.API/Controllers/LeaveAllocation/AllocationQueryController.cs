@@ -1,6 +1,6 @@
 ﻿using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.LeaveAllocation;
-using LeaveManagement.API.Infrastracture;
+using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Allocation;
 using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetActiveLeaveAllocations;
 using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAllAllocationsByEmployee;
@@ -8,12 +8,15 @@ using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAllocation
 using LeaveManagement.Application.Features.LeaveAllocation.Queries.GetExpiredLeaveAllocations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
+using static LeaveManagement.API.Constants.Constants;
 
 namespace LeaveManagement.API.Controllers.LeaveAllocation
 {
     [Authorize]
     [Route("LeaveManagement/Allocation")]
+    [EnableRateLimiting(RateLimits.PerUser)]
     [ApiController]
     public class AllocationQueryController(AllocationQueryHandlers queryHandlers) : ControllerBase
     {

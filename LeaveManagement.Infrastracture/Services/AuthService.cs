@@ -169,6 +169,5 @@ namespace LeaveManagement.Infrastructure.Services
                 IsEmailVerified = user.isEmailVerified
             });
         }
-        //add verification endpoint
     }
 }

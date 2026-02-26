@@ -8,13 +8,13 @@ namespace LeaveManagement.API.Handlers.LeaveType
     public class TypeCommandHandlers
     {
         public ICommandHandler<CreateLeaveCommand, Guid> Create { get; }
-        public ICommandHandler<RemoveLeaveTypeCommand, bool> Remove { get; }
-        public ICommandHandler<UpdateLeaveTypeCommand, Guid> Update { get; }
+        public ICommandHandler<RemoveLeaveTypeCommand> Remove { get; }
+        public ICommandHandler<UpdateLeaveTypeCommand> Update { get; }
 
         public TypeCommandHandlers(
             ICommandHandler<CreateLeaveCommand, Guid> create,
-            ICommandHandler<RemoveLeaveTypeCommand, bool> remove,
-            ICommandHandler<UpdateLeaveTypeCommand, Guid> update)
+            ICommandHandler<RemoveLeaveTypeCommand> remove,
+            ICommandHandler<UpdateLeaveTypeCommand> update)
         {
             Create = create;
             Remove = remove;

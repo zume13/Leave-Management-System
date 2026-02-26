@@ -9,7 +9,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.UpdateLeave
     public sealed class UpdateLeaveRequestCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateLeaveRequestCommand>
     {
         private readonly IApplicationDbContext _context = context;
-        public async Task<ResultT<Guid>> Handle(UpdateLeaveRequestCommand command, CancellationToken token = default)
+        public async Task<Result> Handle(UpdateLeaveRequestCommand command, CancellationToken token = default)
         {
             var employee = await _context.Employees
                 .Include(e => 

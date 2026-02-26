@@ -1,17 +1,23 @@
 ﻿using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.LeaveRequest;
 using LeaveManagement.API.Infrastracture;
+using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeaveRequest;
 using LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeaveRequest;
 using LeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeaveRequest;
 using LeaveManagement.Application.Features.LeaveRequest.Commands.RejectLeaveRequest;
 using LeaveManagement.Application.Features.LeaveRequest.Commands.UpdateLeaveRequest;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
+using static LeaveManagement.API.Constants.Constants;
 
 namespace LeaveManagement.API.Controllers.LeaveRequest
 {
+    [Authorize]
     [Route("LeaveManagement/LeaveRequest")]
+    [EnableRateLimiting(RateLimits.PerUser)]
     [ApiController]
     public class RequestCommandController(RequestCommandHandlers commandHandlers) : ControllerBase
     {

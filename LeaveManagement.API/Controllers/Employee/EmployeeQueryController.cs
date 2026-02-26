@@ -1,16 +1,22 @@
 ﻿using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Infrastracture;
+using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployee;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDepartment;
 using LeaveManagement.Application.Features.Employee.Queries.ListEmployees;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
+using static LeaveManagement.API.Constants.Constants;
 
 namespace LeaveManagement.API.Controllers.Employee
 {
+    [Authorize]
     [Route("LeaveManagement/Employee")]
+    [EnableRateLimiting(RateLimits.PerUser)]
     [ApiController]
     public class EmployeeQueryController(EmployeeQueryHandlers queryHandler) : ControllerBase
     {
