@@ -12,9 +12,15 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDe
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<GetEmployeesByDepartmentDto>>> Handle(GetEmployeesByDepartmentQuery query, CancellationToken cancellationToken)
         {
+            int pageSize = query.pageSize <= 0 ? 20 : Math.Min(query.pageSize, 50);
+            int PageNumber = query.pageNumber <= 0 ? 1 : query.pageNumber;
+
             var employees = await _context.Employees
                 .AsNoTracking()
                 .Where(e => e.DeptId == query.DeptId)
+                .OrderBy(e => e.Name.Value)
+                .Skip((PageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .AsNoTracking()
                 .OrderBy(e => e.Name.Value)
                 .Select(e => new GetEmployeesByDepartmentDto(

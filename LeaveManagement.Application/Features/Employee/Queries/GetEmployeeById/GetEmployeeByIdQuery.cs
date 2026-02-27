@@ -1,13 +1,18 @@
 ﻿using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Dto.Response.Employee;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployee
 {
-    public sealed record GetEmployeeByIdQuery(Guid EmployeeId) : IQuery<EmployeeDto>;
+    public sealed record GetEmployeeByIdQuery : IQuery<EmployeeDto>
+    {
+        [FromRoute(Name = "id")]
+        public Guid EmployeeId { get; init; }
+        [FromQuery]
+        public int pageSize { get; init; }
+        [FromQuery]
+        public int pageNumber { get; init; }
+    }
+
 
 }

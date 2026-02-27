@@ -21,25 +21,25 @@ namespace LeaveManagement.API.Controllers.LeaveAllocation
     public class AllocationQueryController(AllocationQueryHandlers queryHandlers) : ControllerBase
     {
         [HttpGet("Active")]
-        public async Task<IActionResult> GetAllActive()
+        public async Task<IActionResult> GetAllActive([FromQuery] GetActiveLeaveAllocationsQuery query)
         {
-            ResultT<List<LeaveAllocationDto>> result = await queryHandlers.GetActive.Handle(new GetActiveLeaveAllocationsQuery());
+            ResultT<List<LeaveAllocationDto>> result = await queryHandlers.GetActive.Handle(query);
 
             return result.Match<List<LeaveAllocationDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
         [HttpGet("Employee/{id:guid}/All")]
-        public async Task<IActionResult> GetAllAllocationsByEmployee(Guid id)
+        public async Task<IActionResult> GetAllAllocationsByEmployee(GetAllAllocationsByEmployeeQuery query)
         {
-            ResultT<List<GetAllocationByEmployeeDto>> result = await queryHandlers.GetEmployeeAllocations.Handle(new GetAllAllocationsByEmployeeQuery(id));
+            ResultT<List<GetAllocationByEmployeeDto>> result = await queryHandlers.GetEmployeeAllocations.Handle(query);
 
             return result.Match<List<GetAllocationByEmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
         [HttpGet("Expired")]
-        public async Task<IActionResult> GetExpiredAllocations()
+        public async Task<IActionResult> GetExpiredAllocations([FromQuery] GetExpiredLeaveAllocationsQuery query)
         {
-            ResultT<List<LeaveAllocationDto>> result = await queryHandlers.GetExpired.Handle(new GetExpiredLeaveAllocationsQuery());
+            ResultT<List<LeaveAllocationDto>> result = await queryHandlers.GetExpired.Handle(query);
 
             return result.Match<List<LeaveAllocationDto>, IActionResult>(Ok, CustomResults.Problem);
         }

@@ -21,28 +21,25 @@ namespace LeaveManagement.API.Controllers.Employee
     public class EmployeeQueryController(EmployeeQueryHandlers queryHandler) : ControllerBase
     {
         [HttpGet("All")]
-        public async Task<IActionResult> GetEmployees()
+        public async Task<IActionResult> GetEmployees([FromQuery] GetAllEmployeesQuery query)
         {
-            ResultT<List<EmployeeDto>> result =
-                await queryHandler.GetAll.Handle(new GetAllEmployeesQuery());
+            ResultT<List<EmployeeDto>> result = await queryHandler.GetAll.Handle(query);
 
             return result.Match<List<EmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(GetEmployeeByIdQuery query)
         {
-            ResultT<EmployeeDto> result =
-                await queryHandler.GetById.Handle(new GetEmployeeByIdQuery(id));
+            ResultT<EmployeeDto> result = await queryHandler.GetById.Handle(query);
 
             return result.Match<EmployeeDto, IActionResult>(Ok, CustomResults.Problem);
         }
 
-        [HttpGet("Department/{deptId}")]
-        public async Task<IActionResult> GetByDepartment(Guid deptId)
+        [HttpGet("InDepartment/{deptId}")]
+        public async Task<IActionResult> GetByDepartment(GetEmployeesByDepartmentQuery query)
         {
-            ResultT<List<GetEmployeesByDepartmentDto>> result =
-                await queryHandler.GetByDepartment.Handle(new GetEmployeesByDepartmentQuery(deptId));
+            ResultT<List<GetEmployeesByDepartmentDto>> result = await queryHandler.GetByDepartment.Handle(query);
 
             return result.Match<List<GetEmployeesByDepartmentDto>, IActionResult>(Ok, CustomResults.Problem);
         }

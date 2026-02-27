@@ -13,9 +13,15 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAlloca
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<GetAllocationByEmployeeDto>>> Handle(GetAllAllocationsByEmployeeQuery query, CancellationToken cancellationToken)
         {
+            int pageSize = query.pageSize <= 0 ? 20 : Math.Min(query.pageSize, 50);
+            int pageNumber = query.pageNumber <= 0 ? 1 : query.pageNumber;
+
             var allocations = await _context.LeaveAllocations
                 .AsNoTracking()
                 .Where(a => a.EmployeeId == query.EmployeeId)
+                .OrderBy(a => a.CreationDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Select(a => new GetAllocationByEmployeeDto(
                     a.Id,
                     a.LeaveName,

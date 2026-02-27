@@ -14,21 +14,25 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<EmployeeDto>>> Handle(GetAllEmployeesQuery query, CancellationToken cancellationToken)
         {
-            var employees = await (
-                from e in _context.Employees
+            int pageSize = query.pageSize <= 0 ? 20 : Math.Min(query.pageSize, 50);
+            int pageNumber = query.pageNumber <= 0 ? 1 : query.pageNumber;
+
+            var employees = await _context.Employees
                 .AsNoTracking()
-                where e.Status != EmployeeStatus.Fired
-                join d in _context.Departments
-                .AsNoTracking()
-                on e.DeptId equals d.Id
-                select new EmployeeDto(
-                    e.Id,
-                    e.Name.Value,
-                    e.Email.Value,
-                    e.Status,
-                    d.DepartmentName.Value
-                )
-            ).ToListAsync(cancellationToken);
+                .Where(e => e.Status != EmployeeStatus.Fired)
+                .OrderBy(e => e.Name.Value)
+                .Skip((query.pageNumber - 1) * query.pageSize)
+                .Take(query.pageSize)
+                .Join(_context.Departments.AsNoTracking(), 
+                    e => e.DeptId,
+                    d => d.Id,
+                    (e, d) => new EmployeeDto(
+                        e.Id,
+                        e.Name.Value,
+                        e.Email.Value,
+                        e.Status,
+                        d.DepartmentName.Value))
+                .ToListAsync(cancellationToken);
 
             if (employees.Count == 0)
                 return ApplicationErrors.Employee.NoEmployeesFound;
