@@ -1,4 +1,5 @@
-﻿using LeaveManagement.API.Handlers.Employee;
+﻿using LeaveManagement.API.Constants;
+using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Handlers.LeaveAllocation;
 using LeaveManagement.API.Handlers.LeaveRequest;
 using LeaveManagement.API.Handlers.LeaveType;
@@ -7,7 +8,6 @@ using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
-using static LeaveManagement.API.Constants.Constants;
 
 namespace LeaveManagement.API
 {
@@ -46,7 +46,7 @@ namespace LeaveManagement.API
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst
                     }));
 
-                opt.AddPolicy(RateLimits.Strict, httpContext =>
+                opt.AddPolicy(RateLimit.PolicyName.Strict, httpContext =>
                 {
                     var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)
                                  ?? httpContext.Connection.RemoteIpAddress?.ToString()
@@ -62,7 +62,7 @@ namespace LeaveManagement.API
                     });
                 });
 
-                opt.AddPolicy(RateLimits.PerUser, httpContext =>
+                opt.AddPolicy(RateLimit.PolicyName.PerUser, httpContext =>
                 {
                     var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)
                             ?? httpContext.Connection.RemoteIpAddress?.ToString()

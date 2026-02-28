@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
-using static LeaveManagement.API.Constants.Constants;
+using static LeaveManagement.API.Constants.RateLimit;
 
 namespace LeaveManagement.API.Controllers.LeaveType
 {
