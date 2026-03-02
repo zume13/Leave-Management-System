@@ -1,4 +1,5 @@
-﻿using LeaveManagement.API.Extensions;
+﻿using LeaveManagement.API.Constants;
+using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.LeaveType;
 using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.LeaveType;
@@ -8,28 +9,27 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
-using static LeaveManagement.API.Constants.RateLimit;
 
 namespace LeaveManagement.API.Controllers.LeaveType
 {
     [Authorize]
-    [EnableRateLimiting(RateLimits.PerUser)]
+    [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
     [Route("LeaveManagement/LeaveType")]
     [ApiController]
     public class LeaveTypeQueryController(TypeQueryHandlers handlers) : ControllerBase
     {
         [HttpGet("All")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetAllLeavesQuery query)
         {
-            ResultT<List<LeavesDto>> result = await handlers.GetAllLeaves.Handle(new GetAllLeavesQuery());
+            ResultT<List<LeavesDto>> result = await handlers.GetAllLeaves.Handle(query);
 
             return result.Match<List<LeavesDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id)
+        [HttpGet("{leaveId:guid}")]
+        public async Task<IActionResult> GetById(Guid leaveId)
         {
-            ResultT<LeavesDto> result = await handlers.GetLeaveById.Handle(new GetLeaveByIdQuery(id));
+            ResultT<LeavesDto> result = await handlers.GetLeaveById.Handle(new GetLeaveByIdQuery(leaveId));
 
             return result.Match<LeavesDto, IActionResult>(Ok, CustomResults.Problem);
         }

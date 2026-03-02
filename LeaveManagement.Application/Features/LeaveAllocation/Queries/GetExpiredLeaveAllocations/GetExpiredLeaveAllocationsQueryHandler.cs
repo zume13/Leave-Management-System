@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Constants;
 using LeaveManagement.Application.Dto.Response.Allocation;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
@@ -12,12 +13,12 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetExpire
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<LeaveAllocationDto>>> Handle(GetExpiredLeaveAllocationsQuery query, CancellationToken cancellationToken)
         {
-            int pageSize = query.pageSize <= 0 ? 20 : Math.Min(query.pageSize, 50);  
-            int pageNumber = query.pageNumber <= 0 ? 1 : query.pageNumber;
+            int pageSize = query.pageSize <= 0 ? NumericConstant.DefaultPageSize : NumericConstant.MaxPageSize(query.pageSize);
+            int pageNumber = Math.Max(1, query.pageNumber);
 
             var allocations = await _context.LeaveAllocations
                 .AsNoTracking()
-                .Where(a => a.IsExpired == true)
+                .Where(a => a.IsExpired)
                 .OrderByDescending(a => a.CreationDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

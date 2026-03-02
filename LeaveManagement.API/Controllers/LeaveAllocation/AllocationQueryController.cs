@@ -1,4 +1,5 @@
-﻿using LeaveManagement.API.Extensions;
+﻿using LeaveManagement.API.Constants;
+using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.LeaveAllocation;
 using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Allocation;
@@ -10,13 +11,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
-using static LeaveManagement.API.Constants.RateLimit;
 
 namespace LeaveManagement.API.Controllers.LeaveAllocation
 {
     [Authorize]
     [Route("LeaveManagement/Allocation")]
-    [EnableRateLimiting(RateLimits.PerUser)]
+    [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
     [ApiController]
     public class AllocationQueryController(AllocationQueryHandlers queryHandlers) : ControllerBase
     {
@@ -28,10 +28,10 @@ namespace LeaveManagement.API.Controllers.LeaveAllocation
             return result.Match<List<LeaveAllocationDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
-        [HttpGet("Employee/{id:guid}/All")]
-        public async Task<IActionResult> GetAllAllocationsByEmployee(GetAllAllocationsByEmployeeQuery query)
+        [HttpGet("Employee/{employeeId:guid}/All")]
+        public async Task<IActionResult> GetAllAllocationsByEmployee([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
-            ResultT<List<GetAllocationByEmployeeDto>> result = await queryHandlers.GetEmployeeAllocations.Handle(query);
+            ResultT<List<GetAllocationByEmployeeDto>> result = await queryHandlers.GetEmployeeAllocations.Handle(new GetAllAllocationsByEmployeeQuery(employeeId, pageSize, pageNumber));
 
             return result.Match<List<GetAllocationByEmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }

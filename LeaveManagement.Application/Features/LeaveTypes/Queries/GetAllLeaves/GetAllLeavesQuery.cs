@@ -3,6 +3,6 @@ using LeaveManagement.Application.Dto.Response.LeaveType;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Queries.GetAllLeaves
 {
-    public sealed record GetAllLeavesQuery : IQuery<List<LeavesDto>>;
+    public sealed record GetAllLeavesQuery(int pageSize, int pageNumber) : IQuery<List<LeavesDto>>;
 
 }

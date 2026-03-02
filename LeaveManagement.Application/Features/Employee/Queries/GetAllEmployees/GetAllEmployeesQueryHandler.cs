@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Constants;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Domain.Enums;
 using LeaveManagement.Domain.Value_Objects;
@@ -14,8 +15,8 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<EmployeeDto>>> Handle(GetAllEmployeesQuery query, CancellationToken cancellationToken)
         {
-            int pageSize = query.pageSize <= 0 ? 20 : Math.Min(query.pageSize, 50);
-            int pageNumber = query.pageNumber <= 0 ? 1 : query.pageNumber;
+            int pageSize = query.pageSize <= 0 ? NumericConstant.DefaultPageSize : NumericConstant.MaxPageSize(query.pageSize);
+            int pageNumber = Math.Max(1, query.pageNumber);
 
             var employees = await _context.Employees
                 .AsNoTracking()

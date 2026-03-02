@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Constants;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
@@ -12,12 +13,12 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDe
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<GetEmployeesByDepartmentDto>>> Handle(GetEmployeesByDepartmentQuery query, CancellationToken cancellationToken)
         {
-            int pageSize = query.pageSize <= 0 ? 20 : Math.Min(query.pageSize, 50);
-            int PageNumber = query.pageNumber <= 0 ? 1 : query.pageNumber;
+            int pageSize = query.pageSize <= 0 ? NumericConstant.DefaultPageSize : NumericConstant.MaxPageSize(query.pageSize);
+            int PageNumber = Math.Max(1, query.pageNumber);
 
             var employees = await _context.Employees
                 .AsNoTracking()
-                .Where(e => e.DeptId == query.DeptId)
+                .Where(e => e.DeptId == query.deptId)
                 .OrderBy(e => e.Name.Value)
                 .Skip((PageNumber - 1) * pageSize)
                 .Take(pageSize)

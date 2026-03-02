@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Constants;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
@@ -11,9 +12,15 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendin
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<GetAllPendingRequestsDto>>> Handle(GetAllPendingRequestsQuery query, CancellationToken cancellationToken)
         {
+            int pageSize = query.pageSize <= 0 ? NumericConstant.DefaultPageSize : NumericConstant.MaxPageSize(query.pageSize);
+            int pageNumber = Math.Max(1, query.pageNumber);
+
             var requests = await _context.LeaveRequests
                 .AsNoTracking()
-                .Where(r => r.IsPending() == true)
+                .Where(r => r.IsPending())
+                .OrderBy(r => r.RequestDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Join(_context.Employees.AsNoTracking(),
                     r => r.EmployeeId,
                     e => e.Id,

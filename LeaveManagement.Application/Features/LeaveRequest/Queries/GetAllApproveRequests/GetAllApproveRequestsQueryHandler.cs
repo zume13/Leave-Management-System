@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Constants;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
@@ -11,12 +12,12 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApprov
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<GetAllApproveRequestsDto>>> Handle(GetAllApproveRequestsQuery query, CancellationToken cancellationToken = default)
         {
-            int pageSize = query.pageSize <= 0 ? 20 : query.pageSize;
-            int pageNumber = query.pageNumber <= 0 ? 1 : query.pageNumber;    
+            int pageSize = query.pageSize <= 0 ? NumericConstant.DefaultPageSize : NumericConstant.MaxPageSize(query.pageSize);
+            int pageNumber = Math.Max(1, query.pageNumber);    
 
             var requests = await _context.LeaveRequests
                 .AsNoTracking()
-                .Where(r => r.IsApproved() == true)
+                .Where(r => r.IsApproved())
                 .OrderBy(r => r.RequestDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

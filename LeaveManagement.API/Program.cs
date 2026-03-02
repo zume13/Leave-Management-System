@@ -16,6 +16,8 @@ namespace LeaveManagement.API
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication();
             builder.Services.AddPresentation();
+            builder.Services.AddJwtAuthentication(builder.Configuration);
+            builder.Services.AddQuartz();
 
             var app = builder.Build();
 

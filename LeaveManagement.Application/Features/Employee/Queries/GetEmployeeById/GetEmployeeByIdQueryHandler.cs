@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Constants;
 using LeaveManagement.Application.Dto.Response.Employee;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
@@ -13,15 +14,9 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployee
         IApplicationDbContext _context = context;
         public async Task<ResultT<EmployeeDto>> Handle(GetEmployeeByIdQuery query, CancellationToken cancellationToken)
         {
-            int pageSize = query.pageSize <= 0 ? 20 : Math.Min(query.pageSize, 50);
-            int pageNumber = query.pageNumber <= 0 ? 1 : query.pageNumber;
-
             var employee = await _context.Employees
                 .AsNoTracking()
-                .Where(e => e.Id == query.EmployeeId)
-                .OrderBy(e => e.Name.Value)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .Where(e => e.Id == query.employeeId)
                 .Join(_context.Departments.AsNoTracking(),
                       e => e.DeptId,
                       d => d.Id,
@@ -34,7 +29,7 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployee
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (employee is null)
-                return ApplicationErrors.Employee.EmployeeNotFound(query.EmployeeId);
+                return ApplicationErrors.Employee.EmployeeNotFound(query.employeeId);
 
             return ResultT<EmployeeDto>.Success(employee);
         }

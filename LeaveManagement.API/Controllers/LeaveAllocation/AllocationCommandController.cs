@@ -1,4 +1,5 @@
-﻿using LeaveManagement.API.Extensions;
+﻿using LeaveManagement.API.Constants;
+using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.LeaveAllocation;
 using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.LeaveAllocation;
@@ -9,13 +10,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
-using static LeaveManagement.API.Constants.RateLimit;
 
 namespace LeaveManagement.API.Controllers.LeaveAllocation
 {
     [Authorize]
     [Route("LeaveManagement/Allocation")]
-    [EnableRateLimiting(RateLimits.PerUser)]
+    [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
     [ApiController]
     public class AllocationCommandController(AllocationCommandHandlers commandHandlers) : ControllerBase
     {

@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Queries.GetLeaveById
 {
-    public sealed record GetLeaveByIdQuery(Guid LeaveId) : IQuery<LeavesDto>;
+    public sealed record GetLeaveByIdQuery(Guid leaveId) : IQuery<LeavesDto>;
 }

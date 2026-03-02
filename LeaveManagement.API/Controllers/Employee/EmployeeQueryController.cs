@@ -1,6 +1,6 @@
-﻿using LeaveManagement.API.Extensions;
+﻿using LeaveManagement.API.Constants;
+using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.Employee;
-using LeaveManagement.API.Infrastracture;
 using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployee;
@@ -10,13 +10,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
-using static LeaveManagement.API.Constants.RateLimit;
 
 namespace LeaveManagement.API.Controllers.Employee
 {
     [Authorize]
     [Route("LeaveManagement/Employee")]
-    [EnableRateLimiting(RateLimits.PerUser)]
+    [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
     [ApiController]
     public class EmployeeQueryController(EmployeeQueryHandlers queryHandler) : ControllerBase
     {
@@ -28,18 +27,18 @@ namespace LeaveManagement.API.Controllers.Employee
             return result.Match<List<EmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(GetEmployeeByIdQuery query)
+        [HttpGet("{employeeId:guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid employeeId)
         {
-            ResultT<EmployeeDto> result = await queryHandler.GetById.Handle(query);
+            ResultT<EmployeeDto> result = await queryHandler.GetById.Handle(new GetEmployeeByIdQuery(employeeId));
 
             return result.Match<EmployeeDto, IActionResult>(Ok, CustomResults.Problem);
         }
 
         [HttpGet("InDepartment/{deptId}")]
-        public async Task<IActionResult> GetByDepartment(GetEmployeesByDepartmentQuery query)
+        public async Task<IActionResult> GetByDepartment([FromRoute] Guid deptId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
-            ResultT<List<GetEmployeesByDepartmentDto>> result = await queryHandler.GetByDepartment.Handle(query);
+            ResultT<List<GetEmployeesByDepartmentDto>> result = await queryHandler.GetByDepartment.Handle(new GetEmployeesByDepartmentQuery(deptId, pageSize, pageNumber));
 
             return result.Match<List<GetEmployeesByDepartmentDto>, IActionResult>(Ok, CustomResults.Problem);
         }

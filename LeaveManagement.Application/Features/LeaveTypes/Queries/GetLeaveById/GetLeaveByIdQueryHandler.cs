@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using LeaveManagement.Application.Constants;
 using LeaveManagement.Application.Dto.Response.LeaveType;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
@@ -14,12 +15,12 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Queries.GetLeaveById
         {
             var leave = await _context.LeaveTypes
                 .AsNoTracking()
-                .Where(t => t.Id == query.LeaveId)
+                .Where(t => t.Id == query.leaveId)
                 .Select(t => new LeavesDto(t.Id, t.LeaveName.Value, t.Days.Days))
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (leave == null)
-                return ApplicationErrors.LeaveType.LeaveTypeNotFound(query.LeaveId);
+                return ApplicationErrors.LeaveType.LeaveTypeNotFound(query.leaveId);
 
             return ResultT<LeavesDto>.Success(leave);
         }
