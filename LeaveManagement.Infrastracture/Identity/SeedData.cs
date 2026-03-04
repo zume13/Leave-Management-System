@@ -1,9 +1,7 @@
 ﻿using LeaveManagement.Application.Models;
-using LeaveManagement.Domain.Value_Objects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SharedKernel.Shared;
 
 namespace LeaveManagement.Infrastructure.Identity
 {
@@ -24,8 +22,11 @@ namespace LeaveManagement.Infrastructure.Identity
             }
 
             var adminEmail = _config["AdminCreds:Email"];
-            var adminUser = await userManager.FindByEmailAsync(adminEmail!)
-                ?? new User
+            var adminUser = await userManager.FindByEmailAsync(adminEmail!);
+
+            if (adminUser is null) 
+            {   
+                adminUser = new User
                 {
                     UserName = adminEmail,
                     Email = adminEmail,
@@ -35,15 +36,20 @@ namespace LeaveManagement.Infrastructure.Identity
                     tokenExpiration = null
                 };
 
-            var result = await userManager.CreateAsync(adminUser, _config["AdminCreds:Password"]!);
+                var result = await userManager.CreateAsync(adminUser, _config["AdminCreds:Password"]!);
 
-            if (!result.Succeeded)
-                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+                if (!result.Succeeded)
+                    throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
 
-            var addRole = await userManager.AddToRoleAsync(adminUser, "Admin");
+            if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+            {
+                var addRole = await userManager.AddToRoleAsync(adminUser, "Admin");
 
-            if (!addRole.Succeeded)
-                throw new Exception(string.Join(", ", addRole.Errors.Select(e => e.Description)));
+                if (!addRole.Succeeded)
+                    throw new Exception(string.Join(", ", addRole.Errors.Select(e => e.Description)));
+            }
+           
         }
 
     }

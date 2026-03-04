@@ -21,8 +21,10 @@ namespace LeaveManagement.API
 
             var app = builder.Build();
 
-            using var scope = app.Services.CreateScope();
-            await SeedData.InitializeAsync(scope.ServiceProvider);
+            using (var scope = app.Services.CreateScope())
+            {
+                await SeedData.InitializeAsync(scope.ServiceProvider);
+            }
 
             if (app.Environment.IsDevelopment())
             {
