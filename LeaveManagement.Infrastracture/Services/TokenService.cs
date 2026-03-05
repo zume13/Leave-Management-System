@@ -8,21 +8,32 @@ using System.Text;
 using LeaveManagement.Domain.Entities;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Cryptography;
 
 
 namespace LeaveManagement.Infrastructure.Services
 {
-    public class TokenService(IConfiguration _config) : ITokenService
+    public class TokenService(IConfiguration _config, UserManager<User> manager) : ITokenService
     {
-        public string GenerateAccessToken(User user)
+        public async Task<string?> GenerateAccessToken(User user, DateTime expiry)
         {
-            var claims = new[]
+
+            var roles = await manager.GetRolesAsync(user);
+
+            if (roles.Count == 0)
+                return null;
+
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Name, user.EmployeeName),
                 new Claim(ClaimTypes.Email, user.Email!),
             };
+
+            claims.AddRange(roles.Select(
+                        role => new Claim(ClaimTypes.Role, role)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -31,79 +42,26 @@ namespace LeaveManagement.Infrastructure.Services
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: expiry,
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public ResultT<RefreshToken> GenerateRefreshToken(User user)
+        public ResultT<RefreshToken> GenerateRefreshToken(User user, DateTime expiry)
         {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var refreshToken = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddDays(7),
-                signingCredentials: credentials);
-
-            var token = new JwtSecurityTokenHandler().WriteToken(refreshToken);
+            var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
             if (string.IsNullOrEmpty(token))
                 return InfrastractureErrors.TokenService.TokenGenerationFailed;
-            
 
-            return ResultT<RefreshToken>.Success(
-                RefreshToken.Create(
-                    id : Guid.Parse(refreshToken.Id),
+            return ResultT<RefreshToken>.Success(RefreshToken.Create(
+                    id: Guid.NewGuid(),
                     token: token,
-                    expiresAt: DateTime.UtcNow.AddDays(7),
+                    expiresAt: expiry,
                     userId: user.Id
-                ).Value
-            );
-        }
-
-        public ResultT<ClaimsPrincipal> ValidateRefreshToken(string refreshToken)
-        {
-
-            try
-            {
-                var validationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = _config["Jwt:Issuer"],
-                    ValidAudience = _config["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!))
-                };
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var principal = tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
-                var jwtToken = validatedToken as JwtSecurityToken;
-
-                if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                    return InfrastractureErrors.TokenService.InvalidRefreshToken;
-
-                return ResultT<ClaimsPrincipal>.Success(principal);
-            }
-            catch (SecurityTokenException)
-            {
-                return InfrastractureErrors.TokenService.InvalidRefreshToken;
-            }
-        }
-
-        public Result ValidateRegisterUserToken()
-        {
-            throw new NotImplementedException();
+                ).Value);
         }
     }
 }
+

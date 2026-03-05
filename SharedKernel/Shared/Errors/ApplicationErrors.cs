@@ -10,6 +10,8 @@ namespace SharedKernel.Shared.Errors
             public static readonly Error NoEmployeesFound = Error.NotFound("Employees.NotFound", "There are no registered employees");
             public static readonly Error InvalidToken = Error.NotFound("Token.Invalid", "Token was invalid");
             public static readonly Error AlreadyVerified = Error.Validation("Email.Verified", "The user Email is already verified");
+            public static readonly Error InvalidRole = Error.Failure("Role.Invalid", "The assigned role was invalid");
+            public static readonly Error AlreadyInRole = Error.Failure("Promotion.Invalid", "The user already has this role");
         }
 
         public static class General

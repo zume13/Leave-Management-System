@@ -1,6 +1,7 @@
 ﻿using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
+using LeaveManagement.Application.Features.Employee.Commands.AssignRole;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
@@ -17,7 +18,9 @@ namespace LeaveManagement.API.Handlers.Employee
             public ICommandHandler<RemoveEmployeeCommand> Remove { get; }
             public ICommandHandler<UpdateEmployeeCommand> Update { get; }
             public ICommandHandler<EmailVerificationCommand, VerifyEmailDto> VerifyEmail { get; }
-             public ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto> ReVerifyEmail { get; }
+            public ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto> ReVerifyEmail { get; }
+            public ICommandHandler<AssignRoleCommand> AssignRole { get; }
+
 
         public EmployeeCommandHandlers(
                 ICommandHandler<LogInCommand, LogInDto> _LogIn,
@@ -25,7 +28,8 @@ namespace LeaveManagement.API.Handlers.Employee
                 ICommandHandler<RemoveEmployeeCommand> _Remove,
                 ICommandHandler<UpdateEmployeeCommand> _Update,
                 ICommandHandler<EmailVerificationCommand, VerifyEmailDto> _VerifyEmail,
-                ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto> _ReVerifyEmail)
+                ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto> _ReVerifyEmail,
+                ICommandHandler<AssignRoleCommand> _AssignRole)
             {
                 LogIn = _LogIn;
                 Register = _Register;
@@ -33,6 +37,7 @@ namespace LeaveManagement.API.Handlers.Employee
                 Update = _Update;
                 VerifyEmail = _VerifyEmail;
                 ReVerifyEmail = _ReVerifyEmail;
+                AssignRole = _AssignRole;
         }
         }
     }

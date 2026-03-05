@@ -4,6 +4,7 @@ using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
+using LeaveManagement.Application.Features.Employee.Commands.AssignRole;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
@@ -53,7 +54,7 @@ namespace LeaveManagement.API.Controllers.Employee
         }
 
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEmployeeCommand command)
         {
             command = command with { EmployeeId = id };
@@ -80,6 +81,15 @@ namespace LeaveManagement.API.Controllers.Employee
             ResultT<VerifyEmailDto> result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(email));
 
             return result.Match<VerifyEmailDto, IActionResult>(Ok, CustomResults.Problem);
+        }
+
+        [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
+        [HttpPost("AssignRole")]
+        public async Task<IActionResult> AssignRole([FromBody] AssignRoleCommand command)
+        {
+            Result result = await commandHandler.AssignRole.Handle(command);
+
+            return result.Match<IActionResult>(Ok, CustomResults.Problem);
         }
     }
 }

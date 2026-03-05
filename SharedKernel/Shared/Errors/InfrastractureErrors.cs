@@ -16,6 +16,7 @@ namespace SharedKernel.Shared.Errors
             public static readonly Error InvalidInput = Error.Validation("Token.InvalidInput", "The provided input is invalid"); 
             public static readonly Error CredentialsError = Error.Failure("Creds.Error", "Error occurred while processing credentials");
             public static readonly Error TokenReused = Error.Failure("Token.Reused", "The refresh token has been reused");
+            public static readonly Error NoRegisteredRoles = Error.Problem("User.InvalidRole", "The user has no designated roles");
         }
         public static class User 
         {
