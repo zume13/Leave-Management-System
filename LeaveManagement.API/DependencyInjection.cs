@@ -85,15 +85,11 @@ namespace LeaveManagement.API
             {
                 opt.AddPolicy(Auth.Policies.AdminOnly, policy => policy.RequireRole(Auth.Roles.Admin));
 
-                opt.AddPolicy(Auth.Policies.Employee, policy => policy.RequireRole(Auth.Roles.Employee));
+                opt.AddPolicy(Auth.Policies.ManagerAndAbove, policy =>
+                    policy.RequireRole(Auth.Roles.Admin, Auth.Roles.Manager));
 
-                opt.AddPolicy(Auth.Policies.Manager, policy => policy.RequireRole(Auth.Roles.Manager));
-
-                opt.AddPolicy(Auth.Policies.CanRequestLeave, policy =>
+                opt.AddPolicy(Auth.Policies.EmployeeAndAbove, policy =>
                     policy.RequireRole(Auth.Roles.Admin, Auth.Roles.Manager, Auth.Roles.Employee));
-
-                opt.AddPolicy(Auth.Policies.CanApproveLeave, policy =>
-                     policy.RequireRole(Auth.Roles.Admin, Auth.Roles.Manager));
             });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

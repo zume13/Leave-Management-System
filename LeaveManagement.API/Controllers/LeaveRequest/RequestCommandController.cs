@@ -15,12 +15,12 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.API.Controllers.LeaveRequest
 {
-    [Authorize]
-    [Route("LeaveManagement/LeaveRequest")]
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
+    [Route("LeaveManagement/LeaveRequest")]
     [ApiController]
     public class RequestCommandController(RequestCommandHandlers commandHandlers) : ControllerBase
     {
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpPost("Approve")]
         public async Task<IActionResult> Approve([FromBody] ApproveLeaveRequestCommand command)
         {
@@ -29,6 +29,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
         [HttpPost("Cancel")]
         public async Task<IActionResult> Cancel([FromBody] CancelLeaveRequestCommand command)
         {
@@ -37,6 +38,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] CreateLeaveRequestCommand command)
         {
@@ -45,6 +47,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
             return result.Match<Guid, IActionResult>(id => Created(string.Empty, id), CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpPost("Reject")]
         public async Task<IActionResult> Reject([FromBody] RejectLeaveRequestCommand command)
         {
@@ -52,6 +55,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] UpdateLeaveRequestCommand command)
         {

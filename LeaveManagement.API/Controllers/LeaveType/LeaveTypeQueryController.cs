@@ -12,12 +12,12 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.API.Controllers.LeaveType
 {
-    [Authorize]
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
     [Route("LeaveManagement/LeaveType")]
     [ApiController]
     public class LeaveTypeQueryController(TypeQueryHandlers handlers) : ControllerBase
     {
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpGet("All")]
         public async Task<IActionResult> GetAll([FromQuery] GetAllLeavesQuery query)
         {
@@ -26,6 +26,7 @@ namespace LeaveManagement.API.Controllers.LeaveType
             return result.Match<List<LeavesDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpGet("{leaveId:guid}")]
         public async Task<IActionResult> GetById(Guid leaveId)
         {

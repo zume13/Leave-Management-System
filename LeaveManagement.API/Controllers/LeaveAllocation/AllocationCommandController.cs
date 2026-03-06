@@ -13,12 +13,12 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.API.Controllers.LeaveAllocation
 {
-    [Authorize]
-    [Route("LeaveManagement/Allocation")]
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
+    [Route("LeaveManagement/Allocation")]
     [ApiController]
     public class AllocationCommandController(AllocationCommandHandlers commandHandlers) : ControllerBase
     {
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpPost("Allocate")]
         public async Task<IActionResult> Allocate([FromBody] AllocateLeaveCommand command)
         {
@@ -27,6 +27,7 @@ namespace LeaveManagement.API.Controllers.LeaveAllocation
             return result.Match<Guid, IActionResult>(id => Created(string.Empty, id), CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpPost("Bulk")]
         public async Task<IActionResult> BulkAllocate([FromBody] BulkLeaveAllocationCommand command)
         {
@@ -35,6 +36,7 @@ namespace LeaveManagement.API.Controllers.LeaveAllocation
             return result.Match<BulkLeaveAllocationDto, IActionResult>(Ok, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpDelete("Delete/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {

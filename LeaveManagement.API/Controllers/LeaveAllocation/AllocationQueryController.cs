@@ -14,12 +14,12 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.API.Controllers.LeaveAllocation
 {
-    [Authorize]
-    [Route("LeaveManagement/Allocation")]
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
+    [Route("LeaveManagement/Allocation")]
     [ApiController]
     public class AllocationQueryController(AllocationQueryHandlers queryHandlers) : ControllerBase
     {
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpGet("Active")]
         public async Task<IActionResult> GetAllActive([FromQuery] GetActiveLeaveAllocationsQuery query)
         {
@@ -28,6 +28,7 @@ namespace LeaveManagement.API.Controllers.LeaveAllocation
             return result.Match<List<LeaveAllocationDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
         [HttpGet("Employee/{employeeId:guid}/All")]
         public async Task<IActionResult> GetAllAllocationsByEmployee([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
@@ -36,6 +37,7 @@ namespace LeaveManagement.API.Controllers.LeaveAllocation
             return result.Match<List<GetAllocationByEmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpGet("Expired")]
         public async Task<IActionResult> GetExpiredAllocations([FromQuery] GetExpiredLeaveAllocationsQuery query)
         {

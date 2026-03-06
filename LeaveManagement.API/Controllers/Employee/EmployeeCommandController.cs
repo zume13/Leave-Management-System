@@ -19,7 +19,6 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.API.Controllers.Employee
 {
-    [Authorize]
     [Route("LeaveManagement/Employee")]
     [ApiController]
     public class EmployeeCommandController(EmployeeCommandHandlers commandHandler) : ControllerBase
@@ -44,6 +43,7 @@ namespace LeaveManagement.API.Controllers.Employee
             return result.Match<LogInDto, IActionResult>(Ok, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
@@ -53,6 +53,7 @@ namespace LeaveManagement.API.Controllers.Employee
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEmployeeCommand command)
@@ -63,8 +64,8 @@ namespace LeaveManagement.API.Controllers.Employee
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
         }
 
-        [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
         [HttpGet("Verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
@@ -83,6 +84,7 @@ namespace LeaveManagement.API.Controllers.Employee
             return result.Match<VerifyEmailDto, IActionResult>(Ok, CustomResults.Problem);
         }
 
+        [Authorize(Policy = Auth.Policies.AdminOnly)]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
         [HttpPost("AssignRole")]
         public async Task<IActionResult> AssignRole([FromBody] AssignRoleCommand command)
