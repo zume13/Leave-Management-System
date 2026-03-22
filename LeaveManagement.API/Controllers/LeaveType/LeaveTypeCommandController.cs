@@ -13,12 +13,12 @@ using SharedKernel.Shared.Result;
 namespace LeaveManagement.API.Controllers.LeaveType
 {
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-    [Route("LeaveManagement/LeaveType")]
+    [Route("leave-management/leave-type")]
     [ApiController]
     public class LeaveTypeCommandController(TypeCommandHandlers handlers) : ControllerBase
     {
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpPost("Create")]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateLeaveCommand command)
         {
             ResultT<Guid> result = await handlers.Create.Handle(command);
@@ -27,7 +27,7 @@ namespace LeaveManagement.API.Controllers.LeaveType
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             Result result = await handlers.Remove.Handle(new RemoveLeaveTypeCommand(id));
@@ -36,7 +36,7 @@ namespace LeaveManagement.API.Controllers.LeaveType
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpPut("Update")]
+        [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] UpdateLeaveTypeCommand command)
         {
             Result result = await handlers.Update.Handle(command);

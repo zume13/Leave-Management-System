@@ -52,7 +52,6 @@ namespace LeaveManagement.Infrastructure.Services
                 RefreshTokenExpiration = DateExpiry.refreshTokenExpiry 
             });
         }
-
         public async Task<ResultT<RefreshTokenAsyncDto>> RefreshTokenAsync(string refreshToken, CancellationToken ct = default)
         {
             if(string.IsNullOrWhiteSpace(refreshToken))
@@ -100,7 +99,6 @@ namespace LeaveManagement.Infrastructure.Services
                 RefreshTokenExpiration = DateTime.UtcNow.AddDays(7)
             });
         }
-
         public async Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId, CancellationToken ct = default)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(ct);

@@ -15,12 +15,12 @@ using SharedKernel.Shared.Result;
 namespace LeaveManagement.API.Controllers.LeaveAllocation
 {
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-    [Route("LeaveManagement/Allocation")]
+    [Route("leave-management/allocation")]
     [ApiController]
     public class AllocationQueryController(AllocationQueryHandlers queryHandlers) : ControllerBase
     {
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpGet("Active")]
+        [HttpGet("active")]
         public async Task<IActionResult> GetAllActive([FromQuery] GetActiveLeaveAllocationsQuery query)
         {
             ResultT<List<LeaveAllocationDto>> result = await queryHandlers.GetActive.Handle(query);
@@ -29,7 +29,7 @@ namespace LeaveManagement.API.Controllers.LeaveAllocation
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpGet("Employee/{employeeId:guid}/All")]
+        [HttpGet("employee/{employeeId:guid}/all")]
         public async Task<IActionResult> GetAllAllocationsByEmployee([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
             ResultT<List<GetAllocationByEmployeeDto>> result = await queryHandlers.GetEmployeeAllocations.Handle(new GetAllAllocationsByEmployeeQuery(employeeId, pageSize, pageNumber));
@@ -38,7 +38,7 @@ namespace LeaveManagement.API.Controllers.LeaveAllocation
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpGet("Expired")]
+        [HttpGet("expired")]
         public async Task<IActionResult> GetExpiredAllocations([FromQuery] GetExpiredLeaveAllocationsQuery query)
         {
             ResultT<List<LeaveAllocationDto>> result = await queryHandlers.GetExpired.Handle(query);

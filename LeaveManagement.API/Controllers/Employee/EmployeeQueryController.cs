@@ -14,12 +14,12 @@ using SharedKernel.Shared.Result;
 namespace LeaveManagement.API.Controllers.Employee
 {
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-    [Route("LeaveManagement/Employee")]
+    [Route("leave-management/employee")]
     [ApiController]
     public class EmployeeQueryController(EmployeeQueryHandlers queryHandler) : ControllerBase
     {
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpGet("All")]
+        [HttpGet("all")]
         public async Task<IActionResult> GetEmployees([FromQuery] GetAllEmployeesQuery query)
         {
             ResultT<List<EmployeeDto>> result = await queryHandler.GetAll.Handle(query);
@@ -37,7 +37,7 @@ namespace LeaveManagement.API.Controllers.Employee
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpGet("InDepartment/{deptId}")]
+        [HttpGet("in-department/{deptId}")]
         public async Task<IActionResult> GetByDepartment([FromRoute] Guid deptId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
             ResultT<List<GetEmployeesByDepartmentDto>> result = await queryHandler.GetByDepartment.Handle(new GetEmployeesByDepartmentQuery(deptId, pageSize, pageNumber));

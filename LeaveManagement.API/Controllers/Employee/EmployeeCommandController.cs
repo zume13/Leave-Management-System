@@ -19,13 +19,13 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.API.Controllers.Employee
 {
-    [Route("LeaveManagement/Employee")]
+    [Route("leave-management/employee")]
     [ApiController]
     public class EmployeeCommandController(EmployeeCommandHandlers commandHandler) : ControllerBase
     {
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.Strict)]
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterCommand command)
         {
             ResultT<RegisterDto> result = await commandHandler.Register.Handle(command);
@@ -35,7 +35,7 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.Strict)]
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> LogInAsync([FromBody] LogInCommand command)
         {
             ResultT<LogInDto> result = await commandHandler.LogIn.Handle(command);
@@ -45,7 +45,7 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("delete/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             Result result = await commandHandler.Remove.Handle(new RemoveEmployeeCommand(id));
@@ -55,7 +55,7 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpPut("{id:guid}")]
+        [HttpPut("update/{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEmployeeCommand command)
         {
             command = command with { EmployeeId = id };
@@ -66,7 +66,7 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpGet("Verify")]
+        [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
             ResultT<VerifyEmailDto> result = await commandHandler.VerifyEmail.Handle(new EmailVerificationCommand(token));
@@ -76,7 +76,7 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpPost("ResendVerification")]
+        [HttpPost("resend-verification")]
         public async Task<IActionResult> ResendVerification([FromBody] string email)
         {
             ResultT<VerifyEmailDto> result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(email));
@@ -86,7 +86,7 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [Authorize(Policy = Auth.Policies.AdminOnly)]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpPost("AssignRole")]
+        [HttpPost("assign-role")]
         public async Task<IActionResult> AssignRole([FromBody] AssignRoleCommand command)
         {
             Result result = await commandHandler.AssignRole.Handle(command);

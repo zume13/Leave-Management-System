@@ -16,12 +16,12 @@ using SharedKernel.Shared.Result;
 namespace LeaveManagement.API.Controllers.LeaveRequest
 {
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-    [Route("LeaveManagement/LeaveRequest")]
+    [Route("leave-management/leave-request")]
     [ApiController]
     public class RequestCommandController(RequestCommandHandlers commandHandlers) : ControllerBase
     {
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpPost("Approve")]
+        [HttpPost("approve")]
         public async Task<IActionResult> Approve([FromBody] ApproveLeaveRequestCommand command)
         {
             Result result = await commandHandlers.Approve.Handle(command);
@@ -30,7 +30,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpPost("Cancel")]
+        [HttpPost("cancel")]
         public async Task<IActionResult> Cancel([FromBody] CancelLeaveRequestCommand command)
         {
             Result result = await commandHandlers.Cancel.Handle(command);
@@ -39,7 +39,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpPost("Create")]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateLeaveRequestCommand command)
         {
             ResultT<Guid> result = await commandHandlers.Create.Handle(command);
@@ -48,7 +48,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpPost("Reject")]
+        [HttpPost("reject")]
         public async Task<IActionResult> Reject([FromBody] RejectLeaveRequestCommand command)
         {
             Result result = await commandHandlers.Reject.Handle(command);
@@ -56,7 +56,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpPut("Update")]
+        [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] UpdateLeaveRequestCommand command)
         {
             Result result = await commandHandlers.Update.Handle(command);

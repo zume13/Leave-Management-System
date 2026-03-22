@@ -25,7 +25,7 @@ namespace LeaveManagement.Infrastructure.Services
                 employeeEmail,
                 "Email Verification",
                 $"Please verify your email by clicking on the following link: " +
-                $"{_config["App:BaseUrl"]}/LeaveManagement/Employee/Verify?token={verificationToken}");
+                $"{_config["App:BaseUrl"]}/leave-management/employee/verify?token={verificationToken}");
 
             await SendAsync(message, ct);
         }

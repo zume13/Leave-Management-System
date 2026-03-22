@@ -13,12 +13,12 @@ using SharedKernel.Shared.Result;
 namespace LeaveManagement.API.Controllers.LeaveType
 {
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-    [Route("LeaveManagement/LeaveType")]
+    [Route("leave-management/leave-type")]
     [ApiController]
     public class LeaveTypeQueryController(TypeQueryHandlers handlers) : ControllerBase
     {
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpGet("All")]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAll([FromQuery] GetAllLeavesQuery query)
         {
             ResultT<List<LeavesDto>> result = await handlers.GetAllLeaves.Handle(query);

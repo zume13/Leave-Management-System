@@ -17,12 +17,12 @@ using SharedKernel.Shared.Result;
 namespace LeaveManagement.API.Controllers.LeaveRequest
 {
     [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-    [Route("LeaveManagement/LeaveRequest")]
+    [Route("leave-management/leave-request")]
     [ApiController]
     public class RequestQueryController(RequestQueryHandlers queryHander) : ControllerBase
     {
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpGet("Approved")]
+        [HttpGet("approved")]
         public async Task<IActionResult> GetApprovedLeaveRequests([FromQuery] GetAllApproveRequestsQuery query)
         {
             ResultT<List<GetAllApproveRequestsDto>> result =
@@ -32,7 +32,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpGet("Pending")]
+        [HttpGet("pending")]
         public async Task<IActionResult> GetPendingLeaveRequests([FromQuery] GetAllPendingRequestsQuery query)
         {
             ResultT<List<GetAllPendingRequestsDto>> result =
@@ -42,7 +42,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
-        [HttpGet("Rejected")]
+        [HttpGet("rejected")]
         public async Task<IActionResult> GetRejectedLeaveRequests([FromQuery] GetAllRejectedRequestsQuery query)
         {
             ResultT<List<GetAllRejectedRequestsDto>> result =
@@ -52,7 +52,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpGet("Employee/{employeeId:guid}/All")]
+        [HttpGet("employee/{employeeId:guid}/all")]
         public async Task<IActionResult> GetRequestsByEmployeeId([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
             ResultT<List<GetAllRequestByEmployeeDto>> result =
@@ -62,7 +62,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpGet("Employee/{employeeId:guid}/Approved")]
+        [HttpGet("employee/{employeeId:guid}/approved")]
         public async Task<IActionResult> GetApprovedRequestsByEmployeeId([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
             ResultT<List<GetApprovedRequestsByEmployeeDto>> result =
@@ -72,7 +72,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpGet("Employee/{employeeId:guid}/Pending")]
+        [HttpGet("employee/{employeeId:guid}/pending")]
         public async Task<IActionResult> GetPendingRequestsByEmployeeId([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
             ResultT<List<GetPendingRequestsByEmployeeDto>> result =
@@ -82,7 +82,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpGet("Employee/{employeeId:guid}/Rejected")]
+        [HttpGet("employee/{employeeId:guid}/rejected")]
         public async Task<IActionResult> GetRejectedRequestsByEmployeeId([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
             ResultT<List<GetRejectedRequestsByEmployeeDto>> result =
