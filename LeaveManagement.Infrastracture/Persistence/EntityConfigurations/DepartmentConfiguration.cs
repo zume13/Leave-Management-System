@@ -15,7 +15,7 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.OwnsOne(d => d.DepartmentName, deptName =>
             {
                 deptName.Property(deptname => deptname.Value)
-                .HasColumnName("DepartmentName")
+                .HasColumnName("department_name")
                 .HasMaxLength(Name.MaxLength)
                 .IsRequired();
             });

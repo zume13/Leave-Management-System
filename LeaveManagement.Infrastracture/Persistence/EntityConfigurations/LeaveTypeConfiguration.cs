@@ -14,7 +14,7 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.OwnsOne(lt => lt.LeaveName, lt =>
             {
                 lt.Property(l => l.Value)
-                    .HasColumnName("LeaveName")
+                    .HasColumnName("leave_name")
                     .IsRequired()
                     .HasMaxLength(Name.MaxLength);
             });
@@ -22,7 +22,7 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.OwnsOne(lt => lt.Days, lt =>
             {
                 lt.Property(d => d.Days)
-                    .HasColumnName("Days")
+                    .HasColumnName("days")
                     .IsRequired();
             });
         }

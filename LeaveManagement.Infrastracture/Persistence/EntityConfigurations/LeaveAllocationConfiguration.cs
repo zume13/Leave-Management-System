@@ -12,29 +12,30 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.HasKey(a => a.Id);
 
             builder.Property(a => a.CreationDate)
-                .HasColumnName("CreationDate")
+                .HasColumnName("creation_date")
                 .IsRequired();
 
             builder.OwnsOne(a => a.LeaveDays, leaveDays =>
             {
                 leaveDays.Property(leaveDays => leaveDays.Days)
-                .HasConversion(v => v, v => LeaveDuration.Create(v).Value.Days);
+                .HasConversion(v => v, v => LeaveDuration.Create(v).Value.Days)
+                .HasColumnName("leave_days");
             });
 
 
 
             builder.Property(a => a.LeaveName)
-                .HasColumnName("Name")
+                .HasColumnName("name")
                 .HasMaxLength(Name.MaxLength)
                 .IsRequired();
 
             builder.Property(a => a.UsedDays)
-                .HasColumnName("ConsumedDays");
+                .HasColumnName("used_days");
 
             builder.Ignore(a => a.RemainingDays);
 
             builder.Property(a => a.Year)
-                .HasColumnName("YearValidity")
+                .HasColumnName("year_validity")
                 .IsRequired();
 
             builder.HasOne<Employee>()

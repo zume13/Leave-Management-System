@@ -16,7 +16,7 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.OwnsOne<Name>(e => e.Name, name =>
             {
                 name.Property(n => n.Value)
-                .HasColumnName("Name")
+                .HasColumnName("name")
                 .HasMaxLength(Name.MaxLength)
                 .IsRequired();
             });
@@ -24,18 +24,18 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.OwnsOne<Email>(e => e.Email, email =>
             {
                 email.Property(email => email.Value)
-                .HasColumnName("Email")
+                .HasColumnName("email")
                 .HasMaxLength(Email.MaxLength)
                 .IsRequired();
             });
 
             builder.Property(e => e.Status)
-                .HasColumnName("Status")
+                .HasColumnName("status")
                 .HasConversion<string>()
                 .IsRequired();
 
             builder.Property(e => e.VerificationToken)
-                .HasColumnName("Token");
+                .HasColumnName("token");
 
             builder.HasOne<User>()
                 .WithOne()

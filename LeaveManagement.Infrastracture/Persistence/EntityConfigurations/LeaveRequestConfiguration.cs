@@ -12,32 +12,38 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.HasKey(r => r.Id);
 
             builder.Property(r => r.RequestDate)
+                .HasColumnName("request_date")
                 .IsRequired();  
                 
             builder.Property(r => r.StartDate)
                 .IsRequired();
 
             builder.Property(r => r.EndDate)
+                .HasColumnName("end_date")
                 .IsRequired();  
 
             builder.OwnsOne<LeaveDuration>(r => r.LeaveDays, ld =>
             {
                 ld.Property(d => d.Days)
-                .HasColumnName("LeaveDays")
+                .HasColumnName("leave_days")
                     .IsRequired();
             });
 
             builder.Property(r => r.Status)
+                .HasColumnName("status")
                 .HasConversion<string>()
                 .IsRequired();
 
             builder.Property(r => r.RejectionReason)
+                .HasColumnName("rejection_reason")
                 .HasMaxLength(500);
 
             builder.Property(r => r.Description)
+                .HasColumnName("description")
                 .HasMaxLength(500);
 
             builder.Property(r => r.ProcessedBy)
+                .HasColumnName("processed_by")
                 .HasMaxLength(50);
             
             builder.HasOne<Employee>()
