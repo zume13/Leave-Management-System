@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore;
 namespace LeaveManagement.Infrastructure.Persistence
 {
     public class ApplicationDbContext(
-        DbContextOptions op, 
-        IDomainEventDispatcher dispatcher) 
+        DbContextOptions op,
+        IDomainEventDispatcher dispatcher)
         : IdentityDbContext<User>(op), IApplicationDbContext
     {
         public DbSet<Department> Departments => Set<Department>();
@@ -45,6 +45,13 @@ namespace LeaveManagement.Infrastructure.Persistence
                 }).ToList();
 
             await dispatcher.DispatchAsync(domainEvents);
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
     }
 }
