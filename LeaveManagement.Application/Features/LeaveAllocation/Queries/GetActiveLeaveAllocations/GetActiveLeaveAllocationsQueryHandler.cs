@@ -8,7 +8,7 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetActiveLeaveAllocations
 {
-    internal sealed class GetActiveLeaveAllocationsQueryHandler(IApplicationDbContext context) : IQueryHandler<GetActiveLeaveAllocationsQuery, List<LeaveAllocationDto>>
+    public sealed class GetActiveLeaveAllocationsQueryHandler(IApplicationDbContext context) : IQueryHandler<GetActiveLeaveAllocationsQuery, List<LeaveAllocationDto>>
     {
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<LeaveAllocationDto>>> Handle(GetActiveLeaveAllocationsQuery query, CancellationToken cancellationToken)

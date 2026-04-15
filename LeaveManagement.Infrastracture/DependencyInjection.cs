@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LeaveManagement.Infrastructure
 {
@@ -21,7 +23,7 @@ namespace LeaveManagement.Infrastructure
             {
                 var interceptor = sp.GetService<ConvertDomainEventsToOutboxMessagesInterceptor>();
 
-                opt.UseSqlServer(config["DefaultConnection"]).AddInterceptors(interceptor!);
+                opt.UseSqlServer(config.GetConnectionString("DefaultConnection")).AddInterceptors(interceptor!);
                 
             });
 
@@ -35,6 +37,15 @@ namespace LeaveManagement.Infrastructure
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAuthService, AuthService>();
 
+            services.AddSingleton<JsonSerializerOptions>(new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
+                Converters =
+                {
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                }
+            });
             services.AddScoped<IDomainEventDispatcher, DomainEventsDispatcher>();
             services.AddSingleton<IDomainEventTypeRegistry, DomainEventTypeRegistry>();
             services.AddScoped<IOutBoxMessageSerializer, OutboxMessageSerializer>();

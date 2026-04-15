@@ -9,7 +9,7 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployee
 {
-    internal sealed class GetEmployeeByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetEmployeeByIdQuery, EmployeeDto>
+    public sealed class GetEmployeeByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetEmployeeByIdQuery, EmployeeDto>
     {
         IApplicationDbContext _context = context;
         public async Task<ResultT<EmployeeDto>> Handle(GetEmployeeByIdQuery query, CancellationToken cancellationToken)

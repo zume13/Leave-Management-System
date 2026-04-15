@@ -10,15 +10,9 @@ namespace LeaveManagement.Infrastructure.Persistence
         public ApplicationDbContextFactory() { }
         public ApplicationDbContext CreateDbContext(string[] args)
         {
-
-            var config = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../LeaveManagement.API"))
-            .AddJsonFile("appsettings.json")
-            .Build();
-
             var optBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-            optBuilder.UseSqlServer(config["DefaultConnection"]!);
+            optBuilder.UseSqlServer("Server=thirdy\\SQLEXPRESS;Database=LeaveManagementDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True");
 
             return new ApplicationDbContext(optBuilder.Options, null!);
         }

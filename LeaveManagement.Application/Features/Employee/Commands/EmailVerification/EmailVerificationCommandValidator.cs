@@ -4,7 +4,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.EmailVerificati
 {
     internal class EmailVerificationCommandValidator : AbstractValidator<EmailVerificationCommand>
     {
-        EmailVerificationCommandValidator()
+       public EmailVerificationCommandValidator()
         {
             RuleFor(x => x.token)
                 .NotEmpty().WithMessage("Token is required.")

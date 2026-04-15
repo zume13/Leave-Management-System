@@ -5,7 +5,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.ResendEmailVeri
 {
     internal class ResendEmailVerificationCommandValidator : AbstractValidator<ResendEmailVerificationCommand>
     {
-        ResendEmailVerificationCommandValidator()
+       public ResendEmailVerificationCommandValidator()
         {
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email is required.")

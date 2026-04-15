@@ -7,7 +7,7 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApproveRequests
 {
-    internal sealed class GetAllApproveRequestsQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllApproveRequestsQuery, List<GetAllApproveRequestsDto>>
+    public sealed class GetAllApproveRequestsQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllApproveRequestsQuery, List<GetAllApproveRequestsDto>>
     {
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<List<GetAllApproveRequestsDto>>> Handle(GetAllApproveRequestsQuery query, CancellationToken cancellationToken = default)

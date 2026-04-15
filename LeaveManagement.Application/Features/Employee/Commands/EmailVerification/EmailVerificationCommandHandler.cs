@@ -9,7 +9,7 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.Employee.Commands.EmailVerification
 {
-    internal class EmailVerificationCommandHandler(
+    public class EmailVerificationCommandHandler(
         IApplicationDbContext _context,
         UserManager<User> _userManager) 
         : ICommandHandler<EmailVerificationCommand, VerifyEmailDto>

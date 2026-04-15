@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Decorators;
-using LeaveManagement.Application.Features.Employee.Events;
+using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.DomainEvents;
 
@@ -11,29 +11,29 @@ namespace LeaveManagement.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            var assembly = typeof(SendVerificationEmailHandler).Assembly;
+            var assembly = typeof(EmailVerificationCommandHandler).Assembly;
 
             services.Scan(scan => scan
                 .FromAssemblies(assembly)
-                .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
+                .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)), publicOnly: false)
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
 
             services.Scan(scan => scan
                 .FromAssemblies(assembly)
-                .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+                .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)), publicOnly: false)
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
 
             services.Scan(scan => scan
                 .FromAssemblies(assembly)
-                .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
+                .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
 
             services.Scan(scan => scan
                 .FromAssemblies(assembly)
-                .AddClasses(classes => classes.AssignableTo(typeof(IDomainEventHandler<>)))
+                .AddClasses(classes => classes.AssignableTo(typeof(IDomainEventHandler<>)), publicOnly: false)
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
 
