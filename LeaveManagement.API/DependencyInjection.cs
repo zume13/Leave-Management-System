@@ -81,6 +81,16 @@ namespace LeaveManagement.API
                 });
             });
 
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("AllowSwaggerUI", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7215")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             services.AddAuthorization(opt =>
             {
                 opt.AddPolicy(Auth.Policies.AdminOnly, policy => policy.RequireRole(Auth.Roles.Admin));

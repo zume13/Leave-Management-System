@@ -46,12 +46,19 @@ namespace LeaveManagement.Application.Decorators
             {
                 ValidationFailure[] validationFailures = await ValidateAsync(command, validators);
 
-                if(validationFailures.Length == 0)
+                if(validationFailures.Length != 0)
                 {
-                    await innerHandler.Handle(command, token);
+                    return ResultT<TResponse>.Failure(CreateValidationErrors(validationFailures));
                 }
-                   
-                return ResultT<TResponse>.Failure(CreateValidationErrors(validationFailures));
+
+                var result = await innerHandler.Handle(command, token);
+
+                if(result.isFailure)
+                {
+                    return ResultT<TResponse>.Failure(result.Error);
+                }
+
+                return ResultT<TResponse>.Success(result.Value);
             }
         }
 
@@ -67,10 +74,17 @@ namespace LeaveManagement.Application.Decorators
 
                 if(validationFailures.Length == 0)
                 {
-                    await innerHandler.Handle(command, token);
+                    return Result.Failure(new ValidationError([.. validationFailures.Select(v => new Error(v.ErrorCode, v.ErrorMessage, ErrorType.Validation))]));
                 }
 
-                return Result.Failure(new ValidationError([..validationFailures.Select(v => new Error(v.ErrorCode, v.ErrorMessage, ErrorType.Validation))]));
+                var result = await innerHandler.Handle(command, token);
+
+                if(result.isFailure)
+                {
+                    return Result.Failure(result.Error);
+                }
+
+                return Result.Success();
             }
         }
     }
