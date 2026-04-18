@@ -4,7 +4,7 @@ using LeaveManagement.API.Handlers.LeaveAllocation;
 using LeaveManagement.API.Handlers.LeaveRequest;
 using LeaveManagement.API.Handlers.LeaveType;
 using LeaveManagement.API.Infrastracture;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
@@ -106,11 +106,26 @@ namespace LeaveManagement.API
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(opt =>
             {
-                opt.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer"
+                });
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer" 
+                            },
+                        },
+                        new string[] {}
+                    }
                 });
                 opt.OperationFilter<SecurityRequirementsOperationFilter>();
                 opt.SwaggerDoc("v1", new OpenApiInfo
@@ -120,7 +135,6 @@ namespace LeaveManagement.API
                     Description = "An Asp.Net Api for Leave Management"
                 });
             });
-
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
 
