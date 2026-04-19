@@ -25,7 +25,7 @@ namespace LeaveManagement.API.Controllers.Employee
     {
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.Strict)]
-        [HttpPost("register")]
+        [HttpPost("auth/register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterCommand command)
         {
             ResultT<RegisterDto> result = await commandHandler.Register.Handle(command);
@@ -35,7 +35,7 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.Strict)]
-        [HttpPost("login")]
+        [HttpPost("auth/login")]
         public async Task<IActionResult> LogInAsync([FromBody] LogInCommand command)
         {
             ResultT<LogInDto> result = await commandHandler.LogIn.Handle(command);

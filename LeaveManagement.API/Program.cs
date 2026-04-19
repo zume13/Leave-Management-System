@@ -28,7 +28,7 @@ namespace LeaveManagement.API
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwaggerWithUI();
+                app.UseScalar();
             }
 
             app.UseHttpsRedirection();

@@ -1,13 +1,16 @@
-﻿using Swashbuckle.AspNetCore.SwaggerGen;    
+﻿using Scalar.AspNetCore;
 
 namespace LeaveManagement.API.Extensions
 {
     public static class ApplicationBuilderExtension
     {
-        public static WebApplication UseSwaggerWithUI(this WebApplication app)
+        public static WebApplication UseScalar(this WebApplication app)
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            app.MapOpenApi();
+            app.MapScalarApiReference(opt =>
+            {
+                opt.Title = "Leave Management API";
+            });
 
             return app;
         }

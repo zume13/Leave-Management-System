@@ -4,6 +4,7 @@ using LeaveManagement.API.Handlers.LeaveAllocation;
 using LeaveManagement.API.Handlers.LeaveRequest;
 using LeaveManagement.API.Handlers.LeaveType;
 using LeaveManagement.API.Infrastracture;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Security.Claims;
@@ -102,39 +103,20 @@ namespace LeaveManagement.API
                     policy.RequireRole(Auth.Roles.Admin, Auth.Roles.Manager, Auth.Roles.Employee));
             });
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(opt =>
-            {
-                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            services.AddOpenApi(opt => 
+                opt.AddDocumentTransformer((doc, context, ct) =>
                 {
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer"
-                });
-                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer" 
-                            },
-                        },
-                        new string[] {}
-                    }
-                });
-                opt.OperationFilter<SecurityRequirementsOperationFilter>();
-                opt.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "LeaveManagementApi",
-                    Description = "An Asp.Net Api for Leave Management"
-                });
-            });
+                    doc.Components ??= new();
+                    doc.Components.SecuritySchemes!.Add("Bearer", new OpenApiSecurityScheme 
+                    { 
+                        Type = SecuritySchemeType.Http,
+                        Description = "A Leave Management API secured with JWT Bearer Authentication",
+                        Scheme = "bearer",
+                        BearerFormat = "JWT"
+                    });
+                    return Task.CompletedTask;
+                }));
+
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
 
