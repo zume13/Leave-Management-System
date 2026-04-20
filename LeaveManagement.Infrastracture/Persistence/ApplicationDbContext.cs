@@ -3,6 +3,7 @@ using LeaveManagement.Application.Abstractions.Events;
 using LeaveManagement.Application.Models;
 using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.Primitives;
+using LeaveManagement.Infrastructure.Persistence.Outbox;
 using LeaveManagement.SharedKernel.DomainEvents;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace LeaveManagement.Infrastructure.Persistence
         public DbSet<LeaveType> LeaveTypes => Set<LeaveType>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
+        public DbSet<OutBoxMessage> OutBoxMessages => Set<OutBoxMessage>();
 
         public override async Task<int> SaveChangesAsync(
             CancellationToken cancellationToken = default)

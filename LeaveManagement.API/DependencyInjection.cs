@@ -5,8 +5,6 @@ using LeaveManagement.API.Handlers.LeaveRequest;
 using LeaveManagement.API.Handlers.LeaveType;
 using LeaveManagement.API.Infrastracture;
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
 
@@ -84,7 +82,7 @@ namespace LeaveManagement.API
 
             services.AddCors(opt =>
             {
-                opt.AddPolicy("AllowSwaggerUI", policy =>
+                opt.AddPolicy("AllowScalar", policy =>
                 {
                     policy.WithOrigins("https://localhost:7215")
                     .AllowAnyHeader()
@@ -107,13 +105,14 @@ namespace LeaveManagement.API
                 opt.AddDocumentTransformer((doc, context, ct) =>
                 {
                     doc.Components ??= new();
-                    doc.Components.SecuritySchemes!.Add("Bearer", new OpenApiSecurityScheme 
-                    { 
+                    doc.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+                    doc.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+                    {
                         Type = SecuritySchemeType.Http,
                         Description = "A Leave Management API secured with JWT Bearer Authentication",
                         Scheme = "bearer",
                         BearerFormat = "JWT"
-                    });
+                    };
                     return Task.CompletedTask;
                 }));
 

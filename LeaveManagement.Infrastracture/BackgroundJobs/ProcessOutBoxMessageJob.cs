@@ -1,4 +1,4 @@
-﻿using LeaveManagement.Infrastructure.Events;
+﻿using LeaveManagement.Application.Abstractions.Events;
 using LeaveManagement.Infrastructure.Persistence;
 using LeaveManagement.Infrastructure.Persistence.Outbox;
 using LeaveManagement.SharedKernel.DomainEvents;
@@ -11,15 +11,15 @@ namespace LeaveManagement.Infrastructure.BackgroundJobs
     public class ProcessOutBoxMessageJob : IJob
     {
         private readonly ApplicationDbContext _context;
-        private readonly DomainEventsDispatcher _dispatcher;
-        private readonly DomainEventTypeRegistry _registry;
-        private readonly OutboxMessageSerializer _serializer;
+        private readonly IDomainEventDispatcher _dispatcher;
+        private readonly IDomainEventTypeRegistry _registry;
+        private readonly IOutBoxMessageSerializer _serializer;
 
         public ProcessOutBoxMessageJob(
             ApplicationDbContext context,
-            DomainEventsDispatcher dispatcher,
-            DomainEventTypeRegistry registry,
-            OutboxMessageSerializer serializer)
+            IDomainEventDispatcher dispatcher,
+            IDomainEventTypeRegistry registry,
+            IOutBoxMessageSerializer serializer)
         {
             _context = context;
             _dispatcher = dispatcher;
@@ -29,7 +29,7 @@ namespace LeaveManagement.Infrastructure.BackgroundJobs
         //Dispatching domain events using background jobs
         public async Task Execute(IJobExecutionContext context)
         {
-            var messages = await _context.Set<OutBoxMessage>()
+            var messages = await _context.OutBoxMessages
                             .Where(o => o.ProcessedOn == null)
                             .Take(20)
                             .ToListAsync(context.CancellationToken);
