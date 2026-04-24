@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using LeaveManagement.Infrastructure.Identity;
 using LeaveManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using LeaveManagement.Application;
@@ -20,11 +19,6 @@ namespace LeaveManagement.API
             builder.Services.AddQuartz();
 
             var app = builder.Build();
-
-            using (var scope = app.Services.CreateScope())
-            {
-                await SeedData.InitializeAsync(scope.ServiceProvider);
-            }
 
             if (app.Environment.IsDevelopment())
             {

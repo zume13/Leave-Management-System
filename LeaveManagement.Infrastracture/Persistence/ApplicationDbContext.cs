@@ -13,7 +13,7 @@ namespace LeaveManagement.Infrastructure.Persistence
     public class ApplicationDbContext(
         DbContextOptions op,
         IDomainEventDispatcher dispatcher)
-        : IdentityDbContext<User>(op), IApplicationDbContext
+        : DbContext(op), IApplicationDbContext
     {
         public DbSet<Department> Departments => Set<Department>();
         public DbSet<Employee> Employees => Set<Employee>();
