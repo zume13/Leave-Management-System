@@ -8,7 +8,7 @@ namespace LeaveManagement.API.Extensions
 
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
         {
-            services.AddAuthentication("Bearer").AddJwtBearer(options =>
+            services.AddAuthentication("Bearer").AddJwtBearer(options => 
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -18,7 +18,8 @@ namespace LeaveManagement.API.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = config["Jwt:Issuer"],
                     ValidAudience = config["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 

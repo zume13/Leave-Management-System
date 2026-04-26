@@ -18,26 +18,30 @@ namespace LeaveManagement.Domain.Entities
             Email email, 
             EmployeeStatus status,
             Guid departmentId, 
-            string userId, 
-            string? verificationToken) : base(id)
+            string? verificationToken,
+            Role role,
+            string password) : base(id)
         {
             this.Name = name;
             this.Email = email;
             this.Status = status;
             this.DeptId = departmentId;
-            this.UserId = userId;
             this.VerificationToken = verificationToken;
+            this.Role = role;
+            this.HashedPassword = password;
         }
         private Employee() { }
 
         public Name Name { get; private set; }
         public Email Email { get; private set; }
+        public Role Role { get; private set; } 
+        public string HashedPassword { get; private set; } = null!;
         public EmployeeStatus Status { get; private set; }
         public string? VerificationToken { get; private set; }
+        public bool IsEmailVerified => VerificationToken is null;
 
         //FKs
         public Guid DeptId { get; private set; }
-        public string UserId { get; private set; } = null!;
 
         public IReadOnlyCollection<LeaveAllocation> Allocations => _allocations;
         public IReadOnlyCollection<LeaveRequest> Requests => _requests;
@@ -47,20 +51,24 @@ namespace LeaveManagement.Domain.Entities
             Name name, 
             Email email, 
             Guid departmentId,
-            string userId, 
-            string verificationToken)
+            string verificationToken,
+            string hashedpass)
         {
-            if (userId is null)
-                return DomainErrors.Employee.NullUserId;
-
             if (name is null)
                 return DomainErrors.Employee.EmptyEmployeeName;
 
             if (email is null)
                 return DomainErrors.Email.EmptyEmail;
 
-            var employee = new Employee(Guid.NewGuid(), name, email, EmployeeStatus.Active,
-                                        departmentId, userId, verificationToken);
+            var employee = new Employee(
+                Guid.NewGuid(), 
+                name, 
+                email, 
+                EmployeeStatus.Active,
+                departmentId, 
+                verificationToken, 
+                Role.Employee,
+                hashedpass);
 
             employee.RaiseDomainEvent(new MemberRegisteredEvent(
                 employee.Name.Value,
@@ -278,6 +286,30 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
         public Result EditRequest(Guid requestId, DateTime newStartDate, DateTime newEndDate, string? newDescription) => UpdateLeaveRequest(requestId, r => r.EditLeaveRequest(newStartDate, newEndDate, newDescription));
+        public Result Promote(Role newRole)
+        {
+            switch (newRole)
+            {
+                case Role.Admin:
+                    if (Role == Role.Admin)
+                        return DomainErrors.Employee.AlreadyInRole;
+                    Role = Role.Admin;
+                    break;
+                case Role.Manager:
+                    if (Role == Role.Manager)
+                        return DomainErrors.Employee.AlreadyInRole;
+                    Role = Role.Manager;
+                    break;
+                case Role.Employee:
+                    if (Role == Role.Employee)
+                        return DomainErrors.Employee.AlreadyInRole;
+                    Role = Role.Employee;
+                    break;
+                default:
+                    return DomainErrors.Employee.InvalidRole;
+            }
+            return Result.Success();
+        }
         #endregion
     }
 }

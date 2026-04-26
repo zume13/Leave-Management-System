@@ -1,54 +1,51 @@
 ﻿using LeaveManagement.Application.Abstractions.Services;
-using LeaveManagement.Application.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using LeaveManagement.Domain.Entities;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
+using Microsoft.IdentityModel.JsonWebTokens;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
+using LeaveManagement.Infrastructure.DateTimeProvider;
 
 
 namespace LeaveManagement.Infrastructure.Services
 {
-    public class TokenService(IConfiguration _config, UserManager<User> manager) : ITokenService
+    public class TokenService(IConfiguration _config) : ITokenService
     {
-        public async Task<string?> GenerateAccessToken(User user, DateTime expiry)
+        public string GenerateAccessToken(Employee employee)
         {
 
-            var roles = await manager.GetRolesAsync(user);
-
-            if (roles.Count == 0)
-                return null;
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.EmployeeName),
-                new Claim(ClaimTypes.Email, user.Email!),
-            };
-
-            claims.AddRange(roles.Select(
-                        role => new Claim(ClaimTypes.Role, role)));
-
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: expiry,
-                signingCredentials: credentials);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] 
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, employee.Id.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Email, employee.Email.Value),
+                    new Claim(JwtRegisteredClaimNames.Name, employee.Name.Value),
+                    new Claim("role", employee.Role.ToString())
+                }),
+                Audience = _config["Jwt:Audience"],
+                Issuer = _config["Jwt:Issuer"],
+                Expires = DateExpiry.accessTokenExpiry,
+                SigningCredentials = credentials
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var handler = new JsonWebTokenHandler();
+
+            var token = handler.CreateToken(tokenDescriptor);
+
+            return token;
         }
 
-        public ResultT<RefreshToken> GenerateRefreshToken(User user, DateTime expiry)
+        public ResultT<RefreshToken> GenerateRefreshToken(Employee employee)
         {
             var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
@@ -58,8 +55,8 @@ namespace LeaveManagement.Infrastructure.Services
             return ResultT<RefreshToken>.Success(RefreshToken.Create(
                     id: Guid.NewGuid(),
                     token: token,
-                    expiresAt: expiry,
-                    userId: user.Id
+                    expiresAt: DateExpiry.refreshTokenExpiry,
+                    employeeid: employee.Id
                 ).Value);
         }
     }

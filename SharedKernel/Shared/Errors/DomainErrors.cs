@@ -23,6 +23,8 @@ namespace SharedKernel.Shared.Errors
             public static readonly Error NullUserId = Error.Validation("UserId.Null", "The user id is null");
             public static readonly Error AlreadyVerified = Error.Validation("Email.Verified", "The user Email is already verified");
             public static readonly Error InvalidToken = Error.Validation("Token.Invalid", "Verification token is invalid");
+            public static readonly Error AlreadyInRole = Error.Problem("Role.Duplicate", "Employee is already in this role");
+            public static readonly Error InvalidRole = Error.Problem("Role.Unexistent", "Role is invalid");
         }
 
         public static class Email

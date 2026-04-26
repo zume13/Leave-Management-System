@@ -1,7 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Services;
 using LeaveManagement.Application.Dto.Response.Auth;
-using LeaveManagement.Application.Models;
 using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.Value_Objects;
 using LeaveManagement.Infrastructure.DateTimeProvider;
@@ -12,20 +11,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Infrastructure.Services
 {
-    public class AuthService(UserManager<User> _userManager, IApplicationDbContext _context, ITokenService _token) : IAuthService
+    public class AuthService(IApplicationDbContext _context, ITokenService _token) : IAuthService
     {
         
         public async Task<ResultT<LogInDto>> LoginAsync(string email, string password, CancellationToken ct = default)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var employee = await _context.Employees.FindAsync(email);
 
-            if (user is null)
-                return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
-
-            if (user.isEmailVerified == false)
-                return ResultT<LogInDto>.Failure(InfrastractureErrors.Email.EmailNotVerified);
-
-            if (!await _userManager.CheckPasswordAsync(user, password))
+            if (employee is null)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
 
             var token = await _token.GenerateAccessToken(user, DateExpiry.accessTokenExpiry);
@@ -68,13 +61,13 @@ namespace LeaveManagement.Infrastructure.Services
             if(!oldRefreshToken.IsActive())
                 return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.TokenReused);
 
-            var user = await _userManager.FindByIdAsync(oldRefreshToken.UserId.ToString());
+            var employee = await _context.Employees.FindAsync(oldRefreshToken.EmployeeId, ct);
 
-            if(user is null)
-                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.User.UserNotFound);
-            
-            var newRefreshToken = _token.GenerateRefreshToken(user, DateExpiry.accessTokenExpiry);
-            var newAccessToken = await _token.GenerateAccessToken(user, DateExpiry.refreshTokenExpiry);
+            if(employee is null)
+                return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
+
+            var newRefreshToken = _token.GenerateRefreshToken(employee);
+            var newAccessToken =  _token.GenerateAccessToken(employee);
 
             if(newRefreshToken.isFailure || newAccessToken is null)
                 return ResultT<RefreshTokenAsyncDto>.Failure(InfrastractureErrors.TokenService.TokenGenerationFailed);
@@ -95,70 +88,40 @@ namespace LeaveManagement.Infrastructure.Services
             {
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken.Value.Token,
-                AccessTokenExpiration = DateTime.UtcNow.AddMinutes(30),
-                RefreshTokenExpiration = DateTime.UtcNow.AddDays(7)
+                AccessTokenExpiration = DateExpiry.accessTokenExpiry,
+                RefreshTokenExpiration = DateExpiry.refreshTokenExpiry
             });
         }
         public async Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId, CancellationToken ct = default)
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync(ct);
-
-            var existingUser = await _userManager.FindByEmailAsync(email);
+            var existingUser = await _context.Employees.FindAsync(email, ct);
             if (existingUser is not null)
                 return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.UserEmailExists);
 
-            var user = new User
-            {
-                UserName = email,
-                Email = email,
-                EmployeeName = employeeName,
-                isEmailVerified = false,
-                verificationToken = Guid.NewGuid().ToString(),
-                tokenExpiration = DateTime.UtcNow.AddDays(1)
-            };
+                var newMail = Email.Create(email).Value;
 
-            try
-            {
-                var createUserResult = await _userManager.CreateAsync(user, password);
-
-                if (!createUserResult.Succeeded)
+                if (newMail is null)
+                {
                     return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
+                }
 
-                var newMail = Email.Create(user.Email).Value;
-                var employee = Employee.Create(Name.Create(user.EmployeeName).Value, newMail, deptId, user.Id, user.verificationToken);
+                using NewsPasswordHasher hasher = new();
+
+            var employee = Employee.Create(Name.Create(employeeName).Value, newMail, deptId, Guid.NewGuid().ToString(), );
 
                 if (employee.isFailure)
                 {
-                    await _userManager.DeleteAsync(user);
-                    return ResultT<RegisterDto>.Failure(DomainErrors.Employee.NullEmployee);
-                }
-
-                var roleResult = await _userManager.AddToRoleAsync(user, "Employee");
-
-                if (!roleResult.Succeeded)
-                {
-                    await _userManager.DeleteAsync(user);
                     return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
                 }
-
                 await _context.Employees.AddAsync(employee.Value, ct);
                 await _context.SaveChangesAsync(ct);
-                await transaction.CommitAsync(ct);
-            }
-            catch (Exception)
-            {
-                await transaction.RollbackAsync(ct);
-                await _userManager.DeleteAsync(user);
-                return ResultT<RegisterDto>.Failure(InfrastractureErrors.General.InternalError);
-            }
+
 
             return ResultT<RegisterDto>.Success(new RegisterDto
             {
                 Success = true,
                 Message = "User registered successfully. Please check your inbox and verify your email.",
-                UserId = user.Id,
-                Email = user.Email,
-                IsEmailVerified = user.isEmailVerified
+                Email = newMail.Value
             });
         }
     }

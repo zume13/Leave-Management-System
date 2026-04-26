@@ -7,7 +7,7 @@ namespace LeaveManagement.Application.Abstractions.Services
 {
     public interface ITokenService
     {
-        Task<string?> GenerateAccessToken(User user, DateTime expiry);
-        ResultT<RefreshToken> GenerateRefreshToken(User user, DateTime expiry);
+        string GenerateAccessToken(Employee employee);
+        ResultT<RefreshToken> GenerateRefreshToken(Employee employee);
     }
 }
