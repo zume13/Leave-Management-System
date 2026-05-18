@@ -2,6 +2,8 @@
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Decorators;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
+using LeaveManagement.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.DomainEvents;
 
@@ -45,6 +47,8 @@ namespace LeaveManagement.Application
             services.Decorate(typeof(ICommandHandler<,>), typeof(LoggingDecorator.CommandHandler<,>));
             services.Decorate(typeof(ICommandHandler<>), typeof(LoggingDecorator.BaseCommandHandler<>));
             services.Decorate(typeof(IQueryHandler<,>), typeof(LoggingDecorator.QueryHandler<,>));
+
+            services.AddSingleton<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
 
             return services;
         }

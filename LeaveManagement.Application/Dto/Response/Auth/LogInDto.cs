@@ -4,7 +4,6 @@ namespace LeaveManagement.Application.Dto.Response.Auth
     public class LogInDto
     {
         public bool IsSuccessful { get; set; }
-        public string UserId { get; set; } = null!;
         public string Accesstoken { get; set; } = null!;
         public string RefreshToken { get; set; } = null!;
         public DateTime AccessTokenExpiration { get; set; }

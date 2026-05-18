@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LeaveManagement.Infrastructure.Services
 {
-    public class AuthService(IApplicationDbContext _context, ITokenService _token) : IAuthService
+    public class AuthService(IApplicationDbContext _context, ITokenService _token, IPasswordHasher<Employee> _hasher) : IAuthService
     {
         
         public async Task<ResultT<LogInDto>> LoginAsync(string email, string password, CancellationToken ct = default)
@@ -21,12 +22,12 @@ namespace LeaveManagement.Infrastructure.Services
             if (employee is null)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
 
-            var token = await _token.GenerateAccessToken(user, DateExpiry.accessTokenExpiry);
+            var token = _token.GenerateAccessToken(employee);
 
             if(token is null)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.General.InternalError);
 
-            var refreshToken = _token.GenerateRefreshToken(user, DateExpiry.refreshTokenExpiry);
+            var refreshToken = _token.GenerateRefreshToken(employee);
 
             if(refreshToken.isFailure)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.General.InternalError);
@@ -105,9 +106,9 @@ namespace LeaveManagement.Infrastructure.Services
                     return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
                 }
 
-                using NewsPasswordHasher hasher = new();
+                var hashedpass = _hasher.HashPassword(null!, password);
 
-            var employee = Employee.Create(Name.Create(employeeName).Value, newMail, deptId, Guid.NewGuid().ToString(), );
+            var employee = Employee.Create(Name.Create(employeeName).Value, newMail, deptId, Guid.NewGuid().ToString(), hashedpass);
 
                 if (employee.isFailure)
                 {
