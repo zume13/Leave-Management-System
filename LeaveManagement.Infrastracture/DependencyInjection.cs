@@ -1,7 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Events;
 using LeaveManagement.Application.Abstractions.Services;
-using LeaveManagement.Application.Models;
 using LeaveManagement.Infrastructure.Events;
 using LeaveManagement.Infrastructure.Persistence;
 using LeaveManagement.Infrastructure.Persistence.Interceptors;
@@ -27,9 +26,7 @@ namespace LeaveManagement.Infrastructure
                 
             });
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddScoped<IEmailLinkFactory, EmailLinkFactory>();
 
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 

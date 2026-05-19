@@ -13,6 +13,7 @@ namespace SharedKernel.Shared.Errors
             public static readonly Error InvalidId = Error.Validation("Id.Invalid", "ID must be positive");
             public static readonly Error NotFound = Error.NotFound("Object.NotFound", "Object was not found");
             public static readonly Error NullUpdateValues = Error.Validation("Values.Null", "Provided details were null");
+            public static readonly Error InternalError = Error.Failure("InternalError", "An internal error occurred");
         }
         public static class Employee
         {
@@ -27,6 +28,12 @@ namespace SharedKernel.Shared.Errors
             public static readonly Error InvalidRole = Error.Problem("Role.Unexistent", "Role is invalid");
         }
 
+        public static class EmailVerificationToken
+        {
+            public static readonly Error InvalidTokenHash = Error.Validation("TokenHash.Invalid", "The token hash is invalid");
+            public static readonly Error InvalidExpiryDate = Error.Validation("ExpiryDate.Invalid", "The expiry date must be in the future");
+            public static readonly Error InvalidEmployeeId = Error.Validation("EmployeeId.Invalid", "The employee id is invalid");
+        }
         public static class Email
         {
             public static readonly Error EmptyEmail = Error.Validation("Email.Empty", "Email is empty");

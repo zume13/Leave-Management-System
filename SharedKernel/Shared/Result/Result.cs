@@ -1,5 +1,4 @@
-﻿using SharedKernel.Shared.Result;
-
+﻿
 namespace SharedKernel.Shared.Result
 {
     public class Result

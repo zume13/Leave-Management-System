@@ -39,7 +39,6 @@ namespace LeaveManagement.Infrastructure.Services
             return ResultT<LogInDto>.Success(new LogInDto
             {
                 IsSuccessful = true,
-                UserId = user.Id,
                 Accesstoken = token,
                 RefreshToken = refreshToken.Value.Token,
                 AccessTokenExpiration = DateExpiry.accessTokenExpiry, 
