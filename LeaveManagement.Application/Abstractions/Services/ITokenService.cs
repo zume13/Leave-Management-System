@@ -1,5 +1,4 @@
-﻿using LeaveManagement.Application.Models;
-using LeaveManagement.Domain.Entities;
+﻿using LeaveManagement.Domain.Entities;
 using SharedKernel.Shared.Result;
 using System.Security.Claims;
 

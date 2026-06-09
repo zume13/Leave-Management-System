@@ -1,5 +1,4 @@
-﻿using LeaveManagement.Application.Models;
-using LeaveManagement.Domain.Entities;
+﻿using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.Enums;
 using LeaveManagement.Domain.Value_Objects;
 using Microsoft.EntityFrameworkCore;
@@ -36,11 +35,6 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
 
             builder.Property(e => e.VerificationToken)
                 .HasColumnName("token");
-
-            builder.HasOne<User>()
-                .WithOne()
-                .HasForeignKey<Employee>(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<Department>()
                 .WithOne()

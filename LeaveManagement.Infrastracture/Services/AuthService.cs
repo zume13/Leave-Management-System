@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LeaveManagement.Infrastructure.Services
 {

@@ -251,7 +251,7 @@ namespace LeaveManagement.Domain.Entities
             if (result.isFailure)
                 return result.Error;
 
-            Email = result.Value;
+            this.Email = result.Value;
             return Result.Success();
         }
         public Result ChangeName(string name)
@@ -261,7 +261,7 @@ namespace LeaveManagement.Domain.Entities
             if (result.isFailure) 
                 return result.Error;
 
-            Name = result.Value;
+            this.Name = result.Value;
             return Result.Success();
         }
         public Result Update(string? name, string? email)

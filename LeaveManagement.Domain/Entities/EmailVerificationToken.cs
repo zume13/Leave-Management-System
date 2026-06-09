@@ -22,9 +22,8 @@ namespace LeaveManagement.Domain.Entities
 
         public bool IsValid => DateTime.UtcNow < ExpiryDate && RevokedAt == null && UsedAt == null;
 
-        public ResultT<EmailVerificationToken> Create(DateTime expiry, Guid employeeId)
-        {
-                return DomainErrors.EmailVerificationToken.InvalidTokenHash;
+        public static ResultT<EmailVerificationToken> Create(DateTime expiry, Guid employeeId)
+        { 
             if (expiry <= DateTime.UtcNow)
                 return DomainErrors.EmailVerificationToken.InvalidExpiryDate;
             if (employeeId == Guid.Empty)

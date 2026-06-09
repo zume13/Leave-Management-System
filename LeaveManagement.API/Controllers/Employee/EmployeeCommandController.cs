@@ -86,8 +86,8 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [Authorize(Policy = Auth.Policies.AdminOnly)]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpPost("assign-role")]
-        public async Task<IActionResult> AssignRole([FromBody] AssignRoleCommand command)
+        [HttpPost("promote")]
+        public async Task<IActionResult> Promote([FromBody] PromoteCommand command)
         {
             Result result = await commandHandler.AssignRole.Handle(command);
 

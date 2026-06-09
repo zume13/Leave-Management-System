@@ -39,6 +39,7 @@ namespace SharedKernel.Shared.Errors
         public static class Email
         {
             public static readonly Error EmailInvalid = Error.Validation("Email.Invalid", "Email is invalid");
+            public static readonly Error EmailVerificationTokenCreationFailed = Error.Failure("Email.TokenCreationFailed", "Failed to create email verification token");
         }
     }
 }

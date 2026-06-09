@@ -1,11 +1,9 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Events;
-using LeaveManagement.Application.Models;
 using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.Primitives;
 using LeaveManagement.Infrastructure.Persistence.Outbox;
 using LeaveManagement.SharedKernel.DomainEvents;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Infrastructure.Persistence
@@ -19,6 +17,7 @@ namespace LeaveManagement.Infrastructure.Persistence
         public DbSet<Employee> Employees => Set<Employee>();
         public DbSet<LeaveAllocation> LeaveAllocations => Set<LeaveAllocation>();
         public DbSet<LeaveType> LeaveTypes => Set<LeaveType>();
+        public DbSet<EmailVerificationToken> EmailVerificationTokens => Set<EmailVerificationToken>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
         public DbSet<OutBoxMessage> OutBoxMessages => Set<OutBoxMessage>();

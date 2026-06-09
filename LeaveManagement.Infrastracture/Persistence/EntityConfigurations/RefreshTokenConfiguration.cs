@@ -1,5 +1,4 @@
-﻿using LeaveManagement.Application.Models;
-using LeaveManagement.Domain.Entities;
+﻿using LeaveManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -35,11 +34,6 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.Property(rt => rt.ReplacedByToken)
                 .HasColumnName("replaced_by_token")
                 .HasMaxLength(512);
-
-            builder.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(rt => rt.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

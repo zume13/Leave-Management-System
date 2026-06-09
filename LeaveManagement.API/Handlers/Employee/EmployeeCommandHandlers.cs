@@ -19,7 +19,7 @@ namespace LeaveManagement.API.Handlers.Employee
             public ICommandHandler<UpdateEmployeeCommand> Update { get; }
             public ICommandHandler<EmailVerificationCommand, VerifyEmailDto> VerifyEmail { get; }
             public ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto> ReVerifyEmail { get; }
-            public ICommandHandler<AssignRoleCommand> AssignRole { get; }
+            public ICommandHandler<PromoteCommand> AssignRole { get; }
 
 
         public EmployeeCommandHandlers(
@@ -29,7 +29,7 @@ namespace LeaveManagement.API.Handlers.Employee
                 ICommandHandler<UpdateEmployeeCommand> _Update,
                 ICommandHandler<EmailVerificationCommand, VerifyEmailDto> _VerifyEmail,
                 ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto> _ReVerifyEmail,
-                ICommandHandler<AssignRoleCommand> _AssignRole)
+                ICommandHandler<PromoteCommand> _AssignRole)
             {
                 LogIn = _LogIn;
                 Register = _Register;
