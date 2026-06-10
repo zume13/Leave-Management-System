@@ -8,6 +8,7 @@ namespace LeaveManagement.Application.Abstractions.Data
     {
         DbSet<Department> Departments { get; }
         DbSet<Employee> Employees { get; }
+        DbSet<EmailVerificationToken> EmailVerificationTokens { get; }
         DbSet<LeaveAllocation> LeaveAllocations { get; }
         DbSet<LeaveType> LeaveTypes { get; }
         DbSet<LeaveRequest> LeaveRequests { get; }

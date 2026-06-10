@@ -1,9 +1,9 @@
 ﻿using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
-using LeaveManagement.Application.Features.Employee.Commands.AssignRole;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
+using LeaveManagement.Application.Features.Employee.Commands.Promote;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee;
 using LeaveManagement.Application.Features.Employee.Commands.ResendEmailVerification;
@@ -17,9 +17,9 @@ namespace LeaveManagement.API.Handlers.Employee
             public ICommandHandler<RegisterCommand, RegisterDto> Register { get; }
             public ICommandHandler<RemoveEmployeeCommand> Remove { get; }
             public ICommandHandler<UpdateEmployeeCommand> Update { get; }
-            public ICommandHandler<EmailVerificationCommand, VerifyEmailDto> VerifyEmail { get; }
-            public ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto> ReVerifyEmail { get; }
-            public ICommandHandler<PromoteCommand> AssignRole { get; }
+            public ICommandHandler<EmailVerificationCommand> VerifyEmail { get; }
+            public ICommandHandler<ResendEmailVerificationCommand> ReVerifyEmail { get; }
+            public ICommandHandler<PromoteCommand, PromoteEmployeeDto> Promote { get; }
 
 
         public EmployeeCommandHandlers(
@@ -27,9 +27,9 @@ namespace LeaveManagement.API.Handlers.Employee
                 ICommandHandler<RegisterCommand, RegisterDto> _Register,
                 ICommandHandler<RemoveEmployeeCommand> _Remove,
                 ICommandHandler<UpdateEmployeeCommand> _Update,
-                ICommandHandler<EmailVerificationCommand, VerifyEmailDto> _VerifyEmail,
-                ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto> _ReVerifyEmail,
-                ICommandHandler<PromoteCommand> _AssignRole)
+                ICommandHandler<EmailVerificationCommand> _VerifyEmail,
+                ICommandHandler<ResendEmailVerificationCommand> _ReVerifyEmail,
+                ICommandHandler<PromoteCommand, PromoteEmployeeDto> _Promote)
             {
                 LogIn = _LogIn;
                 Register = _Register;
@@ -37,7 +37,7 @@ namespace LeaveManagement.API.Handlers.Employee
                 Update = _Update;
                 VerifyEmail = _VerifyEmail;
                 ReVerifyEmail = _ReVerifyEmail;
-                AssignRole = _AssignRole;
+                Promote = _Promote;
         }
         }
     }

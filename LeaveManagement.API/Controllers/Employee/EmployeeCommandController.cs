@@ -4,9 +4,9 @@ using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
-using LeaveManagement.Application.Features.Employee.Commands.AssignRole;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
+using LeaveManagement.Application.Features.Employee.Commands.Promote;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee;
 using LeaveManagement.Application.Features.Employee.Commands.ResendEmailVerification;
@@ -69,9 +69,9 @@ namespace LeaveManagement.API.Controllers.Employee
         [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
-            ResultT<VerifyEmailDto> result = await commandHandler.VerifyEmail.Handle(new EmailVerificationCommand(token));
+            Result result = await commandHandler.VerifyEmail.Handle(new EmailVerificationCommand(token));
 
-            return result.Match<VerifyEmailDto, IActionResult>(Ok, CustomResults.Problem);
+            return result.Match<IActionResult>(Ok, CustomResults.Problem);
         }
 
         [AllowAnonymous]
@@ -79,9 +79,9 @@ namespace LeaveManagement.API.Controllers.Employee
         [HttpPost("resend-verification")]
         public async Task<IActionResult> ResendVerification([FromBody] string email)
         {
-            ResultT<VerifyEmailDto> result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(email));
+            Result result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(email));
 
-            return result.Match<VerifyEmailDto, IActionResult>(Ok, CustomResults.Problem);
+            return result.Match<IActionResult>(Ok, CustomResults.Problem);
         }
 
         [Authorize(Policy = Auth.Policies.AdminOnly)]
@@ -89,7 +89,7 @@ namespace LeaveManagement.API.Controllers.Employee
         [HttpPost("promote")]
         public async Task<IActionResult> Promote([FromBody] PromoteCommand command)
         {
-            Result result = await commandHandler.AssignRole.Handle(command);
+            Result result = await commandHandler.Promote.Handle(command);
 
             return result.Match<IActionResult>(Ok, CustomResults.Problem);
         }

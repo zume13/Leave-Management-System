@@ -9,7 +9,6 @@ namespace LeaveManagement.Domain.Entities
         private EmailVerificationToken(Guid id, DateTime expiry, Guid emplopyeeId) : base(id)
         {
             this.Id = id;
-
             this.ExpiryDate = expiry;
             this.EmployeeId = emplopyeeId;
         }
@@ -22,13 +21,21 @@ namespace LeaveManagement.Domain.Entities
 
         public bool IsValid => DateTime.UtcNow < ExpiryDate && RevokedAt == null && UsedAt == null;
 
-        public static ResultT<EmailVerificationToken> Create(DateTime expiry, Guid employeeId)
+        public static ResultT<EmailVerificationToken> Create( Guid employeeId)
         { 
-            if (expiry <= DateTime.UtcNow)
-                return DomainErrors.EmailVerificationToken.InvalidExpiryDate;
             if (employeeId == Guid.Empty)
                 return DomainErrors.EmailVerificationToken.InvalidEmployeeId;
-            return ResultT<EmailVerificationToken>.Success(new EmailVerificationToken(Guid.NewGuid(), expiry, employeeId));
+            return ResultT<EmailVerificationToken>.Success(new EmailVerificationToken(Guid.NewGuid(), DateTime.UtcNow.AddDays(1), employeeId));
+        }
+
+        public void Revoke()
+        {
+            RevokedAt = DateTime.UtcNow;
+        }
+
+        public void Use()
+        {
+            UsedAt = DateTime.UtcNow;
         }
     }
 }

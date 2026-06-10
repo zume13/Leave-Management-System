@@ -11,7 +11,7 @@ namespace LeaveManagement.Infrastructure.Services
     {
         public ResultT<string> Create(EmailVerificationToken token)
         {
-            var link = _generator.GetUriByName(_context.HttpContext!, "VerifyEmail", new { token = token.Id });   
+            var link = _generator.GetUriByName(_context.HttpContext!, "verify", new { token = token.Id });   
 
             if(link == null) 
                 return DomainErrors.General.InternalError;

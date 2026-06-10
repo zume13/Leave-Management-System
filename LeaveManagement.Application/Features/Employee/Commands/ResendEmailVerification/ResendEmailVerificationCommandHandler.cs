@@ -11,37 +11,42 @@ namespace LeaveManagement.Application.Features.Employee.Commands.ResendEmailVeri
     public class ResendEmailVerificationCommandHandler(
         IApplicationDbContext _context,
         IEmailService _emailService) 
-        : ICommandHandler<ResendEmailVerificationCommand, VerifyEmailDto>    
+        : ICommandHandler<ResendEmailVerificationCommand>    
     {
-        public async Task<ResultT<VerifyEmailDto>> Handle(ResendEmailVerificationCommand command, CancellationToken token = default)
+        public async Task<Result> Handle(ResendEmailVerificationCommand command, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(command.Email))
-                return ResultT<VerifyEmailDto>.Failure(ApplicationErrors.Email.EmailInvalid);
+                return Result.Failure(ApplicationErrors.Email.EmailInvalid);
 
             var employee = await _context.Employees
                 .FindAsync(command.Email, token);
 
-            if (employee is null)
-                return ResultT<VerifyEmailDto>.Failure(InfrastractureErrors.User.UserNotFound);
 
-            var newToken = EmailVerificationToken.Create(DateTime.UtcNow.AddHours(24), employee.Id);
+            if (employee is null)
+                return Result.Failure(InfrastractureErrors.User.UserNotFound);
+
+            var oldToken = await _context.EmailVerificationTokens
+                                    .FindAsync(employee.Id, token);
+
+            if(oldToken is null)
+                return Result.Failure(ApplicationErrors.Email.InvalidEmailVerificationToken);
+
+            oldToken.Revoke();
+
+            var newToken = EmailVerificationToken.Create(employee.Id);
 
             if(newToken.isFailure)
-                return ResultT<VerifyEmailDto>.Failure(ApplicationErrors.Email.EmailVerificationTokenCreationFailed);
+                return Result.Failure(ApplicationErrors.Email.EmailVerificationTokenCreationFailed);
 
             var updateResult = employee.UpdateVerificationToken(newToken.Value.Id.ToString());
 
             if (updateResult.isFailure)
-                return ResultT<VerifyEmailDto>.Failure(updateResult.Error);
+                return Result.Failure(updateResult.Error);
 
                 await _context.SaveChangesAsync(token);
                 await _emailService.SendEmailVerificationAsync(employee.Name.Value, employee.Email.Value, newToken.Value.Id.ToString(), token);
 
-
-            return ResultT<VerifyEmailDto>.Success(new VerifyEmailDto(
-                true,
-                "Verification email resent. Please check your inbox."
-            ));
+            return Result.Success();
         }
     }
 }

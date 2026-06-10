@@ -9,30 +9,32 @@ namespace LeaveManagement.Application.Features.Employee.Commands.EmailVerificati
 {
     public class EmailVerificationCommandHandler(
         IApplicationDbContext _context) 
-        : ICommandHandler<EmailVerificationCommand, VerifyEmailDto>
+        : ICommandHandler<EmailVerificationCommand>
     {
-        public async Task<ResultT<VerifyEmailDto>> Handle(EmailVerificationCommand command, CancellationToken token = default)
+        public async Task<Result> Handle(EmailVerificationCommand command, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(command.token))
-                return ResultT<VerifyEmailDto>.Failure(ApplicationErrors.Employee.InvalidToken);
+                return Result.Failure(ApplicationErrors.Employee.InvalidToken);
 
             var employee = await _context.Employees
                 .FirstOrDefaultAsync(e => e.VerificationToken == command.token, token);
 
+            var Etoken = await _context.EmailVerificationTokens.FindAsync(command.token);
+
             if (employee is null)
-                return ResultT<VerifyEmailDto>.Failure(ApplicationErrors.Employee.InvalidToken);
+                return Result.Failure(ApplicationErrors.Employee.InvalidToken);
+
+            if (Etoken is null || !Etoken.IsValid)
+                return Result.Failure(ApplicationErrors.Employee.InvalidToken);
 
             var verifyResult = employee.VerifyEmail();
 
             if (verifyResult.isFailure)
-                return ResultT<VerifyEmailDto>.Failure(verifyResult.Error);
+                return Result.Failure(verifyResult.Error);
 
             await _context.SaveChangesAsync(token);
 
-            return ResultT<VerifyEmailDto>.Success(new VerifyEmailDto(
-                true,
-                "Email verified successfully. You can now log in."
-            ));
+            return Result.Success();
         }
     }
 }
