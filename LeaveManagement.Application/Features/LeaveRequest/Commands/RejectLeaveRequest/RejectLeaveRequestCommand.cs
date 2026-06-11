@@ -2,5 +2,5 @@
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.RejectLeaveRequest
 {
-    public sealed record RejectLeaveRequestCommand(Guid LeaveRequestId, string Reason, string AdminName) : ICommand;
+    public sealed record RejectLeaveRequestCommand(Guid employeeId, Guid LeaveRequestId, string Reason, Guid processorId) : ICommand;
 }

@@ -60,8 +60,10 @@ namespace LeaveManagement.Domain.Entities
             if (email is null)
                 return DomainErrors.Email.EmptyEmail;
 
+            var employeeId = Guid.NewGuid();
+
             var employee = new Employee(
-                Guid.NewGuid(), 
+                employeeId, 
                 name, 
                 email, 
                 EmployeeStatus.Active,
@@ -70,10 +72,7 @@ namespace LeaveManagement.Domain.Entities
                 Role.Employee,
                 hashedpass);
 
-            employee.RaiseDomainEvent(new MemberRegisteredEvent(
-                employee.Name.Value,
-                employee.Email.Value,
-                verificationToken));
+            employee.RaiseDomainEvent(new MemberRegisteredEvent(employeeId));
 
             return ResultT<Employee>.Success(employee);
         }
@@ -186,8 +185,33 @@ namespace LeaveManagement.Domain.Entities
             return Result.Success();
         }
         public Result CancelLeaveRequest(Guid requestId) => UpdateLeaveRequest(requestId, r => r.Cancel());
-        public Result RejectLeaveRequest(Guid requestId, string adminName, string reason) => UpdateLeaveRequest(requestId, r => r.Reject(adminName, reason)); 
-        public Result ApproveLeaveRequest(Guid requestId, string AdminName)
+        public Result RejectLeaveRequest(Guid requestId, Guid approverId, string reason)
+        {
+            var request =  _requests.FirstOrDefault(r => r.Id == requestId);
+
+            if (request is null)
+                return DomainErrors.LeaveRequest.RequestNotFound;
+
+            if (request.StartDate.Year < DateTime.UtcNow.Year)
+                return DomainErrors.LeaveRequest.InvalidYear;
+
+            if (Status == EmployeeStatus.Fired)
+                return DomainErrors.Employee.InactiveEmployee;
+
+            var reject = request.Reject(approverId, reason);
+
+            if (reject.isFailure)
+                return Result.Failure(reject.Error);
+
+            this.RaiseDomainEvent(new RejectedLeaveEvent(
+                employeeName: this.Name.Value,
+                employeeEmail: this.Email.Value,
+                requestId: request.Id, 
+                rejectionReason: reason)); 
+
+            return Result.Success();
+        }
+        public Result ApproveLeaveRequest(Guid requestId, Guid approverId)
         {
             var request = _requests.FirstOrDefault(r => r.Id == requestId);
 
@@ -208,7 +232,7 @@ namespace LeaveManagement.Domain.Entities
             if (!allocation.CanConsume(request.LeaveDays.Days))
                 return DomainErrors.LeaveDays.InsufficientLeaveDays;
 
-            var approved = request.Approve(AdminName);
+            var approved = request.Approve(approverId);
 
             if (approved.isFailure)
                 return approved.Error;
@@ -216,9 +240,9 @@ namespace LeaveManagement.Domain.Entities
             allocation.Consume(request.LeaveDays.Days);
 
             this.RaiseDomainEvent(new ApprovedLeaveEvent(
-                EmployeeName: this.Name.Value,
-                EmployeeEmail: this.Email.Value,
-                Admin: AdminName)); 
+                employeeName: this.Name.Value,
+                employeeEmail: this.Email.Value,
+                requestId: request.Id)); 
 
             return Result.Success();
         }

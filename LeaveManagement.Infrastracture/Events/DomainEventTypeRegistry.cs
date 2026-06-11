@@ -11,7 +11,8 @@ namespace LeaveManagement.Infrastructure.Events
         private readonly Dictionary<string, Type> _map = new()
         {
             [DomainEventName.MemberRegistered] = typeof(MemberRegisteredEvent),
-            [DomainEventName.LeaveApproved] = typeof(ApprovedLeaveEvent)
+            [DomainEventName.LeaveApproved] = typeof(ApprovedLeaveEvent),
+            [DomainEventName.LeaveRejected] = typeof(RejectedLeaveEvent)
         };
         public ResultT<Type> Resolve(string eventName)
         {

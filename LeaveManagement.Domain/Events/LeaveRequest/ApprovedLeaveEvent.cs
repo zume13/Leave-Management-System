@@ -3,7 +3,7 @@ using SharedKernel.DomainEvents;
 
 namespace LeaveManagement.Domain.Events.LeaveRequest
 {
-    public record ApprovedLeaveEvent(string EmployeeName, string EmployeeEmail, string? Admin) : IDomainEvent
+    public record ApprovedLeaveEvent(string employeeName, string employeeEmail, Guid requestId) : IDomainEvent
     {
         public string EventName => DomainEventName.LeaveApproved;
     }

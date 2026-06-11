@@ -3,7 +3,7 @@ using SharedKernel.DomainEvents;
 
 namespace LeaveManagement.Domain.Events.Employees
 {
-    public record MemberRegisteredEvent(string EmployeeName, string EmployeeEmail, string? VerificationToken) : IDomainEvent
+    public record MemberRegisteredEvent(Guid employeeId) : IDomainEvent
     {
         public string EventName => DomainEventName.MemberRegistered;
     }

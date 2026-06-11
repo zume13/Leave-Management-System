@@ -1,5 +1,4 @@
 ﻿using LeaveManagement.Application.Abstractions.Services;
-using LeaveManagement.Domain.Events.Employees;
 using LeaveManagement.Domain.Events.LeaveRequest;
 using SharedKernel.DomainEvents;
 

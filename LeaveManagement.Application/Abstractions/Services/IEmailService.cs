@@ -4,16 +4,21 @@ namespace LeaveManagement.Application.Abstractions.Services
 {
     public interface IEmailService
     {
-        Task SendEmailVerificationAsync(
-            string employeeName,
-            string employeeEmail,
-            string verificationToken,
+        Task<Result> SendEmailVerificationAsync(
+            Guid employeeId,
             CancellationToken ct = default);
 
-        Task SendLeaveApprovedEmailAsync(
+        Task<Result> SendLeaveApprovedEmailAsync(
             string employeeName,
             string employeeEmail,
-            string admin,
+            string leaveName,
+            CancellationToken ct = default);
+
+        Task<Result> SendLeavedRejectedEmailAsync(
+            string employeeName,
+            string employeeEmail,
+            string leaveName,
+            string rejectionReason,
             CancellationToken ct = default);
     }
 }

@@ -3,6 +3,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendin
 {
     public sealed record GetAllPendingRequestsDto(
         Guid RequestId,
+        Guid RequestorId,
         string Requestor,
         DateTime RequestDate,
         DateTime StartDate,

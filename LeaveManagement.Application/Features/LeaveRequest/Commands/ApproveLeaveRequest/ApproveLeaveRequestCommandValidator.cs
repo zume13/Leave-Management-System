@@ -8,8 +8,10 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeav
         {
             RuleFor(c => c.LeaveRequestId)
                 .NotEmpty();
-            RuleFor(c => c.AdminName)
-                .NotEmpty();
+            RuleFor(c => c.approverId)
+                .NotNull();
+            RuleFor(c => c.employeeId)
+                .NotNull();
         }
     }
 }

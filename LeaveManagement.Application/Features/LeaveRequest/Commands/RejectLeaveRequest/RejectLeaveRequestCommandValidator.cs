@@ -9,7 +9,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.RejectLeave
         {
             RuleFor(c => c.LeaveRequestId)
                 .NotEmpty();
-            RuleFor(c => c.AdminName)
+            RuleFor(c => c.employeeId)
                 .NotEmpty();
             RuleFor(c => c.Reason)
                 .MinimumLength(6)

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
+using System.Net.Mail;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -29,6 +31,17 @@ namespace LeaveManagement.Infrastructure
             services.AddScoped<IEmailLinkFactory, EmailLinkFactory>();
 
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential(config["Smtp:Email"], config["Smtp:Password"]),
+                EnableSsl = true,
+            };
+
+            services.AddFluentEmail(config["Smtp:Email"], config["Smtp:From"])
+                    .AddSmtpSender(smtpClient);
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();

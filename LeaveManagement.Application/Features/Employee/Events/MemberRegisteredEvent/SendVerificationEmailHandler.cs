@@ -8,7 +8,7 @@ namespace LeaveManagement.Application.Features.Employee.Events
     {
         public async Task Handle(MemberRegisteredEvent domainEvent, CancellationToken ct = default)
         {
-            await _service.SendEmailVerificationAsync(domainEvent.EmployeeName, domainEvent.EmployeeEmail, domainEvent.VerificationToken);
+            await _service.SendEmailVerificationAsync(domainEvent.employeeId);
         }
     }
 }

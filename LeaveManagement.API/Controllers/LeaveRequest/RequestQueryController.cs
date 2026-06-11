@@ -5,7 +5,6 @@ using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApproveRequests;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendingRequests;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRejectedRequests;
-using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRequestByEmployee;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetApprovedRequestsByEmployee;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetPendingRequestsByEmployee;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetRejectedRequestsByEmployee;
@@ -49,16 +48,6 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
                 await queryHander.GetAllRejected.Handle(query);
 
             return result.Match<List<GetAllRejectedRequestsDto>, IActionResult>(Ok, CustomResults.Problem);
-        }
-
-        [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
-        [HttpGet("employee/{employeeId:guid}/all")]
-        public async Task<IActionResult> GetRequestsByEmployeeId([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
-        {
-            ResultT<List<GetAllRequestByEmployeeDto>> result =
-                await queryHander.GetEmployeeRequests.Handle(new GetAllRequestByEmployeeQuery(employeeId, pageSize, pageNumber));
-
-            return result.Match<List<GetAllRequestByEmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]

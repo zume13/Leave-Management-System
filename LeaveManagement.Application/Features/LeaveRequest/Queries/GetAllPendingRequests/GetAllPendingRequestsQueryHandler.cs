@@ -26,6 +26,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendin
                     e => e.Id,
                     (r, e) => new GetAllPendingRequestsDto(
                         r.Id,
+                        e.Id,
                         e.Name.Value,
                         r.RequestDate,
                         r.StartDate,

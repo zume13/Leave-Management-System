@@ -5,5 +5,6 @@ namespace SharedKernel.DomainEvents
     {
         public const string MemberRegistered = "Member.Registered";
         public const string LeaveApproved = "Leave.Approved";
+        public const string LeaveRejected = "Leave.Rejected";
     }
 }

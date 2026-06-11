@@ -16,12 +16,12 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeav
                 .Include(e => e.Requests.Where(r => r.Id == command.LeaveRequestId))
                 .Include(e => e.Allocations)
                 .SingleOrDefaultAsync(e => 
-                    e.Requests.Any(r => r.Id == command.LeaveRequestId), token);
+                    e.Requests.Any(r => r.Id == command.employeeId), token);
 
             if (employee is null)
                 return ApplicationErrors.LeaveRequests.RequestNotFound(command.LeaveRequestId);
 
-            var result = employee.ApproveLeaveRequest(command.LeaveRequestId, command.AdminName);
+            var result = employee.ApproveLeaveRequest(command.LeaveRequestId, command.approverId);
 
             if (result.isFailure)
                 return result.Error;

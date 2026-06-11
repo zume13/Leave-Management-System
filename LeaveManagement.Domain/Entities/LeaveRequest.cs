@@ -33,7 +33,7 @@ namespace LeaveManagement.Domain.Entities
         public LeaveRequestStatus Status { get; private set; }
         public string? RejectionReason { get; private set; }
         public string? Description { get; private set; }
-        public string? ProcessedBy { get; private set; }
+        public Guid ProcessedBy { get; private set; }
 
         //FKs
         public Guid EmployeeId { get; private set; }
@@ -99,7 +99,7 @@ namespace LeaveManagement.Domain.Entities
         {
             return StartDate <= end && start <= EndDate;
         }
-        public Result Approve(string AdminName)
+        public Result Approve(Guid approverId)
         {
             if(Status != LeaveRequestStatus.Pending)
                 return DomainErrors.LeaveRequest.InvalidRequestStatus;
@@ -107,7 +107,7 @@ namespace LeaveManagement.Domain.Entities
             Status = LeaveRequestStatus.Approved;
             ProcessedDate = DateTime.UtcNow;
             LastModifiedDate = DateTime.UtcNow;
-            ProcessedBy = AdminName;
+            ProcessedBy = approverId;
 
             return Result.Success();
         }
@@ -122,7 +122,7 @@ namespace LeaveManagement.Domain.Entities
 
             return Result.Success();
         }
-        public Result Reject(string adminName, string? reason = null)
+        public Result Reject(Guid approverId, string? reason = null)
         {
             if (Status != LeaveRequestStatus.Pending)
                 return DomainErrors.LeaveRequest.InvalidRequestStatus;
@@ -131,7 +131,7 @@ namespace LeaveManagement.Domain.Entities
             RejectionReason = string.IsNullOrWhiteSpace(reason) ? "Not provided" : reason;
             ProcessedDate = DateTime.UtcNow;
             LastModifiedDate = DateTime.UtcNow;
-            ProcessedBy = adminName;
+            ProcessedBy = approverId;
 
             return Result.Success();
         }

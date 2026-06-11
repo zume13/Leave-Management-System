@@ -14,12 +14,12 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.RejectLeave
             var employee = await _context.Employees
                 .Include(e => e.Requests.Where(r => r.Id == command.LeaveRequestId))
                 .SingleOrDefaultAsync(e => 
-                    e.Requests.Any(r => r.Id == command.LeaveRequestId), token);
+                    e.Requests.Any(r => r.Id == command.employeeId), token);
 
             if (employee is null)
                 return ApplicationErrors.LeaveRequests.RequestNotFound(command.LeaveRequestId);
 
-            var rejectResult = employee.RejectLeaveRequest(command.LeaveRequestId, command.AdminName, command.Reason);
+            var rejectResult = employee.RejectLeaveRequest(command.LeaveRequestId, command.processorId, command.Reason);
 
             if (rejectResult.isFailure)
                 return rejectResult.Error;

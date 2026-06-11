@@ -118,8 +118,6 @@ namespace LeaveManagement.Infrastructure.Services
 
             return ResultT<RegisterDto>.Success(new RegisterDto
             {
-                Success = true,
-                Message = "User registered successfully. Please check your inbox and verify your email.",
                 Email = newMail.Value
             });
         }
