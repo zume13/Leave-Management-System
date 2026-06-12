@@ -10,5 +10,5 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetApprovedR
         DateTime EndDate,
         int LeaveDuration,
         string Description,
-        string Approver);
+        Guid Approver);
 }

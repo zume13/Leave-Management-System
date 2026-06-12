@@ -27,11 +27,9 @@ namespace LeaveManagement.Infrastructure
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection")).AddInterceptors(interceptor!);
                 
             });
-
-            services.AddScoped<IEmailLinkFactory, EmailLinkFactory>();
-
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
+            services.AddHttpContextAccessor();
 
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
@@ -46,6 +44,7 @@ namespace LeaveManagement.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IEmailLinkFactory, EmailLinkFactory>();
 
             services.AddSingleton<JsonSerializerOptions>(new JsonSerializerOptions
             {

@@ -33,7 +33,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApprov
                     r.EndDate,
                     r.LeaveDays.Days,
                     r.Description ?? "No description provided",
-                    r.ProcessedBy ?? "System"))
+                    r.ProcessedBy))
                 .ToListAsync(cancellationToken);
 
             if (requests.Count == 0)

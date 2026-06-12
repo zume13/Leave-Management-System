@@ -10,6 +10,6 @@ namespace LeaveManagement.Infrastructure.Persistence.Outbox
         public DateTime OccuredOn { get; set; } 
         public DateTime? ProcessedOn { get; set; }
         public string? Error { get; set; } 
-
+        public int retryCount { get; set; }
     }
 }

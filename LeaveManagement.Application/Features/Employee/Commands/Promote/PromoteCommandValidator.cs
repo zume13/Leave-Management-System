@@ -8,8 +8,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.Promote
         {
             RuleFor(x => x.employeeId)
                 .NotEmpty().WithMessage("Employee id is required")
-                .NotNull().WithMessage("Employee id is required")
-                .Must(id => Guid.TryParse(id, out _)).WithMessage("Employee id must be a valid guid");
+                .NotNull().WithMessage("Employee id is required");
 
             RuleFor(x => x.role)
                 .NotEmpty().WithMessage("Role is required")

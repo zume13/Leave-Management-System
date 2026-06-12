@@ -44,7 +44,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.ResendEmailVeri
                 return Result.Failure(updateResult.Error);
 
                 await _context.SaveChangesAsync(token);
-                await _emailService.SendEmailVerificationAsync(employee.Name.Value, employee.Email.Value, newToken.Value.Id.ToString(), token);
+                await _emailService.SendEmailVerificationAsync(employee.Id, token);
 
             return Result.Success();
         }

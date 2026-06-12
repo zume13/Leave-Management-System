@@ -7,7 +7,7 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Infrastructure.Services
 {
-    public class EmailLinkFactory(HttpContextAccessor _context, LinkGenerator _generator) : IEmailLinkFactory
+    public class EmailLinkFactory(IHttpContextAccessor _context, LinkGenerator _generator) : IEmailLinkFactory
     {
         public ResultT<string> Create(EmailVerificationToken token)
         {

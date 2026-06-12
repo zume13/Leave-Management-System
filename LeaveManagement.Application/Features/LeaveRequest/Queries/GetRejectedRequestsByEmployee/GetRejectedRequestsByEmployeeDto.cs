@@ -15,5 +15,5 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetRejectedR
         DateTime EndDate,
         int LeaveDuration,
         string Reason,
-        string ProcessedBy);
+        Guid ProcessedBy);
 }
