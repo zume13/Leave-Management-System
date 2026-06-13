@@ -38,7 +38,7 @@ namespace LeaveManagement.Infrastructure.Persistence
                 .Select(entry => entry.Entity)
                 .SelectMany(aggregate =>
                 {
-                    List<IDomainEvent> domainEvents = aggregate.domainEvents;
+                   var domainEvents = aggregate.domainEvents;
 
                     aggregate.ClearDomainEvents();
 

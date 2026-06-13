@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
 using Microsoft.EntityFrameworkCore;
+using LeaveManagement.Domain.Enums;
 
 namespace LeaveManagement.Infrastructure.Services
 {
@@ -16,7 +17,7 @@ namespace LeaveManagement.Infrastructure.Services
         
         public async Task<ResultT<LogInDto>> LoginAsync(string email, string password, CancellationToken ct = default)
         {
-            var employee = await _context.Employees.FindAsync(email);
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email.Value == email, ct);
 
             if (employee is null)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
@@ -93,9 +94,14 @@ namespace LeaveManagement.Infrastructure.Services
         }
         public async Task<ResultT<RegisterDto>> RegisterAsync(string email, string employeeName, string password, Guid deptId, CancellationToken ct = default)
         {
-            var existingUser = await _context.Employees.FindAsync(email, ct);
-            if (existingUser is not null)
-                return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.UserEmailExists);
+
+            using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+            try
+            {
+                var existingUser = await _context.Employees.FirstOrDefaultAsync(e => e.Email.Value == email, ct);
+                if (existingUser is not null)
+                    return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.UserEmailExists);
 
                 var newMail = Email.Create(email).Value;
 
@@ -106,20 +112,37 @@ namespace LeaveManagement.Infrastructure.Services
 
                 var hashedpass = _hasher.HashPassword(null!, password);
 
-            var employee = Employee.Create(Name.Create(employeeName).Value, newMail, deptId, Guid.NewGuid().ToString(), hashedpass);
+                var verificationToken = Guid.NewGuid();
+
+                var employee = Employee.Create(Name.Create(employeeName).Value, newMail, deptId, verificationToken.ToString(), hashedpass);
 
                 if (employee.isFailure)
                 {
                     return ResultT<RegisterDto>.Failure(InfrastractureErrors.User.FailedRegistry);
                 }
+
+                var createdToken = EmailVerificationToken.Create(verificationToken, employee.Value.Id);
+
+                if(createdToken.isFailure)
+                    return ResultT<RegisterDto>.Failure(createdToken.Error);
+
+                employee.Value.AssignRole(Role.Employee);
+                await _context.EmailVerificationTokens.AddAsync(createdToken.Value, ct);
                 await _context.Employees.AddAsync(employee.Value, ct);
                 await _context.SaveChangesAsync(ct);
+                await transaction.CommitAsync(ct);
 
-
-            return ResultT<RegisterDto>.Success(new RegisterDto
+                return ResultT<RegisterDto>.Success(new RegisterDto
+                {
+                    Email = newMail.Value
+                });
+            }
+            catch (Exception ex)
             {
-                Email = newMail.Value
-            });
+                await transaction.RollbackAsync(ct);
+                throw;
+            }   
+            
         }
     }
 }

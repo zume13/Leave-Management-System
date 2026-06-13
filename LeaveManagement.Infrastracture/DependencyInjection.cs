@@ -20,11 +20,15 @@ namespace LeaveManagement.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
+            services.AddScoped<ConvertDomainEventsToOutboxMessagesInterceptor>();
+            services.AddScoped<IDomainEventDispatcher, DomainEventsDispatcher>();
+            services.AddSingleton<IDomainEventTypeRegistry, DomainEventTypeRegistry>();
+            services.AddScoped<IOutBoxMessageSerializer, OutboxMessageSerializer>();
+
             services.AddDbContext<ApplicationDbContext>((sp, opt) =>
             {
-                var interceptor = sp.GetService<ConvertDomainEventsToOutboxMessagesInterceptor>();
 
-                opt.UseSqlServer(config.GetConnectionString("DefaultConnection")).AddInterceptors(interceptor!);
+                opt.UseSqlServer(config.GetConnectionString("DefaultConnection")).AddInterceptors(sp.GetService<ConvertDomainEventsToOutboxMessagesInterceptor>()!);
                 
             });
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
@@ -45,6 +49,7 @@ namespace LeaveManagement.Infrastructure
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmailLinkFactory, EmailLinkFactory>();
+            services.AddScoped<SeederService>();
 
             services.AddSingleton<JsonSerializerOptions>(new JsonSerializerOptions
             {
@@ -55,10 +60,7 @@ namespace LeaveManagement.Infrastructure
                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
                 }
             });
-            services.AddScoped<IDomainEventDispatcher, DomainEventsDispatcher>();
-            services.AddSingleton<IDomainEventTypeRegistry, DomainEventTypeRegistry>();
-            services.AddScoped<IOutBoxMessageSerializer, OutboxMessageSerializer>();
-
+            
             return services;
         }
 

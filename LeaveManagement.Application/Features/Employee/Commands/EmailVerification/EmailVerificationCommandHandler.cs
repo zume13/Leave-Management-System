@@ -1,6 +1,5 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
-using LeaveManagement.Application.Dto.Response.Employee;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
@@ -12,7 +11,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.EmailVerificati
         : ICommandHandler<EmailVerificationCommand>
     {
         public async Task<Result> Handle(EmailVerificationCommand command, CancellationToken token = default)
-        {
+        {        
             if (string.IsNullOrWhiteSpace(command.token))
                 return Result.Failure(ApplicationErrors.Employee.InvalidToken);
 
@@ -24,7 +23,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.EmailVerificati
             if (employee is null)
                 return Result.Failure(ApplicationErrors.Employee.InvalidToken);
 
-            if (Etoken is null || !Etoken.IsValid)
+            if (Etoken is null || !Etoken.IsValid || Etoken.Id.ToString() != employee.VerificationToken)
                 return Result.Failure(ApplicationErrors.Employee.InvalidToken);
 
             var verifyResult = employee.VerifyEmail();

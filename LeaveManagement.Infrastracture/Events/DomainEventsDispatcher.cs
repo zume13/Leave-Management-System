@@ -29,7 +29,7 @@ namespace LeaveManagement.Infrastructure.Events
                     if(handler is null)
                         continue;
 
-                    var handlerWrapper = HandlerWrapper.Create(handler, handlerType);
+                    var handlerWrapper = HandlerWrapper.Create(handler, domainEventType);
 
                     await handlerWrapper.Handle(domainEvent, ct);
                 }

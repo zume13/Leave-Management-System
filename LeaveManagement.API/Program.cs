@@ -3,6 +3,7 @@ using LeaveManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using LeaveManagement.Application;
 using LeaveManagement.API.Extensions;
+using LeaveManagement.Infrastructure.Services;
 
 namespace LeaveManagement.API
 {
@@ -24,6 +25,12 @@ namespace LeaveManagement.API
             {
                 app.UseScalar();
             }
+
+            using var scope = app.Services.CreateScope();
+
+            var seeder = scope.ServiceProvider.GetRequiredService<SeederService>();
+
+            await seeder.SeedAsync();
 
             app.UseHttpsRedirection();
 

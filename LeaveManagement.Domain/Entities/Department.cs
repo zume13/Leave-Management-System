@@ -13,12 +13,12 @@ namespace LeaveManagement.Domain.Entities
         }
         private Department() { }
         public Name DepartmentName { get; private set; }
-        public static ResultT<Department> Create(Name deptName)
+        public static ResultT<Department> Create(Guid deptId, Name deptName)
         {
             if (deptName == null)
                 return DomainErrors.General.EmptyName;
 
-            return ResultT<Department>.Success(new Department(Guid.NewGuid(), deptName));
+            return ResultT<Department>.Success(new Department(deptId, deptName));
         }
     }
 }

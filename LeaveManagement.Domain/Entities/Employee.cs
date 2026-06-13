@@ -19,7 +19,6 @@ namespace LeaveManagement.Domain.Entities
             EmployeeStatus status,
             Guid departmentId, 
             string? verificationToken,
-            Role role,
             string password) : base(id)
         {
             this.Name = name;
@@ -27,7 +26,6 @@ namespace LeaveManagement.Domain.Entities
             this.Status = status;
             this.DeptId = departmentId;
             this.VerificationToken = verificationToken;
-            this.Role = role;
             this.HashedPassword = password;
         }
         private Employee() { }
@@ -54,10 +52,10 @@ namespace LeaveManagement.Domain.Entities
             string verificationToken,
             string hashedpass)
         {
-            if (name is null)
+            if (name.Value is null)
                 return DomainErrors.Employee.EmptyEmployeeName;
 
-            if (email is null)
+            if (email.Value is null)
                 return DomainErrors.Email.EmptyEmail;
 
             var employeeId = Guid.NewGuid();
@@ -69,7 +67,6 @@ namespace LeaveManagement.Domain.Entities
                 EmployeeStatus.Active,
                 departmentId, 
                 verificationToken, 
-                Role.Employee,
                 hashedpass);
 
             employee.RaiseDomainEvent(new MemberRegisteredEvent(employeeId));
@@ -333,6 +330,10 @@ namespace LeaveManagement.Domain.Entities
                     return DomainErrors.Employee.InvalidRole;
             }
             return Result.Success();
+        }
+        public void AssignRole(Role newRole)
+        {
+            this.Role = newRole;
         }
         #endregion
     }

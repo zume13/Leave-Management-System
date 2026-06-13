@@ -7,7 +7,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.Register
         public RegisterCommandValidator()
         {
             RuleFor(c => c.Email)
-                .EmailAddress().WithMessage("Please enter a valid Emaild Adress")
+                .EmailAddress().WithMessage("Please enter a valid Email Adress")
                 .NotEmpty().WithMessage("Email should not be empty");
             RuleFor(c => c.EmployeeName)
                 .NotEmpty().WithMessage("Employee name should not be empty")

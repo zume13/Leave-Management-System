@@ -67,9 +67,9 @@ namespace LeaveManagement.API.Controllers.Employee
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
         [HttpGet("verify", Name = "verify")]
-        public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+        public async Task<IActionResult> VerifyEmail([FromQuery] EmailVerificationCommand command)
         {
-            Result result = await commandHandler.VerifyEmail.Handle(new EmailVerificationCommand(token));
+            Result result = await commandHandler.VerifyEmail.Handle(command);
 
             return result.Match<IActionResult>(Ok, CustomResults.Problem);
         }

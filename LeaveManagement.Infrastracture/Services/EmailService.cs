@@ -33,7 +33,7 @@ namespace LeaveManagement.Infrastructure.Services
             if(employee is null)
                 return Result.Failure(InfrastractureErrors.User.UserNotFound);
 
-            var link = _factory.Create(EmailVerificationToken.Create(employeeId).Value);
+            var link = _factory.Create(EmailVerificationToken.Create(Guid.Parse(employee.VerificationToken!), employeeId).Value);
 
             var body = $@"<!DOCTYPE html>
                         <html>
@@ -58,7 +58,7 @@ namespace LeaveManagement.Infrastructure.Services
                                                     </p>
 
                                                     <p style='text-align:center;margin:30px 0;'>
-                                                        <a href='{link}'
+                                                        <a href='{link.Value}'
                                                            style='background:#2563eb;
                                                                   color:white;
                                                                   padding:12px 24px;
@@ -73,8 +73,8 @@ namespace LeaveManagement.Infrastructure.Services
                                                     </p>
 
                                                     <p>
-                                                        <a href='{link}'>
-                                                            {link}
+                                                        <a href='{link.Value}'>
+                                                            {link.Value}
                                                         </a>
                                                     </p>
                                                 </td>

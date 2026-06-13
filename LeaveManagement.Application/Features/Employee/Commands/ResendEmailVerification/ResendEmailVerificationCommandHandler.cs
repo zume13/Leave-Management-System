@@ -33,7 +33,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.ResendEmailVeri
 
             oldToken.Revoke();
 
-            var newToken = EmailVerificationToken.Create(employee.Id);
+            var newToken = EmailVerificationToken.Create(Guid.NewGuid(), employee.Id);
 
             if(newToken.isFailure)
                 return Result.Failure(ApplicationErrors.Email.EmailVerificationTokenCreationFailed);

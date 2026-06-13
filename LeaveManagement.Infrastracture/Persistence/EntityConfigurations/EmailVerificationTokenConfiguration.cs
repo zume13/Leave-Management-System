@@ -12,7 +12,7 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
 
             builder.HasOne<Employee>()
                 .WithOne()
-                .HasForeignKey<EmailVerificationToken>(e => e.Id)
+                .HasForeignKey<EmailVerificationToken>(e => e.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);  
 
             builder.Property(e => e.ExpiryDate)

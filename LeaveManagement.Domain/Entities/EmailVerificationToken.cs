@@ -21,11 +21,15 @@ namespace LeaveManagement.Domain.Entities
 
         public bool IsValid => DateTime.UtcNow < ExpiryDate && RevokedAt == null && UsedAt == null;
 
-        public static ResultT<EmailVerificationToken> Create( Guid employeeId)
+        public static ResultT<EmailVerificationToken> Create(Guid tokenId, Guid employeeId)
         { 
             if (employeeId == Guid.Empty)
                 return DomainErrors.EmailVerificationToken.InvalidEmployeeId;
-            return ResultT<EmailVerificationToken>.Success(new EmailVerificationToken(Guid.NewGuid(), DateTime.UtcNow.AddDays(1), employeeId));
+
+            if (tokenId == Guid.Empty)
+                return DomainErrors.EmailVerificationToken.InvalidEmployeeId;
+
+            return ResultT<EmailVerificationToken>.Success(new EmailVerificationToken(tokenId, DateTime.UtcNow.AddDays(1), employeeId));
         }
 
         public void Revoke()

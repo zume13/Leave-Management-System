@@ -9,22 +9,22 @@ namespace LeaveManagement.Infrastructure.Persistence.Interceptors
 {
     public sealed class ConvertDomainEventsToOutboxMessagesInterceptor(IOutBoxMessageSerializer _serializer) : SaveChangesInterceptor
     {
-        public override ValueTask<int> SavedChangesAsync(
-            SaveChangesCompletedEventData eventData,
-            int result,
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
             CancellationToken ct = default)
         {
             DbContext? dbContext = eventData.Context;
 
             if (dbContext is null)
-                return base.SavedChangesAsync(eventData, result, ct);
+                return base.SavingChangesAsync(eventData, result, ct);
 
             var outBoxMessages = dbContext.ChangeTracker
                 .Entries<AggregateRoot>()
                 .Select(x => x.Entity)
                 .SelectMany(aggregate => {
 
-                    List<IDomainEvent> domainEvents = aggregate.domainEvents;
+                    var domainEvents = aggregate.domainEvents.ToList();
 
                     aggregate.ClearDomainEvents();
 
@@ -42,7 +42,7 @@ namespace LeaveManagement.Infrastructure.Persistence.Interceptors
 
             dbContext.Set<OutBoxMessage>().AddRange(outBoxMessages);
 
-            return base.SavedChangesAsync(eventData, result, ct);
+            return base.SavingChangesAsync(eventData, result, ct);
         }
     }
 }
