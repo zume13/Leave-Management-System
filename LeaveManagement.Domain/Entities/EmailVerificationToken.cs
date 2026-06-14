@@ -19,7 +19,9 @@ namespace LeaveManagement.Domain.Entities
         public DateTime? RevokedAt { get; private set; }
         public DateTime? UsedAt { get; private set; }
 
-        public bool IsValid => DateTime.UtcNow < ExpiryDate && RevokedAt == null && UsedAt == null;
+        public bool IsValid => RevokedAt == null && UsedAt == null;
+
+        public bool IsExpired => DateTime.UtcNow > ExpiryDate;
 
         public static ResultT<EmailVerificationToken> Create(Guid tokenId, Guid employeeId)
         { 

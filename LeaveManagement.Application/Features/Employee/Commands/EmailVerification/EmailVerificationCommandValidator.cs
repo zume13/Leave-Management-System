@@ -7,7 +7,8 @@ namespace LeaveManagement.Application.Features.Employee.Commands.EmailVerificati
        public EmailVerificationCommandValidator()
         {
             RuleFor(x => x.token)
-                .NotNull().WithMessage("Token cannot be null.");
+                .NotNull().WithMessage("Token cannot be null.")
+                .NotEmpty().WithMessage("Token cannot be empty.");
         }
     }
 }

@@ -18,13 +18,16 @@ namespace LeaveManagement.Application.Features.Employee.Commands.EmailVerificati
             var employee = await _context.Employees
                 .FirstOrDefaultAsync(e => e.VerificationToken == command.token, token);
 
-            var Etoken = await _context.EmailVerificationTokens.FindAsync(command.token);
+            var Etoken = await _context.EmailVerificationTokens.FindAsync(Guid.Parse(command.token));
 
             if (employee is null)
                 return Result.Failure(ApplicationErrors.Employee.InvalidToken);
 
             if (Etoken is null || !Etoken.IsValid || Etoken.Id.ToString() != employee.VerificationToken)
                 return Result.Failure(ApplicationErrors.Employee.InvalidToken);
+
+            if(Etoken.IsExpired)
+                return Result.Failure(ApplicationErrors.Employee.ExpiredToken);
 
             var verifyResult = employee.VerifyEmail();
 

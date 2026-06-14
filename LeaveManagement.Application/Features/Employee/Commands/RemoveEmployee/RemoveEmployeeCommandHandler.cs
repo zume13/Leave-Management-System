@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
 
@@ -11,9 +12,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee
 
         public async Task<Result> Handle(RemoveEmployeeCommand command, CancellationToken token = default)
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync(token);
-
-            var employee = await _context.Employees.FindAsync(command.employeeId, token);
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == command.employeeId, token);
 
             if (employee is null)
                 return ApplicationErrors.Employee.EmployeeNotFound(command.employeeId);

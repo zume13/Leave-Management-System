@@ -40,7 +40,26 @@ namespace LeaveManagement.API.Controllers.Employee
         {
             ResultT<LogInDto> result = await commandHandler.LogIn.Handle(command);
 
-            return result.Match<LogInDto, IActionResult>(Ok, CustomResults.Problem);
+            return result.Match<LogInDto, IActionResult>(success =>
+            {
+                Response.Cookies.Append(
+                    "refreshToken",
+                    result.Value.RefreshToken,
+                    new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = result.Value.RefreshTokenExpiration
+                    });
+
+                return Ok(
+                    new {
+                        isSuccessful = true,
+                        accessToken = result.Value.Accesstoken,
+                        accessTokenExpiry = result.Value.AccessTokenExpiration
+                    });
+            }, CustomResults.Problem);
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
@@ -92,6 +111,39 @@ namespace LeaveManagement.API.Controllers.Employee
             Result result = await commandHandler.Promote.Handle(command);
 
             return result.Match<IActionResult>(Ok, CustomResults.Problem);
+        }
+
+        [AllowAnonymous]
+        [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
+        [HttpPost("auth/refresh-token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            string? refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return CustomResults.Problem(Result.Failure(Error.NotFound("RefreshToken.NotFound", "RefreshToken was not found")));
+            }
+            ResultT<LogInDto> result = await commandHandler.RefreshToken.Handle();
+            return result.Match<LogInDto, IActionResult>(success =>
+            {
+                Response.Cookies.Append(
+                    "refreshToken",
+                    result.Value.RefreshToken,
+                    new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = result.Value.RefreshTokenExpiration
+                    });
+                return Ok(
+                    new
+                    {
+                        isSuccessful = true,
+                        accessToken = result.Value.Accesstoken,
+                        accessTokenExpiry = result.Value.AccessTokenExpiration
+                    });
+            }, CustomResults.Problem);
         }
     }
 }

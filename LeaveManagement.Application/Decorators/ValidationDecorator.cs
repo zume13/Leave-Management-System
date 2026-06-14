@@ -72,7 +72,7 @@ namespace LeaveManagement.Application.Decorators
             {
                 ValidationFailure[] validationFailures = await ValidateAsync(command, validators);
 
-                if(validationFailures.Length == 0)
+                if(validationFailures.Length != 0)
                 {
                     return Result.Failure(new ValidationError([.. validationFailures.Select(v => new Error(v.ErrorCode, v.ErrorMessage, ErrorType.Validation))]));
                 }

@@ -23,3 +23,4 @@
         public static Error NotFound(string code, string desc) => new(code, desc, ErrorType.NotFound);
     }
 }
+ 

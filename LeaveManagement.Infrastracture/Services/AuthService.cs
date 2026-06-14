@@ -22,6 +22,11 @@ namespace LeaveManagement.Infrastructure.Services
             if (employee is null)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
 
+            var verificationResult = _hasher.VerifyHashedPassword(employee, employee.HashedPassword, password);
+
+            if (verificationResult == PasswordVerificationResult.Failed)
+                return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
+
             var token = _token.GenerateAccessToken(employee);
 
             if(token is null)
