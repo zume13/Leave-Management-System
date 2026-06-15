@@ -26,7 +26,7 @@ namespace LeaveManagement.Domain.Entities
         public DateTime? RevokedAt { get; private set; }
         public string? ReplacedByToken { get; private set; }
 
-        public static ResultT<RefreshToken> Create(Guid id, string token, DateTime expiresAt, Guid employeeid)
+        public static ResultT<RefreshToken> Create(string token, DateTime expiresAt, Guid employeeid)
         {
             if (string.IsNullOrWhiteSpace(token))
                 return DomainErrors.RefreshToken.NullToken;
@@ -34,7 +34,7 @@ namespace LeaveManagement.Domain.Entities
             if (expiresAt <= DateTime.UtcNow)
                 return DomainErrors.RefreshToken.TokenExpired;
 
-            return ResultT<RefreshToken>.Success(new RefreshToken(id, token, expiresAt, employeeid));
+            return ResultT<RefreshToken>.Success(new RefreshToken(Guid.NewGuid(), token, expiresAt, employeeid));
         }
         public Result Revoke(string? replacedByToken = null)
         {

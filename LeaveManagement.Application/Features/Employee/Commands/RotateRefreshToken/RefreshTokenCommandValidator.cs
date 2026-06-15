@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace LeaveManagement.Application.Features.Employee.Commands.RefreshToken
+namespace LeaveManagement.Application.Features.Employee.Commands.RotateRefreshToken
 {
     internal class RefreshTokenCommandValidator : AbstractValidator<RefreshTokenCommand>
     {

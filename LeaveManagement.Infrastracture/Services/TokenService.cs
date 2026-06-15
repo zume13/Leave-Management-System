@@ -53,7 +53,6 @@ namespace LeaveManagement.Infrastructure.Services
                 return InfrastractureErrors.TokenService.TokenGenerationFailed;
 
             return ResultT<RefreshToken>.Success(RefreshToken.Create(
-                    id: Guid.NewGuid(),
                     token: token,
                     expiresAt: DateExpiry.refreshTokenExpiry,
                     employeeid: employee.Id
