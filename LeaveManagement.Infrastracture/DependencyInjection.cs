@@ -28,7 +28,7 @@ namespace LeaveManagement.Infrastructure
             services.AddDbContext<ApplicationDbContext>((sp, opt) =>
             {
 
-                opt.UseSqlServer(config.GetConnectionString("DefaultConnection")).AddInterceptors(sp.GetService<ConvertDomainEventsToOutboxMessagesInterceptor>()!);
+                opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
                 
             });
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());

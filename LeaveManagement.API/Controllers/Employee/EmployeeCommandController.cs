@@ -10,6 +10,7 @@ using LeaveManagement.Application.Features.Employee.Commands.Promote;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee;
 using LeaveManagement.Application.Features.Employee.Commands.ResendEmailVerification;
+using LeaveManagement.Application.Features.Employee.Commands.RotateRefreshToken;
 using LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -120,11 +121,10 @@ namespace LeaveManagement.API.Controllers.Employee
         {
             string? refreshToken = Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
-            {
                 return CustomResults.Problem(Result.Failure(Error.NotFound("RefreshToken.NotFound", "RefreshToken was not found")));
-            }
-            ResultT<LogInDto> result = await commandHandler.RefreshToken.Handle();
-            return result.Match<LogInDto, IActionResult>(success =>
+            
+            ResultT<RefreshTokenDto> result = await commandHandler.RefreshToken.Handle(new RefreshTokenCommand(refreshToken));
+            return result.Match<RefreshTokenDto, IActionResult>(success =>
             {
                 Response.Cookies.Append(
                     "refreshToken",

@@ -6,15 +6,12 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeave
     {
         public CreateLeaveRequestCommandValidator()
         {
-            RuleFor(c => c.userId)
-                .NotEmpty();
             RuleFor(c => c.startDate)
                 .Must(date => date.Date > DateTime.Today)
                 .NotEmpty();
             RuleFor(c => c.endDate)
                 .Must((request, endDate) => 
-                    endDate.Date > DateTime.Today && 
-                    endDate.Date > request.startDate);
+                    endDate.Date > DateTime.Today);
             RuleFor(c => c.description)
                 .MinimumLength(5);
             RuleFor(c => c.employeeId)

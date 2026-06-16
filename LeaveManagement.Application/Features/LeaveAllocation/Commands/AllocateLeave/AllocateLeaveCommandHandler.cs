@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
+using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
 
@@ -10,9 +11,10 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.Allocate
         private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<Guid>> Handle(AllocateLeaveCommand command, CancellationToken token = default)
         {
-            var employee = await _context.Employees.FindAsync(command.EmployeeId, token);
+            var employee = await _context.Employees.Include(e => e.Allocations)
+                                .SingleOrDefaultAsync(e => e.Id == command.EmployeeId, token);
 
-            if(employee is null)
+            if (employee is null)
                 return ApplicationErrors.Employee.EmployeeNotFound(command.EmployeeId);
 
             var leaveType = await _context.LeaveTypes.FindAsync(command.LeaveTypeId, token);
@@ -24,6 +26,10 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.Allocate
 
             if(allocateResult.isFailure)
                 return ResultT<Guid>.Failure(allocateResult.Error);
+
+            var newAllocation = employee.Allocations.Single(a => a.Id == allocateResult.Value);
+
+            await _context.LeaveAllocations.AddAsync(newAllocation, token);
 
             await _context.SaveChangesAsync(token);
 

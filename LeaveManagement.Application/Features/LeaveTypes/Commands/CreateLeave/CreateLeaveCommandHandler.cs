@@ -5,9 +5,8 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Commands.CreateLeave
 {
-    public sealed class CreateLeaveCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateLeaveCommand, Guid>
+    public sealed class CreateLeaveCommandHandler(IApplicationDbContext _context) : ICommandHandler<CreateLeaveCommand, Guid>
     {
-        private readonly IApplicationDbContext _context = context;
         public async Task<ResultT<Guid>> Handle(CreateLeaveCommand command, CancellationToken token = default)
         {
             var result = LeaveType.Create(command.Name, command.DefaultDays);
@@ -16,6 +15,9 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Commands.CreateLeave
                 return result.Error;
 
             await _context.LeaveTypes.AddAsync(result.Value, token);
+
+
+            await _context.SaveChangesAsync(token);
 
             return ResultT<Guid>.Success(result.Value.Id);
         }

@@ -7,6 +7,7 @@ using LeaveManagement.Application.Features.Employee.Commands.Promote;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee;
 using LeaveManagement.Application.Features.Employee.Commands.ResendEmailVerification;
+using LeaveManagement.Application.Features.Employee.Commands.RotateRefreshToken;
 using LeaveManagement.Application.Features.Employee.Commands.UpdateEmployee;
 
 namespace LeaveManagement.API.Handlers.Employee
@@ -21,6 +22,8 @@ namespace LeaveManagement.API.Handlers.Employee
             public ICommandHandler<ResendEmailVerificationCommand> ReVerifyEmail { get; }
             public ICommandHandler<PromoteCommand, PromoteEmployeeDto> Promote { get; }
 
+            public ICommandHandler<RefreshTokenCommand,  RefreshTokenDto> RefreshToken { get; }
+
 
         public EmployeeCommandHandlers(
                 ICommandHandler<LogInCommand, LogInDto> _LogIn,
@@ -29,7 +32,8 @@ namespace LeaveManagement.API.Handlers.Employee
                 ICommandHandler<UpdateEmployeeCommand> _Update,
                 ICommandHandler<EmailVerificationCommand> _VerifyEmail,
                 ICommandHandler<ResendEmailVerificationCommand> _ReVerifyEmail,
-                ICommandHandler<PromoteCommand, PromoteEmployeeDto> _Promote)
+                ICommandHandler<PromoteCommand, PromoteEmployeeDto> _Promote,
+                ICommandHandler<RefreshTokenCommand, RefreshTokenDto> _RefreshToken)
             {
                 LogIn = _LogIn;
                 Register = _Register;
@@ -38,6 +42,7 @@ namespace LeaveManagement.API.Handlers.Employee
                 VerifyEmail = _VerifyEmail;
                 ReVerifyEmail = _ReVerifyEmail;
                 Promote = _Promote;
-        }
+                RefreshToken = _RefreshToken;
+            }
         }
     }

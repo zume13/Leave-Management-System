@@ -18,7 +18,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetApprovedR
 
             var requests = await _context.LeaveRequests
                 .AsNoTracking()
-                .Where(r => r.EmployeeId == query.employeeId && r.IsApproved())
+                .Where(r => r.EmployeeId == query.employeeId && r.Status == LeaveRequestStatus.Approved)
                 .OrderBy(r => r.ProcessedDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

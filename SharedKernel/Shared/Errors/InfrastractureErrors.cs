@@ -24,6 +24,7 @@ namespace SharedKernel.Shared.Errors
             public static readonly Error FailedRegistry = Error.Failure("Register.Failed", "User registration failed due to internal error");
             public static readonly Error InvalidCredentials = Error.Problem("User.InvalidCredentials", "Invalid email or password");
             public static readonly Error UserNotFound = Error.NotFound("User.NotFound", "User not found");
+            public static readonly Error EmailNotVerified = Error.Problem("User.EmailNotVerified", "The user's email was not verified");
         }
 
         public static class Email

@@ -129,13 +129,13 @@ namespace LeaveManagement.Domain.Entities
             if (startDate > endDate)
                 return DomainErrors.LeaveRequest.InvalidDateRange;
 
-            if (startDate < DateTime.UtcNow)
+            if (startDate < DateTime.UtcNow.Date)
                 return DomainErrors.LeaveDays.PastDate;
 
             if (LeaveRequest.GetLeaveSpan(startDate, endDate) <= 0)
                 return DomainErrors.LeaveRequest.InvalidDateRange;
 
-            if (_requests.Any(r => r.OverlapsWith(startDate, endDate)))
+            if (_requests.Any(r => r.OverlapsWith(startDate, endDate) && r.IsPending()))
                 return DomainErrors.LeaveRequest.OverLappingRequest;
 
             var alloc = _allocations.FirstOrDefault(a => a.LeaveTypeId == leaveType.Id);

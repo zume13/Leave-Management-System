@@ -12,7 +12,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.UpdateLeave
                 .Must(date => date.Date > DateTime.Today)
                 .NotEmpty();
             RuleFor(c => c.newEndDate)
-                .Must((request, endDate) => endDate.Date > DateTime.Today && endDate.Date > request.newStartDate)
+                .Must((request, endDate) => endDate.Date > DateTime.Today)
                 .NotEmpty();
             RuleFor(c => c.newDescription)
                 .MinimumLength(6);

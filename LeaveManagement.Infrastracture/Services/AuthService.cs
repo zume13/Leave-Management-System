@@ -22,7 +22,10 @@ namespace LeaveManagement.Infrastructure.Services
             if (employee is null)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);
 
-            var verificationResult = _hasher.VerifyHashedPassword(employee, employee.HashedPassword, password);
+            if(employee.IsEmailVerified == false)
+                return ResultT<LogInDto>.Failure(InfrastractureErrors.User.EmailNotVerified);
+
+            var verificationResult = _hasher.VerifyHashedPassword(null!, employee.HashedPassword, password);
 
             if (verificationResult == PasswordVerificationResult.Failed)
                 return ResultT<LogInDto>.Failure(InfrastractureErrors.User.InvalidCredentials);

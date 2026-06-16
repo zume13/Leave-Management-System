@@ -2,15 +2,16 @@
 using LeaveManagement.Application.Abstractions.Events;
 using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.Primitives;
+using LeaveManagement.Infrastructure.Persistence.Interceptors;
 using LeaveManagement.Infrastructure.Persistence.Outbox;
-using LeaveManagement.SharedKernel.DomainEvents;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Infrastructure.Persistence
 {
     public class ApplicationDbContext(
         DbContextOptions op,
-        IDomainEventDispatcher dispatcher)
+        IDomainEventDispatcher dispatcher,
+        ConvertDomainEventsToOutboxMessagesInterceptor interceptor)
         : DbContext(op), IApplicationDbContext
     {
         public DbSet<Department> Departments => Set<Department>();
@@ -29,6 +30,12 @@ namespace LeaveManagement.Infrastructure.Persistence
             int result = await base.SaveChangesAsync(cancellationToken);
             return result;
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(interceptor);  
+        }
+
 
         //Another example on how to dispatch domain events
         private async Task PublishDomainEvents()

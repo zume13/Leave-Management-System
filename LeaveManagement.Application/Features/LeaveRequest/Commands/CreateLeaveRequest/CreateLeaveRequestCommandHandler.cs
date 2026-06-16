@@ -14,6 +14,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeave
         {
             var employee = await _context.Employees
                 .Include(e => e.Requests)
+                .Include(e => e.Allocations)
                 .SingleOrDefaultAsync(e => e.Id == command.employeeId, token);
             
             if(employee is null)
@@ -28,6 +29,8 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeave
 
             if (leaveRequest.isFailure)
                 return leaveRequest.Error;
+
+            await _context.LeaveRequests.AddAsync(leaveRequest.Value, token);
 
             await _context.SaveChangesAsync(token);
 

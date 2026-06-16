@@ -12,7 +12,7 @@ namespace LeaveManagement.Domain.Entities
         private LeaveAllocation(Guid id, Employee employee, LeaveType leaveType, int year, DateTime creationDate) : base(id)
         {
             CreationDate = creationDate;
-            LeaveDays = leaveType.Days;
+            LeaveDays = LeaveDuration.Create(leaveType.Days.Days).Value;
             Year = year;
             EmployeeId = employee.Id;
             LeaveTypeId = leaveType.Id;

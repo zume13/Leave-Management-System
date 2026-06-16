@@ -2,5 +2,5 @@
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeaveRequest
 {
-    public sealed record CreateLeaveRequestCommand(string userId, DateTime startDate, DateTime endDate, string? description, Guid employeeId, Guid leaveTypeId) : ICommand<Guid>;
+    public sealed record CreateLeaveRequestCommand(DateTime startDate, DateTime endDate, string? description, Guid employeeId, Guid leaveTypeId) : ICommand<Guid>;
 }

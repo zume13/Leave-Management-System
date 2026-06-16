@@ -12,8 +12,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.RejectLeave
             RuleFor(c => c.employeeId)
                 .NotEmpty();
             RuleFor(c => c.Reason)
-                .MinimumLength(6)
-                .NotEmpty();   
+                .MinimumLength(6);
         }
     }
 }

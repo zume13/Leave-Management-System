@@ -15,7 +15,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeave
             var employee = await _context.Employees
                 .Include(e => e.Requests.Where(r => r.Id == command.LeaveRequestId))
                 .SingleOrDefaultAsync(e => 
-                    e.Requests.Any(e => e.Id == command.LeaveRequestId), token);
+                    e.Requests.Any(r => r.Id == command.LeaveRequestId), token);
 
             if (employee is null)
                 return ApplicationErrors.LeaveRequests.RequestNotFound(command.LeaveRequestId);

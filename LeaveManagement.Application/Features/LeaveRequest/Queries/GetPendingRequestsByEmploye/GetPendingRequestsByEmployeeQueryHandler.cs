@@ -1,6 +1,7 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Constants;
+using LeaveManagement.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
@@ -17,7 +18,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetPendingRe
 
             var requests = await _context.LeaveRequests
                 .AsNoTracking()
-                .Where(r => r.EmployeeId == query.employeeId && r.IsPending())
+                .Where(r => r.EmployeeId == query.employeeId && r.Status == LeaveRequestStatus.Pending)
                 .OrderBy(r => r.RequestDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

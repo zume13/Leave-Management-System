@@ -2,6 +2,7 @@
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Constants;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRejectedRequests;
+using LeaveManagement.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
@@ -18,7 +19,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetRejectedR
 
             var requests = await _context.LeaveRequests
                 .AsNoTracking()
-                .Where(r => r.EmployeeId == query.employeeId && r.IsRejected())
+                .Where(r => r.EmployeeId == query.employeeId && r.Status == LeaveRequestStatus.Rejected)
                 .OrderBy(r => r.ProcessedDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

@@ -39,6 +39,16 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
             builder.HasOne<Department>()
                 .WithOne()
                 .HasForeignKey<Employee>(e => e.DeptId);
+
+            builder.HasMany<LeaveAllocation>(e => e.Allocations)
+                .WithOne()
+                .HasForeignKey(la => la.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany<LeaveRequest>(e => e.Requests)
+                .WithOne()
+                .HasForeignKey(lr => lr.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
