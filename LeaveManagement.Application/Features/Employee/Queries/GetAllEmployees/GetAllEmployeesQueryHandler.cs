@@ -20,7 +20,7 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
 
             var employees = await _context.Employees
                 .AsNoTracking()
-                .Where(e => e.Status != EmployeeStatus.Fired)
+                .Where(e => e.Status == EmployeeStatus.Active)
                 .OrderBy(e => e.Name.Value)
                 .Skip((query.pageNumber - 1) * query.pageSize)
                 .Take(query.pageSize)

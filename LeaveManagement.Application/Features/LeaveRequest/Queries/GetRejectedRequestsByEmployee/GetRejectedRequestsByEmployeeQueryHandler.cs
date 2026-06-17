@@ -1,7 +1,6 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Constants;
-using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRejectedRequests;
 using LeaveManagement.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;

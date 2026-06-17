@@ -18,7 +18,7 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetExpire
 
             var allocations = await _context.LeaveAllocations
                 .AsNoTracking()
-                .Where(a => a.IsExpired)
+                .Where(a => a.Year > DateTime.UtcNow.Year && (a.LeaveDays.Days - a.UsedDays) == 0)
                 .OrderByDescending(a => a.CreationDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
