@@ -12,7 +12,7 @@ namespace LeaveManagement.Infrastructure.Services
     {
         public ResultT<string> Create(EmailVerificationToken token)
         {
-            var path = _generator.GetPathByName("verify", new { token = token.Id });   
+            var path = _generator.GetPathByName("verify", new { token = token.Id});   
 
             if(path == null) 
                 return DomainErrors.General.InternalError;

@@ -27,7 +27,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.EmailVerificati
                 return Result.Failure(ApplicationErrors.Employee.InvalidToken);
 
             if(Etoken.IsExpired)
-                return Result.Failure(ApplicationErrors.Employee.ExpiredToken);
+                return Result.Failure(ApplicationErrors.Employee.ExpiredToken(Etoken.Id.ToString()));
 
             var verifyResult = employee.VerifyEmail();
 

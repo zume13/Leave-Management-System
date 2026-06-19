@@ -1,8 +1,8 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Abstractions.Services;
-using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
 
@@ -15,18 +15,16 @@ namespace LeaveManagement.Application.Features.Employee.Commands.ResendEmailVeri
     {
         public async Task<Result> Handle(ResendEmailVerificationCommand command, CancellationToken token = default)
         {
-            if (string.IsNullOrWhiteSpace(command.Email))
+            if (string.IsNullOrWhiteSpace(command.token))
                 return Result.Failure(ApplicationErrors.Email.EmailInvalid);
 
-            var employee = await _context.Employees
-                .FindAsync(command.Email, token);
-
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.VerificationToken == command.token, token);
 
             if (employee is null)
                 return Result.Failure(InfrastractureErrors.User.UserNotFound);
 
             var oldToken = await _context.EmailVerificationTokens
-                                    .FindAsync(employee.Id, token);
+                                    .FirstOrDefaultAsync(e => e.EmployeeId == employee.Id, token);
 
             if(oldToken is null)
                 return Result.Failure(ApplicationErrors.Email.InvalidEmailVerificationToken);
@@ -43,6 +41,7 @@ namespace LeaveManagement.Application.Features.Employee.Commands.ResendEmailVeri
             if (updateResult.isFailure)
                 return Result.Failure(updateResult.Error);
 
+                await _context.EmailVerificationTokens.AddAsync(newToken.Value, token);
                 await _context.SaveChangesAsync(token);
                 await _emailService.SendEmailVerificationAsync(employee.Id, token);
 

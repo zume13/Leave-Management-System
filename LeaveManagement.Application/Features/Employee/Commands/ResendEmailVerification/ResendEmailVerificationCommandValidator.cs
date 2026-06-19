@@ -7,9 +7,8 @@ namespace LeaveManagement.Application.Features.Employee.Commands.ResendEmailVeri
     {
        public ResendEmailVerificationCommandValidator()
         {
-            RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("Invalid email format.");
+            RuleFor(x => x.token)
+                .NotEmpty().WithMessage("Token is required.");
         }
     }
 }

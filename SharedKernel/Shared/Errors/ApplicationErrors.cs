@@ -12,7 +12,7 @@ namespace SharedKernel.Shared.Errors
             public static readonly Error AlreadyVerified = Error.Validation("Email.Verified", "The user Email is already verified");
             public static readonly Error InvalidRole = Error.Failure("Role.Invalid", "The assigned role was invalid");
             public static readonly Error AlreadyInRole = Error.Failure("Promotion.Invalid", "The user already has this role");
-            public static readonly Error ExpiredToken = Error.Failure("Token.Expired", "Token has expired");
+            public static  Error ExpiredToken(string token) => Error.Problem("Token.Expired", token);
         }
 
         public static class General

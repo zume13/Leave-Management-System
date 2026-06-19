@@ -9,6 +9,11 @@ namespace LeaveManagement.API.Handlers.LeaveType
     {
         public IQueryHandler<GetAllLeavesQuery, List<LeavesDto>> GetAllLeaves { get; }
         public IQueryHandler<GetLeaveByIdQuery, LeavesDto> GetLeaveById { get; }
-        public TypeQueryHandlers() { }
+        public TypeQueryHandlers(IQueryHandler<GetAllLeavesQuery, List<LeavesDto>> getAllLeaves,
+                                 IQueryHandler<GetLeaveByIdQuery, LeavesDto> getLeaveById) 
+        { 
+            this.GetAllLeaves = getAllLeaves;
+            this.GetLeaveById = getLeaveById;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Infrastructure;
+using LeaveManagement.Application.Dto.Client;
 using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
@@ -76,9 +77,9 @@ namespace LeaveManagement.API.Controllers.Employee
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
         [HttpPut("update/{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEmployeeCommand command)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRequest request)
         {
-            command = command with { EmployeeId = id };
+            var command = new UpdateEmployeeCommand(id, request.EmployeeName, request.Email);
             Result result = await commandHandler.Update.Handle(command);
 
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
@@ -96,10 +97,10 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpPost("resend-verification")]
-        public async Task<IActionResult> ResendVerification([FromBody] string email)
+        [HttpPost("resend-verification/{token}")]
+        public async Task<IActionResult> ResendVerification(string token)
         {
-            Result result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(email));
+            Result result = await commandHandler.ReVerifyEmail.Handle(new ResendEmailVerificationCommand(token));
 
             return result.Match<IActionResult>(Ok, CustomResults.Problem);
         }
