@@ -3,6 +3,7 @@ using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
+using LeaveManagement.Application.Features.Employee.Commands.LogOut;
 using LeaveManagement.Application.Features.Employee.Commands.Promote;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee;
@@ -23,6 +24,7 @@ namespace LeaveManagement.API.Handlers.Employee
             public ICommandHandler<PromoteCommand, PromoteEmployeeDto> Promote { get; }
 
             public ICommandHandler<RefreshTokenCommand,  RefreshTokenDto> RefreshToken { get; }
+            public ICommandHandler<LogOutCommand> LogOut { get; }
 
 
         public EmployeeCommandHandlers(
@@ -33,7 +35,8 @@ namespace LeaveManagement.API.Handlers.Employee
                 ICommandHandler<EmailVerificationCommand> _VerifyEmail,
                 ICommandHandler<ResendEmailVerificationCommand> _ReVerifyEmail,
                 ICommandHandler<PromoteCommand, PromoteEmployeeDto> _Promote,
-                ICommandHandler<RefreshTokenCommand, RefreshTokenDto> _RefreshToken)
+                ICommandHandler<RefreshTokenCommand, RefreshTokenDto> _RefreshToken,
+                ICommandHandler<LogOutCommand> _LogOut)
             {
                 LogIn = _LogIn;
                 Register = _Register;
@@ -43,6 +46,7 @@ namespace LeaveManagement.API.Handlers.Employee
                 ReVerifyEmail = _ReVerifyEmail;
                 Promote = _Promote;
                 RefreshToken = _RefreshToken;
+                LogOut = _LogOut;
             }
         }
     }

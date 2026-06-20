@@ -7,6 +7,7 @@ using LeaveManagement.Application.Dto.Response.Auth;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Application.Features.Employee.Commands.EmailVerification;
 using LeaveManagement.Application.Features.Employee.Commands.LogIn;
+using LeaveManagement.Application.Features.Employee.Commands.LogOut;
 using LeaveManagement.Application.Features.Employee.Commands.Promote;
 using LeaveManagement.Application.Features.Employee.Commands.Register;
 using LeaveManagement.Application.Features.Employee.Commands.RemoveEmployee;
@@ -17,6 +18,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 
 namespace LeaveManagement.API.Controllers.Employee
@@ -145,6 +148,25 @@ namespace LeaveManagement.API.Controllers.Employee
                         accessTokenExpiry = result.Value.AccessTokenExpiration
                     });
             }, CustomResults.Problem);
+        }
+
+        [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
+        [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
+        [HttpPost("auth/logout")]
+        public async Task<IActionResult> LogOutAsync()
+        {
+            var employeeId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var command = new LogOutCommand(Guid.Parse(employeeId));
+
+            var result = await commandHandler.LogOut.Handle(command);
+
+            return result.Match<IActionResult>(() =>
+            {
+                Response.Cookies.Delete("refreshToken");
+                return NoContent();
+            }, CustomResults.Problem);
+
         }
     }
 }
