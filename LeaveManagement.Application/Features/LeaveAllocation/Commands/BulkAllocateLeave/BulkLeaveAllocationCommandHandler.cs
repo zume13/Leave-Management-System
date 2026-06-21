@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using LeaveManagement.Application.Dto.Response.LeaveAllocation;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
+using LeaveManagement.Domain.Enums;
 
 
 namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.BulkAllocateLeave
@@ -18,7 +19,10 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.BulkAllo
             if (leaveType is null)
                 return ApplicationErrors.LeaveType.LeaveTypeNotFound(command.LeaveTypeId);
 
-            var employees = await _context.Employees.Where(e => e.Status == Domain.Enums.EmployeeStatus.Active).ToListAsync(token);
+            var employees = await _context.Employees
+                                   .Include(e => e.Allocations)
+                                   .Where(e => e.Status == EmployeeStatus.Active)
+                                   .ToListAsync(token);
 
             if (employees.Count == 0)
                 return ApplicationErrors.Employee.NoEmployeesFound;
@@ -32,8 +36,16 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Commands.BulkAllo
                 foreach (var employee in employees)
                 {
                     var allocationResult = employee.AllocateLeave(leaveType);
+
                     if (allocationResult.isFailure)
+                    {
                         failedEmployees.Add(employee.Id);
+                        continue;
+                    }
+
+                    var newAllocation = employee.Allocations.Single(a => a.Id == allocationResult.Value);
+
+                    await _context.LeaveAllocations.AddAsync(newAllocation, token);
                 }
 
                 await _context.SaveChangesAsync(token);

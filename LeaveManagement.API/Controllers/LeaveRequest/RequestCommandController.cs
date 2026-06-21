@@ -1,8 +1,8 @@
 ﻿using LeaveManagement.API.Constants;
 using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.LeaveRequest;
-using LeaveManagement.API.Infrastracture;
 using LeaveManagement.API.Infrastructure;
+using LeaveManagement.Application.Dto.Request;
 using LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeaveRequest;
 using LeaveManagement.Application.Features.LeaveRequest.Commands.CancelLeaveRequest;
 using LeaveManagement.Application.Features.LeaveRequest.Commands.CreateLeaveRequest;
@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SharedKernel.Shared.Result;
+using System.Security.Claims;
 
 namespace LeaveManagement.API.Controllers.LeaveRequest
 {
@@ -22,8 +23,10 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
     {
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpPost("approve")]
-        public async Task<IActionResult> Approve([FromBody] ApproveLeaveRequestCommand command)
+        public async Task<IActionResult> Approve([FromBody] ApproveLeaveRequestDto request)
         {
+            var command = new ApproveLeaveRequestCommand(request.employeeId, request.LeaveRequestId, Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value));
+
             Result result = await commandHandlers.Approve.Handle(command);
 
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
@@ -49,8 +52,10 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpPost("reject")]
-        public async Task<IActionResult> Reject([FromBody] RejectLeaveRequestCommand command)
+        public async Task<IActionResult> Reject([FromBody] RejectLeaveRequestDto request)
         {
+            var command = new RejectLeaveRequestCommand(request.employeeId, request.LeaveRequestId, request.Reason, Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value));
+
             Result result = await commandHandlers.Reject.Handle(command);
             return result.Match<IActionResult>(NoContent, CustomResults.Problem);
         }
