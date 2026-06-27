@@ -59,9 +59,7 @@ namespace LeaveManagement.API.Controllers.Employee
 
                 return Ok(
                     new {
-                        isSuccessful = true,
                         accessToken = result.Value.Accesstoken,
-                        accessTokenExpiry = result.Value.AccessTokenExpiration
                     });
             }, CustomResults.Problem);
         }
@@ -142,9 +140,7 @@ namespace LeaveManagement.API.Controllers.Employee
                 return Ok(
                     new
                     {
-                        isSuccessful = true,
-                        accessToken = result.Value.Accesstoken,
-                        accessTokenExpiry = result.Value.AccessTokenExpiration
+                        accessToken = result.Value.Accesstoken
                     });
             }, CustomResults.Problem);
         }

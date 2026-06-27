@@ -3,7 +3,6 @@ using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Constants;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Domain.Enums;
-using LeaveManagement.Domain.Value_Objects;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
@@ -22,8 +21,8 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
                 .AsNoTracking()
                 .Where(e => e.Status == EmployeeStatus.Active)
                 .OrderBy(e => e.Name.Value)
-                .Skip((query.pageNumber - 1) * query.pageSize)
-                .Take(query.pageSize)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Join(_context.Departments.AsNoTracking(), 
                     e => e.DeptId,
                     d => d.Id,

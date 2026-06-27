@@ -2,7 +2,9 @@
 using LeaveManagement.API.Extensions;
 using LeaveManagement.API.Handlers.Employee;
 using LeaveManagement.API.Infrastructure;
+using LeaveManagement.Application.Dto.Response.Department;
 using LeaveManagement.Application.Dto.Response.Employee;
+using LeaveManagement.Application.Features.Department.Queries;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployee;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDepartment;
 using LeaveManagement.Application.Features.Employee.Queries.ListEmployees;
@@ -43,6 +45,14 @@ namespace LeaveManagement.API.Controllers.Employee
             ResultT<List<GetEmployeesByDepartmentDto>> result = await queryHandler.GetByDepartment.Handle(new GetEmployeesByDepartmentQuery(deptId, pageSize, pageNumber));
 
             return result.Match<List<GetEmployeesByDepartmentDto>, IActionResult>(Ok, CustomResults.Problem);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("departments")]
+        public async Task<IActionResult> GetDepartments([FromQuery] int pageSize, [FromQuery] int pageNumber)
+        {
+            ResultT<List<DepartmentDto>> result = await queryHandler.GetDepartments.Handle(new GetDepartmentsQuery(pageSize, pageNumber));
+            return result.Match<List<DepartmentDto>, IActionResult>(Ok, CustomResults.Problem);
         }
     }
 }
