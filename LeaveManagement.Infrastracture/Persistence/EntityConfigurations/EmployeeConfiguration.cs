@@ -37,8 +37,8 @@ namespace LeaveManagement.Infrastructure.Persistence.EntityConfigurations
                 .HasColumnName("token");
 
             builder.HasOne<Department>()
-                .WithOne()
-                .HasForeignKey<Employee>(e => e.DeptId);
+                .WithMany()
+                .HasForeignKey(e => e.DeptId);
 
             builder.HasMany<LeaveAllocation>(e => e.Allocations)
                 .WithOne()

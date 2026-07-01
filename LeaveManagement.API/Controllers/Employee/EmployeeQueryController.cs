@@ -5,6 +5,7 @@ using LeaveManagement.API.Infrastructure;
 using LeaveManagement.Application.Dto.Response.Department;
 using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Application.Features.Department.Queries;
+using LeaveManagement.Application.Features.Employee.Queries.GetDashboardData;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployee;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDepartment;
 using LeaveManagement.Application.Features.Employee.Queries.ListEmployees;
@@ -53,6 +54,14 @@ namespace LeaveManagement.API.Controllers.Employee
         {
             ResultT<List<DepartmentDto>> result = await queryHandler.GetDepartments.Handle(new GetDepartmentsQuery(pageSize, pageNumber));
             return result.Match<List<DepartmentDto>, IActionResult>(Ok, CustomResults.Problem);
+        }
+
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboardData()
+        {
+            ResultT<DashboardDataDto> result = await queryHandler.GetDashboardData.Handle(new DashboardDataQuery());
+            return result.Match<DashboardDataDto, IActionResult>(Ok, CustomResults.Problem);
         }
     }
 }

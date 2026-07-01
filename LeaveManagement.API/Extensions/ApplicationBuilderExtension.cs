@@ -11,8 +11,6 @@ namespace LeaveManagement.API.Extensions
             {
                 opt.Title = "Leave Management API";
             });
-
-            app.UseCors("AllowScalar"); 
             return app;
         }
 

@@ -5,7 +5,7 @@ namespace LeaveManagement.API.Extensions
 {
     public static class QuartzExtension
     {
-        public static IServiceCollection AddQuartz(this IServiceCollection services)
+        public static IServiceCollection AddBackgroundJobs(this IServiceCollection services)
         {
             services.AddQuartz(config =>
             {

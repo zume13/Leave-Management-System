@@ -82,9 +82,10 @@ namespace LeaveManagement.API
 
             services.AddCors(opt =>
             {
-                opt.AddPolicy("AllowScalar", policy =>
+                opt.AddPolicy("AllowAngular", policy =>
                 {
-                    policy.WithOrigins("https://localhost:7215")
+                    policy.WithOrigins("http://localhost:4200")
+                    .AllowCredentials()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });

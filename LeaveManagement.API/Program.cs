@@ -17,13 +17,13 @@ namespace LeaveManagement.API
             builder.Services.AddApplication();
             builder.Services.AddPresentation();
             builder.Services.AddJwtAuthentication(builder.Configuration);
-            builder.Services.AddQuartz();
+            builder.Services.AddBackgroundJobs();
 
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseScalar();
+               app.UseScalar();
             }
 
             using var scope = app.Services.CreateScope();
@@ -32,9 +32,13 @@ namespace LeaveManagement.API
 
             await seeder.SeedAsync();
 
+            app.UseExceptionHandler();
+
             app.UseHttpsRedirection();
 
-            app.UseExceptionHandler();
+            app.UseRouting();
+
+            app.UseCors("AllowAngular");
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -3,7 +3,6 @@ using LeaveManagement.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
-using SharedKernel.Shared.Errors;
 using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Infrastructure.Services
@@ -12,12 +11,9 @@ namespace LeaveManagement.Infrastructure.Services
     {
         public ResultT<string> Create(EmailVerificationToken token)
         {
-            var path = _generator.GetPathByName("verify", new { token = token.Id});   
+            var baseUrl = "http://localhost:4200";
 
-            if(path == null) 
-                return DomainErrors.General.InternalError;
-
-            var link = $"{_config["App:BaseUrl"]}{path}";
+            var link = $"{baseUrl}/verify-email?token={token.Id.ToString()}";
 
             return ResultT<string>.Success(link);
         }

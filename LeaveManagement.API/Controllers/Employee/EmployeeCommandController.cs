@@ -44,6 +44,8 @@ namespace LeaveManagement.API.Controllers.Employee
         {
             ResultT<LogInDto> result = await commandHandler.LogIn.Handle(command);
 
+            Console.WriteLine("Login endpoint hit");
+
             return result.Match<LogInDto, IActionResult>(success =>
             {
                 Response.Cookies.Append(
@@ -53,7 +55,7 @@ namespace LeaveManagement.API.Controllers.Employee
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.Strict,
+                        SameSite = SameSiteMode.None,
                         Expires = result.Value.RefreshTokenExpiration
                     });
 
@@ -87,8 +89,8 @@ namespace LeaveManagement.API.Controllers.Employee
 
         [AllowAnonymous]
         [EnableRateLimiting(RateLimit.PolicyName.PerUser)]
-        [HttpGet("verify", Name = "verify")]
-        public async Task<IActionResult> VerifyEmail([FromQuery] EmailVerificationCommand command)
+        [HttpPost("verify")]
+        public async Task<IActionResult> VerifyEmail([FromBody] EmailVerificationCommand command)
         {
             Result result = await commandHandler.VerifyEmail.Handle(command);
 
@@ -150,6 +152,8 @@ namespace LeaveManagement.API.Controllers.Employee
         [HttpPost("auth/logout")]
         public async Task<IActionResult> LogOutAsync()
         {
+            Console.WriteLine("hit");
+
             var employeeId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             var command = new LogOutCommand(Guid.Parse(employeeId));

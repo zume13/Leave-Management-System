@@ -74,7 +74,7 @@ namespace LeaveManagement.Infrastructure.Services
 
                                                     <p>
                                                         <a href='{link.Value}'>
-                                                            {link.Value}
+                                                            click here.
                                                         </a>
                                                     </p>
                                                 </td>
