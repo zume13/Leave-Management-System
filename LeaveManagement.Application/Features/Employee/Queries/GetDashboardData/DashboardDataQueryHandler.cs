@@ -1,5 +1,4 @@
-﻿
-using LeaveManagement.Application.Abstractions.Data;
+﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Result;
@@ -10,7 +9,8 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetDashboardData
     {
         public async Task<ResultT<DashboardDataDto>> Handle(DashboardDataQuery query, CancellationToken cancellationToken = default)
         {
-            var employeeTotal = await _context.Employees.CountAsync(cancellationToken);
+            var employeeTotal = await _context.Employees
+                .CountAsync(cancellationToken);
 
             var pendingLeaveRequests = await _context.LeaveRequests
                 .Where(lr => lr.Status == Domain.Enums.LeaveRequestStatus.Pending)

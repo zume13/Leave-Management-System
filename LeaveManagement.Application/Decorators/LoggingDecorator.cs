@@ -16,19 +16,19 @@ namespace LeaveManagement.Application.Decorators
             public async Task<ResultT<TResponse>> Handle(TCommand command, CancellationToken token = default)
             {
                 var commandName = typeof(TCommand).Name;
-                logger.LogInformation("Handling command {commandName}.", commandName);
+                logger.LogInformation($"Handling command {commandName}.", commandName);
 
                 var result = await innerHandler.Handle(command, token);
 
                 if (result.isSuccess)
                 {
-                    logger.LogInformation("Command {commandName} has been executed successfully", commandName);
+                    logger.LogInformation($"Command {commandName} has been executed successfully", commandName);
                 }
                 else
                 {
                     using (LogContext.PushProperty("Error", result.Error, true))
                     {
-                        logger.LogError("Completed Command {command} with an error/s", commandName);
+                        logger.LogError($"Completed Command {command} with an error/s ({result.Error})");
                     }
                 }
 

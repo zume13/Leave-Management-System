@@ -2,9 +2,9 @@
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllApproveRequests;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendingRequests;
 using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRejectedRequests;
-using LeaveManagement.Application.Features.LeaveRequest.Queries.GetApprovedRequestsByEmployee;
-using LeaveManagement.Application.Features.LeaveRequest.Queries.GetPendingRequestsByEmployee;
-using LeaveManagement.Application.Features.LeaveRequest.Queries.GetRejectedRequestsByEmployee;
+using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRequestsByEmployee;
+using LeaveManagement.Application.Features.LeaveRequest.Queries;
+using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRequests;
 
 namespace LeaveManagement.API.Handlers.LeaveRequest
 {
@@ -13,23 +13,20 @@ namespace LeaveManagement.API.Handlers.LeaveRequest
         public IQueryHandler<GetAllApproveRequestsQuery, List<GetAllApproveRequestsDto>> GetAllApproved { get; }
         public IQueryHandler<GetAllPendingRequestsQuery, List<GetAllPendingRequestsDto>> GetAllPending { get; }
         public IQueryHandler<GetAllRejectedRequestsQuery, List<GetAllRejectedRequestsDto>> GetAllRejected { get; }
-        public IQueryHandler<GetApprovedRequestsByEmployeeQuery, List<GetApprovedRequestsByEmployeeDto>> GetEmployeeApprovedRequest { get; }
-        public IQueryHandler<GetPendingRequestsByEmployeeQuery, List<GetPendingRequestsByEmployeeDto>> GetPendingEmployeeRequest { get; }
-        public IQueryHandler<GetRejectedRequestsByEmployeeQuery, List<GetRejectedRequestsByEmployeeDto>> GetEmployeeRejectedRequest { get; }
+        public IQueryHandler<GetAllRequestsByEmployeeQuery, List<GetAllRequestsByEmployeeDto>> GetAllRequestsByEmployee { get; }
+        public IQueryHandler<GetAllRequestsQuery, List<GetAllRequestsDto>> GetAllRequests { get; }
         public RequestQueryHandlers(
             IQueryHandler<GetAllApproveRequestsQuery, List<GetAllApproveRequestsDto>> _GetAllApproved,
             IQueryHandler<GetAllPendingRequestsQuery, List<GetAllPendingRequestsDto>> _GetAllPending,
             IQueryHandler<GetAllRejectedRequestsQuery, List<GetAllRejectedRequestsDto>> _GetAllRejected,
-            IQueryHandler<GetApprovedRequestsByEmployeeQuery, List<GetApprovedRequestsByEmployeeDto>> _GetEmployeeApprovedRequest,
-            IQueryHandler<GetPendingRequestsByEmployeeQuery, List<GetPendingRequestsByEmployeeDto>> _GetPendingEmployeeRequest,
-            IQueryHandler<GetRejectedRequestsByEmployeeQuery, List<GetRejectedRequestsByEmployeeDto>> _GetEmployeeRejectedRequest)
+            IQueryHandler<GetAllRequestsByEmployeeQuery, List<GetAllRequestsByEmployeeDto>> _GetEmployeeApprovedRequest,
+            IQueryHandler<GetAllRequestsQuery, List<GetAllRequestsDto>> _GetAllRequests)
         {
             GetAllApproved = _GetAllApproved;
             GetAllPending = _GetAllPending;
             GetAllRejected = _GetAllRejected;
-            GetEmployeeApprovedRequest = _GetEmployeeApprovedRequest;
-            GetPendingEmployeeRequest = _GetPendingEmployeeRequest;
-            GetEmployeeRejectedRequest = _GetEmployeeRejectedRequest;
+            GetAllRequestsByEmployee = _GetEmployeeApprovedRequest;
+            GetAllRequests = _GetAllRequests;
         }
     }
 }
