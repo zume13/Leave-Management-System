@@ -17,11 +17,11 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllReques
             GetAllRequestsByEmployeeQuery query,
             CancellationToken cancellationToken)
         {
-            int pageSize = query.PageSize <= 0
+            int pageSize = query.pageSize <= 0
                 ? NumericConstant.DefaultPageSize
-                : NumericConstant.MaxPageSize(query.PageSize);
+                : NumericConstant.MaxPageSize(query.pageSize);
 
-            int pageNumber = Math.Max(1, query.PageNumber);
+            int pageNumber = Math.Max(1, query.pageNumber);
 
             var requests = await _context.LeaveRequests
                 .AsNoTracking()
@@ -29,27 +29,27 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllReques
                 .OrderByDescending(r => r.RequestDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Join(
-                    _context.Employees.AsNoTracking(),
-                    r => r.EmployeeId,
-                    e => e.Id,
-                    (r, e) => new GetAllRequestsByEmployeeDto(
-                        r.Id,
-                        e.Name.Value,
-                        r.RequestDate,
-                        r.ProcessedDate,
-                        r.StartDate,
-                        r.EndDate,
-                        r.LeaveDays.Days,
-                        r.Status.ToString(),
-                        r.Description,
-                        r.RejectionReason,
-                        r.ProcessedBy.ToString()
-                    ))
-                .ToListAsync(cancellationToken);
+                .Join(_context.LeaveTypes.AsNoTracking(),
+                    re => re.LeaveTypeId,
+                    lt => lt.Id,
+                    (re, lt) => new GetAllRequestsByEmployeeDto(
+                        re.Id,
+                        lt.LeaveName.Value,
+                        re.RequestDate,
+                        re.ProcessedDate,
+                        re.StartDate,
+                        re.EndDate,
+                        re.LeaveDays.Days,
+                        re.Status.ToString(),
+                        re.Description,
+                        re.RejectionReason,
+                        re.ProcessedBy.ToString()
+                       )).ToListAsync(cancellationToken);
 
             if (requests.Count == 0)
                 return ApplicationErrors.LeaveRequests.NoRequestsFound;
+
+            
 
             return ResultT<List<GetAllRequestsByEmployeeDto>>.Success(requests);
         }

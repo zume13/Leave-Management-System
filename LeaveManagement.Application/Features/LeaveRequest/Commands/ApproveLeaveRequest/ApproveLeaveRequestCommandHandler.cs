@@ -13,15 +13,15 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeav
         public async Task<Result> Handle(ApproveLeaveRequestCommand command, CancellationToken token = default)
         {
             var employee = await _context.Employees
-                .Include(e => e.Requests.Where(r => r.Id == command.LeaveRequestId))
+                .Include(e => e.Requests.Where(r => r.Id == command.leaveRequestId))
                 .Include(e => e.Allocations)
                 .SingleOrDefaultAsync(e => 
                     e.Requests.Any(r => r.EmployeeId == command.employeeId), token);
 
             if (employee is null)
-                return ApplicationErrors.LeaveRequests.RequestNotFound(command.LeaveRequestId);
+                return ApplicationErrors.LeaveRequests.RequestNotFound(command.leaveRequestId);
 
-            var result = employee.ApproveLeaveRequest(command.LeaveRequestId, command.approverId);
+            var result = employee.ApproveLeaveRequest(command.leaveRequestId, command.approverId);
 
             if (result.isFailure)
                 return result.Error;

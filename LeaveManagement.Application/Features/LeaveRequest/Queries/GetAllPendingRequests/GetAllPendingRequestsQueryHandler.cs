@@ -1,6 +1,7 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
 using LeaveManagement.Application.Constants;
+using LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllRequests;
 using LeaveManagement.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
@@ -8,10 +9,10 @@ using SharedKernel.Shared.Result;
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendingRequests
 {
-    internal sealed class GetAllPendingRequestsQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllPendingRequestsQuery, List<GetAllPendingRequestsDto>>
+    internal sealed class GetAllPendingRequestsQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAllPendingRequestsQuery, List<GetAllRequestsDto>>
     {
         private readonly IApplicationDbContext _context = context;
-        public async Task<ResultT<List<GetAllPendingRequestsDto>>> Handle(GetAllPendingRequestsQuery query, CancellationToken cancellationToken)
+        public async Task<ResultT<List<GetAllRequestsDto>>> Handle(GetAllPendingRequestsQuery query, CancellationToken cancellationToken)
         {
             int pageSize = query.pageSize <= 0 ? NumericConstant.DefaultPageSize : NumericConstant.MaxPageSize(query.pageSize);
             int pageNumber = Math.Max(1, query.pageNumber);
@@ -25,21 +26,32 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllPendin
                 .Join(_context.Employees.AsNoTracking(),
                     r => r.EmployeeId,
                     e => e.Id,
-                    (r, e) => new GetAllPendingRequestsDto(
-                        r.Id,
-                        e.Id,
-                        e.Name.Value,
-                        r.RequestDate,
-                        r.StartDate,
-                        r.EndDate,
-                        r.Description ?? "No description provided",
-                        r.LeaveDays.Days))
-                    .ToListAsync(cancellationToken);
+                    (r, e) => new { Employee = e, Request = r })
+                .Join(_context.LeaveTypes
+                .AsNoTracking(),
+                n => n.Request.LeaveTypeId,
+                l => l.Id,
+                (n, l) => new GetAllRequestsDto(
+                    n.Request.Id,
+                    n.Employee.Id,
+                    l.LeaveName.Value,
+                    n.Employee.Name.Value,
+                    n.Request.RequestDate,
+                    n.Request.ProcessedDate,
+                    n.Request.StartDate,
+                    n.Request.EndDate,
+                    n.Request.LeaveDays.Days,
+                    n.Request.Status.ToString(),
+                    n.Request.Description,
+                    n.Request.RejectionReason,
+                    n.Request.ProcessedBy.ToString()
+                ))
+                .ToListAsync(cancellationToken);
 
             if (requests.Count() == 0)
                 return ApplicationErrors.LeaveRequests.NoRequestsFound;
 
-            return ResultT<List<GetAllPendingRequestsDto>>.Success(requests);
+            return ResultT<List<GetAllRequestsDto>>.Success(requests);
         }
     }
 }

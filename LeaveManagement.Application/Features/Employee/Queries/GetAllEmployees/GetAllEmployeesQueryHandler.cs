@@ -30,7 +30,7 @@ namespace LeaveManagement.Application.Features.Employee.Queries.ListEmployees
                         e.Id,
                         e.Name.Value,
                         e.Email.Value,
-                        e.Status,
+                        e.Status.ToString(),
                         d.DepartmentName.Value))
                 .ToListAsync(cancellationToken);
 

@@ -1,7 +1,7 @@
 ﻿using LeaveManagement.Application.Abstractions.Messaging;
-using Microsoft.AspNetCore.Mvc;
+using LeaveManagement.Application.Dto.Response.Employee;
 
 namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDepartment
 {
-    public sealed record GetEmployeesByDepartmentQuery(Guid deptId, int pageSize, int pageNumber) : IQuery<List<GetEmployeesByDepartmentDto>>;
+    public sealed record GetEmployeesByDepartmentQuery(Guid deptId, int pageSize, int pageNumber) : IQuery<List<EmployeeDto>>;
 }

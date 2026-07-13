@@ -3,7 +3,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllReques
 {
     public sealed record GetAllRequestsByEmployeeDto(
         Guid Id,
-        string EmployeeName,
+        string LeaveName,
         DateTime RequestDate,
         DateTime? ProcessedDate,
         DateTime StartDate,

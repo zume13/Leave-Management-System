@@ -2,5 +2,5 @@
 
 namespace LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeaveRequest
 {
-    public sealed record ApproveLeaveRequestCommand(Guid employeeId, Guid LeaveRequestId, Guid approverId) : ICommand;
+    public sealed record ApproveLeaveRequestCommand(Guid employeeId, Guid leaveRequestId, Guid approverId) : ICommand;
 }

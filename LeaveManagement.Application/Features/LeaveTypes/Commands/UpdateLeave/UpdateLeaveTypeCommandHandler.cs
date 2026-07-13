@@ -11,7 +11,7 @@ namespace LeaveManagement.Application.Features.LeaveTypes.Commands.UpdateLeave
         private readonly IApplicationDbContext _context = context;
         public async Task<Result> Handle(UpdateLeaveTypeCommand command, CancellationToken token = default)
         {
-            var leaveType = _context.LeaveTypes.Find(command.LeaveTypeId);
+            var leaveType = await _context.LeaveTypes.FindAsync(command.LeaveTypeId);
 
             if (leaveType is null)
                 return ApplicationErrors.LeaveType.LeaveTypeNotFound(command.LeaveTypeId);

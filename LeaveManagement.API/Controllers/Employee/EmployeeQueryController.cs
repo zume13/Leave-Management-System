@@ -7,6 +7,7 @@ using LeaveManagement.Application.Dto.Response.Employee;
 using LeaveManagement.Application.Features.Department.Queries;
 using LeaveManagement.Application.Features.Employee.Queries.GetDashboardData;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployee;
+using LeaveManagement.Application.Features.Employee.Queries.GetEmployeeByName;
 using LeaveManagement.Application.Features.Employee.Queries.GetEmployeesByDepartment;
 using LeaveManagement.Application.Features.Employee.Queries.ListEmployees;
 using Microsoft.AspNetCore.Authorization;
@@ -43,9 +44,9 @@ namespace LeaveManagement.API.Controllers.Employee
         [HttpGet("in-department/{deptId}")]
         public async Task<IActionResult> GetByDepartment([FromRoute] Guid deptId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
-            ResultT<List<GetEmployeesByDepartmentDto>> result = await queryHandler.GetByDepartment.Handle(new GetEmployeesByDepartmentQuery(deptId, pageSize, pageNumber));
+            ResultT<List<EmployeeDto>> result = await queryHandler.GetByDepartment.Handle(new GetEmployeesByDepartmentQuery(deptId, pageSize, pageNumber));
 
-            return result.Match<List<GetEmployeesByDepartmentDto>, IActionResult>(Ok, CustomResults.Problem);
+            return result.Match<List<EmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
         [AllowAnonymous]
@@ -62,6 +63,15 @@ namespace LeaveManagement.API.Controllers.Employee
         {
             ResultT<DashboardDataDto> result = await queryHandler.GetDashboardData.Handle(new DashboardDataQuery());
             return result.Match<DashboardDataDto, IActionResult>(Ok, CustomResults.Problem);
+        }
+
+        [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
+        [HttpGet("search-by-name")]
+        public async Task<IActionResult> GetByName([FromQuery] string name, int pageNumber, int pageSize)
+        {
+            ResultT<List<EmployeeDto>> result = await queryHandler.GetByName.Handle(new GetEmployeeByNameQuery(name, pageNumber, pageSize));
+
+            return result.Match<List<EmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }
     }
 }

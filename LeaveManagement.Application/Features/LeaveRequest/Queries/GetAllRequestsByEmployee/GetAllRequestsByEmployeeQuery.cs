@@ -4,8 +4,8 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Queries.GetAllReques
 {
     public sealed record GetAllRequestsByEmployeeQuery(
         Guid EmployeeId,
-        int PageNumber,
-        int PageSize
+        int pageNumber,
+        int pageSize
     ) : IQuery<List<GetAllRequestsByEmployeeDto>>;
 
 }

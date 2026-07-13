@@ -6,7 +6,7 @@ namespace LeaveManagement.Application.Features.LeaveRequest.Commands.ApproveLeav
     {
         public ApproveLeaveRequestCommandValidator()
         {
-            RuleFor(c => c.LeaveRequestId)
+            RuleFor(c => c.leaveRequestId)
                 .NotEmpty();
             RuleFor(c => c.approverId)
                 .NotNull();

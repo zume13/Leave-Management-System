@@ -2,5 +2,5 @@
 
 namespace LeaveManagement.Application.Dto.Response.Employee
 {
-    public record EmployeeDto(Guid Id, string Name, string Email, EmployeeStatus Status, string Department);
+    public record EmployeeDto(Guid Id, string Name, string Email, string Status, string Department);
 }

@@ -22,11 +22,16 @@ namespace LeaveManagement.Application.Features.LeaveAllocation.Queries.GetAlloca
                 .OrderBy(a => a.CreationDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(a => new GetAllocationByEmployeeDto(
-                    a.Id,
-                    a.LeaveName,
-                    a.RemainingDays,
-                    a.Year))
+                .Join(_context.LeaveTypes.AsNoTracking(),
+                    allocation => allocation.LeaveTypeId,
+                    leaveTypes => leaveTypes.Id,
+                    ( allocation , leaveTypes ) => 
+                    new GetAllocationByEmployeeDto(
+                    allocation.Id,
+                    allocation.LeaveName,
+                    allocation.RemainingDays,
+                    allocation.Year, 
+                    leaveTypes.Id))
                 .ToListAsync(cancellationToken);
              
             if (allocations.Count == 0)

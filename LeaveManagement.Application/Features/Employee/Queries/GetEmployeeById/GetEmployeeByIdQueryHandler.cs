@@ -1,6 +1,5 @@
 ﻿using LeaveManagement.Application.Abstractions.Data;
 using LeaveManagement.Application.Abstractions.Messaging;
-using LeaveManagement.Application.Constants;
 using LeaveManagement.Application.Dto.Response.Employee;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Shared.Errors;
@@ -24,7 +23,7 @@ namespace LeaveManagement.Application.Features.Employee.Queries.GetEmployee
                         e.Id,
                         e.Name.Value,
                         e.Email.Value,
-                        e.Status,
+                        e.Status.ToString(),
                         d.DepartmentName.Value))
                 .FirstOrDefaultAsync(cancellationToken);
 

@@ -33,30 +33,30 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         [HttpGet("approved")]
         public async Task<IActionResult> GetApprovedLeaveRequests([FromQuery] GetAllApproveRequestsQuery query)
         {
-            ResultT<List<GetAllApproveRequestsDto>> result =
+            ResultT<List<GetAllRequestsDto>> result =
                 await queryHandler.GetAllApproved.Handle(query);
 
-            return result.Match<List<GetAllApproveRequestsDto>, IActionResult>(Ok, CustomResults.Problem);
+            return result.Match<List<GetAllRequestsDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpGet("pending")]
         public async Task<IActionResult> GetPendingLeaveRequests([FromQuery] GetAllPendingRequestsQuery query)
         {
-            ResultT<List<GetAllPendingRequestsDto>> result =
+            ResultT<List<GetAllRequestsDto>> result =
                 await queryHandler.GetAllPending.Handle(query);
 
-            return result.Match<List<GetAllPendingRequestsDto>, IActionResult>(Ok, CustomResults.Problem);
+            return result.Match<List<GetAllRequestsDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
         [Authorize(Policy = Auth.Policies.ManagerAndAbove)]
         [HttpGet("rejected")]
         public async Task<IActionResult> GetRejectedLeaveRequests([FromQuery] GetAllRejectedRequestsQuery query)
         {
-            ResultT<List<GetAllRejectedRequestsDto>> result =
+            ResultT<List<GetAllRequestsDto>> result =
                 await queryHandler.GetAllRejected.Handle(query);
 
-            return result.Match<List<GetAllRejectedRequestsDto>, IActionResult>(Ok, CustomResults.Problem);
+            return result.Match<List<GetAllRequestsDto>, IActionResult>(Ok, CustomResults.Problem);
         }
 
         [Authorize(Policy = Auth.Policies.EmployeeAndAbove)]
@@ -64,7 +64,7 @@ namespace LeaveManagement.API.Controllers.LeaveRequest
         public async Task<IActionResult> GetApprovedRequestsByEmployeeId([FromRoute] Guid employeeId, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
             ResultT<List<GetAllRequestsByEmployeeDto>> result =
-                await queryHandler.GetAllRequestsByEmployee.Handle(new GetAllRequestsByEmployeeQuery(employeeId, pageSize, pageNumber));
+                await queryHandler.GetAllRequestsByEmployee.Handle(new GetAllRequestsByEmployeeQuery(employeeId, pageNumber, pageSize));
 
             return result.Match<List<GetAllRequestsByEmployeeDto>, IActionResult>(Ok, CustomResults.Problem);
         }

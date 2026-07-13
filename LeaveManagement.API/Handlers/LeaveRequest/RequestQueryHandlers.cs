@@ -10,15 +10,15 @@ namespace LeaveManagement.API.Handlers.LeaveRequest
 {
     public class RequestQueryHandlers
     {
-        public IQueryHandler<GetAllApproveRequestsQuery, List<GetAllApproveRequestsDto>> GetAllApproved { get; }
-        public IQueryHandler<GetAllPendingRequestsQuery, List<GetAllPendingRequestsDto>> GetAllPending { get; }
-        public IQueryHandler<GetAllRejectedRequestsQuery, List<GetAllRejectedRequestsDto>> GetAllRejected { get; }
+        public IQueryHandler<GetAllApproveRequestsQuery, List<GetAllRequestsDto>> GetAllApproved { get; }
+        public IQueryHandler<GetAllPendingRequestsQuery, List<GetAllRequestsDto>> GetAllPending { get; }
+        public IQueryHandler<GetAllRejectedRequestsQuery, List<GetAllRequestsDto>> GetAllRejected { get; }
         public IQueryHandler<GetAllRequestsByEmployeeQuery, List<GetAllRequestsByEmployeeDto>> GetAllRequestsByEmployee { get; }
         public IQueryHandler<GetAllRequestsQuery, List<GetAllRequestsDto>> GetAllRequests { get; }
         public RequestQueryHandlers(
-            IQueryHandler<GetAllApproveRequestsQuery, List<GetAllApproveRequestsDto>> _GetAllApproved,
-            IQueryHandler<GetAllPendingRequestsQuery, List<GetAllPendingRequestsDto>> _GetAllPending,
-            IQueryHandler<GetAllRejectedRequestsQuery, List<GetAllRejectedRequestsDto>> _GetAllRejected,
+            IQueryHandler<GetAllApproveRequestsQuery, List<GetAllRequestsDto>> _GetAllApproved,
+            IQueryHandler<GetAllPendingRequestsQuery, List<GetAllRequestsDto>> _GetAllPending,
+            IQueryHandler<GetAllRejectedRequestsQuery, List<GetAllRequestsDto>> _GetAllRejected,
             IQueryHandler<GetAllRequestsByEmployeeQuery, List<GetAllRequestsByEmployeeDto>> _GetEmployeeApprovedRequest,
             IQueryHandler<GetAllRequestsQuery, List<GetAllRequestsDto>> _GetAllRequests)
         {
